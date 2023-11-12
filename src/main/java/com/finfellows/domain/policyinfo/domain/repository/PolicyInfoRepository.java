@@ -1,6 +1,6 @@
-package com.finfellows.domain.policyInfo.repository;
+package com.finfellows.domain.policyinfo.domain.repository;
 
-import com.finfellows.domain.policyInfo.PolicyInfo;
+import com.finfellows.domain.policyinfo.domain.PolicyInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PolicyInfoRepository extends JpaRepository<PolicyInfo, Long> {

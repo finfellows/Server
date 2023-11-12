@@ -1,5 +1,6 @@
-package com.finfellows.domain.post;
+package com.finfellows.domain.policyinfo.domain;
 
+import com.finfellows.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,27 +9,22 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name="Post")
+@Table(name = "PolicyInfo")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
-public class Post {
+public class PolicyInfo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id",updatable = false)
+    @Column(name = "id", updatable = false)
     private Long id;
 
     @Column(name="url", nullable = false, unique = true)
     private String url;
 
-    @Column(name="writer_id")
-    private Long writerId;
-
     @Builder
-    public Post(String url, Long writerId){
+    public PolicyInfo(String url){
         this.url=url;
-        this.writerId=writerId;
     }
-
 }
