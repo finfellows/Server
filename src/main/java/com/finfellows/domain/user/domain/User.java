@@ -6,7 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "User")
+@Table(name = "'User'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
