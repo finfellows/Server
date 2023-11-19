@@ -1,7 +1,7 @@
 package com.finfellows.domain.educontent.domain;
 
 import com.finfellows.domain.common.BaseEntity;
-import com.finfellows.domain.user.domain.User;
+import com.finfellows.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,16 +20,20 @@ public class EduContent extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name="url", nullable = false, unique = true)
-    private String url;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="writer_id")
-    private User writer;
+    @JoinColumn(name="id")
+    private Post post_id;
+
+    @Column(name="sequence", nullable = false)
+    private Long sequence;
+
+    @Column(name="content")
+    private String content;
 
     @Builder
-    public EduContent(String url, User writer){
-        this.url=url;
-        this.writer=writer;
+    public EduContent(Post post_id, Long sequence, String content){
+        this.post_id=post_id;
+        this.sequence=sequence;
+        this.content=content;
     }
 }

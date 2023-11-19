@@ -1,7 +1,5 @@
 package com.finfellows.domain.post.domain;
 
-import com.finfellows.domain.common.BaseEntity;
-import com.finfellows.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,25 +8,30 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name="Post")
+@Table(name="Content")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
-public class Post extends BaseEntity {
-
+public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id",updatable = false)
+    @Column(name = "id", updatable = false)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="writer_id")
-    private User writer;
+    @JoinColumn(name="id")
+    private Post post_id;
+
+    @Column(name="sequence", nullable = false)
+    private Long sequence;
+
+    @Column(name="content")
+    private String content;
 
     @Builder
-    public Post(User writer){
-        this.writer=writer;
+    public Content(Post post_id, Long sequence, String content){
+        this.post_id=post_id;
+        this.sequence=sequence;
+        this.content=content;
     }
-
 }
