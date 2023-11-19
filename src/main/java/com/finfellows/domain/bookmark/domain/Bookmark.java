@@ -9,11 +9,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "Bookmark")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Where(clause = "status = 'ACTIVE'")
 public class Bookmark extends BaseEntity{
 
     @Id
@@ -37,7 +39,9 @@ public class Bookmark extends BaseEntity{
     private PolicyInfo policyInfo;
 
     @Builder
-    public Bookmark(FinancialProduct financialProduct) {
+    public Bookmark(FinancialProduct financialProduct, EduContent eduContent, PolicyInfo policyInfo) {
         this.financialProduct = financialProduct;
+        this.eduContent = eduContent;
+        this.policyInfo = policyInfo;
     }
 }
