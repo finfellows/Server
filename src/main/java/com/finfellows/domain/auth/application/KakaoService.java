@@ -181,7 +181,6 @@ public class KakaoService {
 
         }
 
-        System.out.println("테스트트트트트트트");
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -190,14 +189,11 @@ public class KakaoService {
                 )
         );
 
-        System.out.println("테스트트트트트");
 
-        log.info("Attempting to save token for email: {}", kakaoProfile.getKakaoAccount().getEmail());
 
 
         TokenMapping tokenMapping = customTokenProvierService.createToken(authentication);
 
-        log.info("Generated TokenMapping: {}", tokenMapping);
 
         Token token = Token.builder()
                 .refreshToken(tokenMapping.getRefreshToken())
