@@ -191,9 +191,9 @@ public class KakaoService {
 
 
 
-
         TokenMapping tokenMapping = customTokenProvierService.createToken(authentication);
 
+        System.out.println("tokenMapping = " + tokenMapping);
 
         Token token = Token.builder()
                 .refreshToken(tokenMapping.getRefreshToken())
@@ -202,9 +202,8 @@ public class KakaoService {
 
         tokenRepository.save(token);
 
-        log.info("Saving Token: {}", token);
         Token savedToken = tokenRepository.save(token);
-        log.info("Saved Token: {}", savedToken);
+
 
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())

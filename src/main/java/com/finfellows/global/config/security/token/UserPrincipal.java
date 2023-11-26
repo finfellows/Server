@@ -19,7 +19,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     private final String name;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(User user, Long id, String email, String name, String userName) {
+    public UserPrincipal(User user, Long id, String email, String name) {
         this.user = user;
         this.id = id;
         this.email = email;
@@ -30,7 +30,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return new UserPrincipal(
                 user,
                 user.getId(),
-                user.getProviderId(),
                 user.getEmail(),
                 user.getName()
         );

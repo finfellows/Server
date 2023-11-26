@@ -35,6 +35,7 @@ public class CustomTokenProvierService {
     public TokenMapping createToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
+
         Date now = new Date();
 
         Date accessTokenExpiresIn = new Date(now.getTime() + oAuth2Config.getAuth().getAccessTokenExpirationMsec());

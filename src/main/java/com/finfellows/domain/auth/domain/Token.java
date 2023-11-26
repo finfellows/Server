@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Token extends BaseEntity {
 
-    @Id
+    @Id  // 이 컬럼이 email로 저장안되고 providerId로 저장되고 있음. 11.25
     @Column(name = "email", nullable = false)
     private String email;
 
