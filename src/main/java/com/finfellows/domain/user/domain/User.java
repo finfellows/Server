@@ -6,10 +6,9 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "'User'")
+@Table(name = "User")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Where(clause = "status = 'ACTIVE'")
 public class User extends BaseEntity {
 
     @Id
@@ -23,8 +22,9 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "provider_id", nullable = false, unique = true, updatable = false)
+    @Column(name = "provider_id", unique = true, updatable = false)
     private String providerId;
+
 
     @Builder
     public User(String email, String name, String providerId) {
