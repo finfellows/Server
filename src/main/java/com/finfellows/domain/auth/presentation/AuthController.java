@@ -3,7 +3,10 @@ package com.finfellows.domain.auth.presentation;
 import com.finfellows.domain.auth.application.KakaoService;
 import com.finfellows.domain.auth.dto.AuthRes;
 import com.finfellows.domain.auth.dto.KakaoProfile;
+import com.finfellows.domain.auth.dto.RefreshTokenReq;
 import com.finfellows.domain.auth.dto.TokenMapping;
+import com.finfellows.global.config.security.token.CurrentUser;
+import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
 import com.finfellows.global.payload.Message;
 import com.finfellows.global.payload.ResponseCustom;
@@ -46,7 +49,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
             @ApiResponse(responseCode = "400", description = "로그인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @GetMapping(value = "/kakao/login")
+    @GetMapping(value = "/kakao/sign-in")
     public ResponseCustom<?> kakaoCallback(
             @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
     ) {
@@ -57,6 +60,19 @@ public class AuthController {
 
         return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile));
 
+    }
+
+    @Operation(summary = "유저 로그아웃", description = "유저 로그아웃을 수행합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "로그아웃 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PostMapping(value = "sign-out")
+    public ResponseCustom<?> signOut(
+            @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.") @Valid @RequestBody RefreshTokenReq tokenRefreshRequest
+    ) {
+        return ResponseCustom.OK(kakaoService.signOut(tokenRefreshRequest));
     }
 
 

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finfellows.domain.auth.domain.Token;
 import com.finfellows.domain.auth.domain.repository.TokenRepository;
-import com.finfellows.domain.auth.dto.AuthRes;
-import com.finfellows.domain.auth.dto.KakaoProfile;
-import com.finfellows.domain.auth.dto.OAuthToken;
-import com.finfellows.domain.auth.dto.TokenMapping;
+import com.finfellows.domain.auth.dto.*;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.config.security.OAuth2Config;
+import com.finfellows.global.error.DefaultAuthenticationException;
+import com.finfellows.global.payload.ErrorCode;
+import com.finfellows.global.payload.Message;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -207,6 +207,17 @@ public class KakaoService {
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(token.getRefreshToken())
+                .build();
+    }
+
+    @Transactional
+    public Message signOut(final RefreshTokenReq tokenRefreshRequest) {
+        Token token = tokenRepository.findByRefreshToken(tokenRefreshRequest.getRefreshToken())
+                .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
+        tokenRepository.delete(token);
+
+        return Message.builder()
+                .message("로그아웃 하였습니다.")
                 .build();
     }
 }
