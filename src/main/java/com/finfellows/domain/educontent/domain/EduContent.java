@@ -21,7 +21,7 @@ public class EduContent extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="post_id")
     private Post post_id;
 
     @Column(name="sequence", nullable = false)
