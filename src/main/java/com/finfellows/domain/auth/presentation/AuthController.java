@@ -1,6 +1,7 @@
 package com.finfellows.domain.auth.presentation;
 
 import com.finfellows.domain.auth.application.KakaoService;
+import com.finfellows.domain.auth.dto.AuthRes;
 import com.finfellows.domain.auth.dto.KakaoProfile;
 import com.finfellows.domain.auth.dto.TokenMapping;
 import com.finfellows.global.payload.ErrorResponse;
@@ -30,15 +31,25 @@ public class AuthController {
 
     private final KakaoService kakaoService;
 
-    // 카카오 code 발급, 로그인 인증으로 리다이렉트해주는 url
-    @GetMapping("/login")
+    @Operation(summary = "카카오 code 발급", description = "카카오 API 서버에 접근 권한을 인가하는 code를 발급받습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "code 발급 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
+            @ApiResponse(responseCode = "400", description = "code 발급 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping(value = "/login")
     public void socialLoginRedirect() throws IOException {
         kakaoService.accessRequest();
     }
 
-    // 카카오 로그인
-    @GetMapping("/kakao/login")
-    public ResponseCustom<?> kakaoCallback(@RequestParam("code") String code) {
+    @Operation(summary = "카카오 로그인", description = "카카오 로그인을 수행합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
+            @ApiResponse(responseCode = "400", description = "로그인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping(value = "/kakao/login")
+    public ResponseCustom<?> kakaoCallback(
+            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
+    ) {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
 
@@ -47,6 +58,8 @@ public class AuthController {
         return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile));
 
     }
+
+
 
 
 
