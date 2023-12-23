@@ -23,11 +23,11 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(name = "provider_id", unique = true, updatable = false)
-    private String providerId;
+    private Long providerId;
 
 
     @Builder
-    public User(String email, String name, String providerId) {
+    public User(String email, String name, Long providerId) {
         this.email = email;
         this.name = name;
         this.providerId = providerId;

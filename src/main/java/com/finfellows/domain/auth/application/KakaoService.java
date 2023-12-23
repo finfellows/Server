@@ -8,7 +8,9 @@ import com.finfellows.domain.auth.domain.repository.TokenRepository;
 import com.finfellows.domain.auth.dto.*;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
+import com.finfellows.global.DefaultAssert;
 import com.finfellows.global.config.security.OAuth2Config;
+import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.error.DefaultAuthenticationException;
 import com.finfellows.global.payload.ErrorCode;
 import com.finfellows.global.payload.Message;
@@ -24,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -164,6 +165,7 @@ public class KakaoService {
     }
 
 
+    @Transactional
     public AuthRes kakaoLogin(KakaoProfile kakaoProfile) {
 
         // 이미 DB에 회원 정보가 저장되어 있으면 로그인 시키고, 없다면 DB에 등록 후 로그인.
@@ -171,7 +173,7 @@ public class KakaoService {
         Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
         if (!byEmail.isPresent()) {
             User user = User.builder()
-                    .providerId(Long.toString(kakaoProfile.getId()))
+                    .providerId(kakaoProfile.getId())
                     .email(kakaoProfile.getKakaoAccount().getEmail())
                     .name(kakaoProfile.getKakaoAccount().getProfile().getNickname())
                     .build();
@@ -218,6 +220,23 @@ public class KakaoService {
 
         return Message.builder()
                 .message("로그아웃 하였습니다.")
+                .build();
+    }
+
+    @Transactional
+    public Message deleteAccount(UserPrincipal userPrincipal) {
+        Optional<User> user = userRepository.findById(userPrincipal.getId());
+        DefaultAssert.isTrue(user.isPresent(), "유저가 올바르지 않습니다.");
+
+        Optional<Token> token = tokenRepository.findByEmail(userPrincipal.getEmail());
+        DefaultAssert.isTrue(token.isPresent(), "토큰이 유효하지 않습니다.");
+
+        userRepository.delete(user.get());
+        tokenRepository.delete(token.get());
+
+
+        return Message.builder()
+                .message("회원 탈퇴 하였습니다.")
                 .build();
     }
 }

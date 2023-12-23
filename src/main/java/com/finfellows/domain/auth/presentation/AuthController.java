@@ -36,8 +36,8 @@ public class AuthController {
 
     @Operation(summary = "카카오 code 발급", description = "카카오 API 서버에 접근 권한을 인가하는 code를 발급받습니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "code 발급 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
-            @ApiResponse(responseCode = "400", description = "code 발급 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "200", description = "code 발급 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
+            @ApiResponse(responseCode = "400", description = "code 발급 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping(value = "/login")
     public void socialLoginRedirect() throws IOException {
@@ -46,8 +46,8 @@ public class AuthController {
 
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 수행합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
-            @ApiResponse(responseCode = "400", description = "로그인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
+            @ApiResponse(responseCode = "400", description = "로그인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping(value = "/kakao/sign-in")
     public ResponseCustom<?> kakaoCallback(
@@ -57,15 +57,14 @@ public class AuthController {
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
 
 
-
         return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile));
 
     }
 
     @Operation(summary = "유저 로그아웃", description = "유저 로그아웃을 수행합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
-            @ApiResponse(responseCode = "400", description = "로그아웃 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "로그아웃 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @PostMapping(value = "sign-out")
     public ResponseCustom<?> signOut(
@@ -73,6 +72,19 @@ public class AuthController {
             @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.") @Valid @RequestBody RefreshTokenReq tokenRefreshRequest
     ) {
         return ResponseCustom.OK(kakaoService.signOut(tokenRefreshRequest));
+    }
+
+
+    @Operation(summary = "회원 탈퇴", description = "현재 접속된 유저 계정을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "회원 탈퇴 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    })
+    @DeleteMapping
+    public ResponseCustom<?> deleteAccount(
+            @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ){
+        return ResponseCustom.OK(kakaoService.deleteAccount(userPrincipal));
     }
 
 
