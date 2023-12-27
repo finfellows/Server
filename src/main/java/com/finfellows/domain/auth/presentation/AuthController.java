@@ -104,5 +104,16 @@ public class AuthController {
         return ResponseCustom.OK(kakaoService.deleteAccount(userPrincipal));
     }
 
+    @Operation(summary = "토큰 갱신", description = "토큰을 갱신을 수행합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "토큰 갱신 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    })
+    public ResponseEntity<?> refresh(
+            @Parameter(description = "Schemas의 RefreshTokenReq를 참고해주세요.", required = true) @Valid @RequestBody RefreshTokenReq refreshTokenReq
+    ) {
+        return kakaoService.refresh(refreshTokenReq);
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.finfellows.global.config.security.token;
 
-import com.finfellows.domain.auth.application.CustomTokenProvierService;
+import com.finfellows.domain.auth.application.CustomTokenProviderService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,14 +19,14 @@ import java.io.IOException;
 public class CustomOncePerRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private CustomTokenProvierService customTokenProvierService;
+    private CustomTokenProviderService customTokenProviderService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
 
-        if (StringUtils.hasText(jwt) && customTokenProvierService.validateToken(jwt)) {
-            UsernamePasswordAuthenticationToken authentication = customTokenProvierService.getAuthenticationById(jwt);
+        if (StringUtils.hasText(jwt) && customTokenProviderService.validateToken(jwt)) {
+            UsernamePasswordAuthenticationToken authentication = customTokenProviderService.getAuthenticationById(jwt);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

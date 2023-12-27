@@ -18,7 +18,7 @@ import java.util.Date;
 
 @Slf4j
 @Service
-public class CustomTokenProvierService {
+public class CustomTokenProviderService {
 
     @Autowired
     private OAuth2Config oAuth2Config;
@@ -26,8 +26,42 @@ public class CustomTokenProvierService {
     @Autowired
     private final CustomUserDetailsService customUserDetailsService;
 
-    public CustomTokenProvierService(CustomUserDetailsService customUserDetailsService) {
+    public CustomTokenProviderService(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
+    }
+
+
+    public TokenMapping refreshToken(Authentication authentication, String refreshToken) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Date now = new Date();
+
+        Date accessTokenExpiresIn = new Date(now.getTime() + oAuth2Config.getAuth().getAccessTokenExpirationMsec());
+
+        String secretKey = oAuth2Config.getAuth().getTokenSecret();
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
+
+        String accessToken = Jwts.builder()
+                .setSubject(Long.toString(userPrincipal.getId()))
+                .setIssuedAt(new Date())
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        return TokenMapping.builder()
+                .email(userPrincipal.getEmail())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public Long getExpiration(String token) {
+        // accessToken 남은 유효시간
+        Date expiration = Jwts.parserBuilder().setSigningKey(oAuth2Config.getAuth().getTokenSecret()).build().parseClaimsJws(token).getBody().getExpiration();
+        // 현재 시간
+        Long now = new Date().getTime();
+        //시간 계산
+        return (expiration.getTime() - now);
     }
 
 
@@ -96,6 +130,12 @@ public class CustomTokenProvierService {
         return authentication;
     }
 
+    public UsernamePasswordAuthenticationToken getAuthenticationByEmail(String email) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        return authentication;
+    }
+
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(oAuth2Config.getAuth().getTokenSecret())
@@ -105,4 +145,6 @@ public class CustomTokenProvierService {
 
         return Long.parseLong(claims.getSubject());
     }
+
+
 }

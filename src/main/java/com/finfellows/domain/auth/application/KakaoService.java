@@ -55,7 +55,7 @@ public class KakaoService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    private final CustomTokenProvierService customTokenProvierService;
+    private final CustomTokenProviderService customTokenProviderService;
 
 
     @Value("${spring.security.oauth2.client.provider.kakao.authorization-uri}")
@@ -195,7 +195,7 @@ public class KakaoService {
 
 
 
-        TokenMapping tokenMapping = customTokenProvierService.createToken(authentication);
+        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
 
 
         Token token = Token.builder()
@@ -268,7 +268,7 @@ public class KakaoService {
 
 
 
-        TokenMapping tokenMapping = customTokenProvierService.createToken(authentication);
+        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
 
 
         Token token = Token.builder()
@@ -286,5 +286,49 @@ public class KakaoService {
                 .refreshToken(token.getRefreshToken())
                 .build();
 
+    }
+
+    public ResponseEntity<?> refresh(RefreshTokenReq refreshTokenReq) {
+        //1차 검증
+        boolean checkValid = valid(refreshTokenReq.getRefreshToken());
+        DefaultAssert.isAuthentication(checkValid);
+
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshTokenReq.getRefreshToken());
+        Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getEmail());
+
+        //4. refresh token 정보 값을 업데이트 한다.
+        //시간 유효성 확인
+        TokenMapping tokenMapping;
+
+        Long expirationTime = customTokenProviderService.getExpiration(refreshTokenReq.getRefreshToken());
+        if(expirationTime > 0){
+            tokenMapping = customTokenProviderService.refreshToken(authentication, token.get().getRefreshToken());
+        }else{
+            tokenMapping = customTokenProviderService.createToken(authentication);
+        }
+
+        Token updateToken = token.get().updateRefreshToken(tokenMapping.getRefreshToken());
+        tokenRepository.save(updateToken);
+
+        AuthRes authResponse = AuthRes.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(updateToken.getRefreshToken()).build();
+
+        return ResponseEntity.ok(authResponse);
+    }
+
+    private boolean valid(String refreshToken) {
+
+        // 1. 토큰 형식 물리적 검증
+        boolean validateCheck = customTokenProviderService.validateToken(refreshToken);
+        DefaultAssert.isTrue(validateCheck, "Token 검증에 실패하였습니다.");
+
+        // 2. refresh token 값을 불러온다.
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
+        DefaultAssert.isTrue(token.isPresent(), "탈퇴 처리된 회원입니다.");
+
+        // 3. email 값을 통해 인증값을 불러온다.
+        Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getEmail());
+        DefaultAssert.isTrue(token.get().getEmail().equals(authentication.getName()), "사용자 인증에 실패했습니다.");
+
+        return true;
     }
 }
