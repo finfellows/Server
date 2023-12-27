@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -19,8 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 import static org.springframework.security.config.Customizer.*;
-
-
 
 @RequiredArgsConstructor
 @Configuration
@@ -58,12 +57,21 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
                         .permitAll()
-                        .requestMatchers("/login/**", "/auth/**", "/oauth2/**")
+                        .requestMatchers("/login/**", "/auth/**", "/oauth2/**", "api/**")
                         .permitAll()
                         .requestMatchers("/blog/**")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "https://api.openai.com/v1/completions")
+                        .permitAll()
+
+                        .requestMatchers("/api/v1/chat-gpt")
+                        .permitAll()
+
                         .anyRequest()
                         .authenticated());
+
+
 
         http.addFilterBefore(customOncePerRequestFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
