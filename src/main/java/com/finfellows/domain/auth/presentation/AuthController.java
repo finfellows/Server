@@ -61,6 +61,23 @@ public class AuthController {
 
     }
 
+
+    @Operation(summary = "관리자 로그인", description = "관리자 권한으로 로그인을 수행합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
+            @ApiResponse(responseCode = "400", description = "로그인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping(value = "/admin/sign-in")
+    public ResponseCustom<?> adminSignIn(
+            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
+            ) {
+        String accessToken = kakaoService.getKakaoAccessToken(code);
+        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
+
+        return ResponseCustom.OK(kakaoService.adminSignIn(kakaoProfile));
+    }
+
+
     @Operation(summary = "유저 로그아웃", description = "유저 로그아웃을 수행합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),

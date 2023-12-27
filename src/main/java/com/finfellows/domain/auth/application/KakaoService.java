@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finfellows.domain.auth.domain.Token;
 import com.finfellows.domain.auth.domain.repository.TokenRepository;
 import com.finfellows.domain.auth.dto.*;
+import com.finfellows.domain.user.domain.Role;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.DefaultAssert;
@@ -176,6 +177,7 @@ public class KakaoService {
                     .providerId(kakaoProfile.getId())
                     .email(kakaoProfile.getKakaoAccount().getEmail())
                     .name(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                    .role(Role.USER)
                     .build();
 
             User saveUser = userRepository.save(user);
@@ -238,5 +240,50 @@ public class KakaoService {
         return Message.builder()
                 .message("회원 탈퇴 하였습니다.")
                 .build();
+    }
+
+    @Transactional
+    public AuthRes adminSignIn(KakaoProfile kakaoProfile) {
+        Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
+        if (!byEmail.isPresent()) {
+            User user = User.builder()
+                    .providerId(kakaoProfile.getId())
+                    .email(kakaoProfile.getKakaoAccount().getEmail())
+                    .name(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                    .role(Role.ADMIN)
+                    .build();
+
+            User saveUser = userRepository.save(user);
+
+
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        kakaoProfile.getKakaoAccount().getEmail(),
+                        kakaoProfile.getId() //providerId랑 같다.
+                )
+        );
+
+
+
+        TokenMapping tokenMapping = customTokenProvierService.createToken(authentication);
+
+
+        Token token = Token.builder()
+                .refreshToken(tokenMapping.getRefreshToken())
+                .email(tokenMapping.getEmail())
+                .build();
+
+        tokenRepository.save(token);
+
+        Token savedToken = tokenRepository.save(token);
+
+
+        return AuthRes.builder()
+                .accessToken(tokenMapping.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .build();
+
     }
 }
