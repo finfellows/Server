@@ -225,6 +225,7 @@ public class KakaoService {
                 .build();
     }
 
+  
     @Transactional
     public Message deleteAccount(UserPrincipal userPrincipal) {
         Optional<User> user = userRepository.findById(userPrincipal.getId());
