@@ -21,19 +21,19 @@ public class EduContent extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
-    private Post post_id;
+    @JoinColumn(name="post_id")
+    private Post post;
 
-    @Column(name="sequence", nullable = false)
-    private Long sequence;
+    @Column(name="title")
+    private String title;
 
     @Column(name="content")
     private String content;
 
     @Builder
-    public EduContent(Post post_id, Long sequence, String content){
-        this.post_id=post_id;
-        this.sequence=sequence;
+    public EduContent(Post post, String title, String content){
+        this.post=post;
+        this.title=title;
         this.content=content;
     }
 }
