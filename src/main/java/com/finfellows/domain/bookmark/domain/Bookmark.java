@@ -4,6 +4,7 @@ import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.educontent.domain.EduContent;
 import com.finfellows.domain.policyinfo.domain.PolicyInfo;
 import com.finfellows.domain.product.domain.FinancialProduct;
+import com.finfellows.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,6 +24,10 @@ public class Bookmark extends BaseEntity{
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     // 금융 뭐하지 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "financial_product_id")
@@ -39,7 +44,8 @@ public class Bookmark extends BaseEntity{
     private PolicyInfo policyInfo;
 
     @Builder
-    public Bookmark(FinancialProduct financialProduct, EduContent eduContent, PolicyInfo policyInfo) {
+    public Bookmark(User user, FinancialProduct financialProduct, EduContent eduContent, PolicyInfo policyInfo) {
+        this.user = user;
         this.financialProduct = financialProduct;
         this.eduContent = eduContent;
         this.policyInfo = policyInfo;
