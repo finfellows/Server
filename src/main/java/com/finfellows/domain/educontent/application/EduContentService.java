@@ -2,11 +2,16 @@ package com.finfellows.domain.educontent.application;
 
 import com.finfellows.domain.educontent.domain.EduContent;
 import com.finfellows.domain.educontent.domain.repository.EduContentRepository;
+import com.finfellows.domain.educontent.dto.request.EduContentRequest;
 import com.finfellows.domain.educontent.dto.response.EduContentResponse;
 import com.finfellows.domain.post.domain.Post;
 import com.finfellows.domain.post.domain.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,4 +34,47 @@ public class EduContentService {
         return savedContent;
     }
 
+    public List<EduContentResponse> getAllEduContents() {
+        List<EduContent> eduContents = eduContentRepository.findAll();
+        return eduContents.stream()
+                .map(eduContent -> EduContentResponse.builder()
+                        .id(eduContent.getId())
+                        .title(eduContent.getTitle())
+                        .content(eduContent.getContent())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public EduContentResponse getEduContent(Long id) {
+        EduContent eduContent = eduContentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
+
+        return EduContentResponse.builder()
+                .id(eduContent.getId())
+                .title(eduContent.getTitle())
+                .content(eduContent.getContent())
+                .build();
+    }
+
+    public void deleteEduContent(Long id) {
+        EduContent eduContent = eduContentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
+
+        eduContentRepository.delete(eduContent);
+    }
+
+    public EduContentResponse updateEduContent(Long id, EduContentRequest request) {
+        EduContent eduContent = eduContentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
+
+        eduContent.updateContent(request.getTitle(), request.getContent());
+
+        EduContent updatedContent = eduContentRepository.save(eduContent);
+
+        return EduContentResponse.builder()
+                .id(updatedContent.getId())
+                .title(updatedContent.getTitle())
+                .content(updatedContent.getContent())
+                .build();
+    }
 }

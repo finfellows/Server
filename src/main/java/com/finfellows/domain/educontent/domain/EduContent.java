@@ -36,4 +36,9 @@ public class EduContent extends BaseEntity {
         this.title=title;
         this.content=content;
     }
+
+    public void updateContent(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
