@@ -23,6 +23,12 @@ public class FinancialProduct extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
+    @Column(unique = true, name = "financial_product_code")
+    private String financialProductCode;
+
+    @Column(name = "top_financial_group_no")
+    private String topFinancialGroupNo;
+
     @Column(name = "disclosure_month")
     private String disclosureMonth;
 
@@ -62,29 +68,14 @@ public class FinancialProduct extends BaseEntity {
     @Column(name = "financial_company_submission_day")
     private LocalDateTime financialCompanySubmissionDay;
 
-    @Column(name = "interest_rate_type")
-    private String interestRateType;
-
-    @Column(name = "interest_rate_type_name")
-    private String interestRateTypeName;
-
-    @Column(name = "reserve_type")
-    private String reserveType;
-
-    @Column(name = "reserve_type_name")
-    private String reserveTypeName;
-
-    @Column(name = "savings_term")
-    private Integer savingsTerm;
-
-    @Column(name = "interest_rate")
-    private String interestRate;
-
-    @Column(name = "maximum_preferred_interest_rate")
-    private String maximumPreferredInterestRate;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "financial_product_type")
+    private FinancialProductType financialProductType;
 
     @Builder
-    public FinancialProduct(String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, String interestRateType, String interestRateTypeName, String reserveType, String reserveTypeName, Integer savingsTerm, String interestRate, String maximumPreferredInterestRate) {
+    public FinancialProduct(String financialProductCode, String topFinancialGroupNo, String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType) {
+        this.financialProductCode = financialProductCode;
+        this.topFinancialGroupNo = topFinancialGroupNo;
         this.disclosureMonth = disclosureMonth;
         this.companyName = companyName;
         this.productName = productName;
@@ -98,13 +89,7 @@ public class FinancialProduct extends BaseEntity {
         this.disclosureStartDay = disclosureStartDay;
         this.disclosureEndDay = disclosureEndDay;
         this.financialCompanySubmissionDay = financialCompanySubmissionDay;
-        this.interestRateType = interestRateType;
-        this.interestRateTypeName = interestRateTypeName;
-        this.reserveType = reserveType;
-        this.reserveTypeName = reserveTypeName;
-        this.savingsTerm = savingsTerm;
-        this.interestRate = interestRate;
-        this.maximumPreferredInterestRate = maximumPreferredInterestRate;
+        this.financialProductType = financialProductType;
     }
 
 }
