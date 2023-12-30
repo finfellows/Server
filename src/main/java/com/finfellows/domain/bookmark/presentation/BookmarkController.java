@@ -60,8 +60,8 @@ public class BookmarkController {
 
     @Operation(summary = "금융, 배우자 북마크", description = "금융, 배우자(교육)를 북마크한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육) 즐겨찾기 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BookmarkRes.class) ) } ),
-            @ApiResponse(responseCode = "400", description = "금융, 배우자.(교육) 즐겨찾기 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BookmarkRes.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육) 즐겨찾기 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "금융, 배우자.(교육) 즐겨찾기 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping("/edu-content/{edu_content_id}")
     public ResponseCustom<?> bookmarkEduContent(
@@ -86,8 +86,8 @@ public class BookmarkController {
 
     @Operation(summary = "금융, 뭐하지 북마크", description = "금융, 뭐하지(금융 상품)를 북마크한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 뭐하지(금융 상품) 즐겨찾기 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BookmarkRes.class) ) } ),
-            @ApiResponse(responseCode = "400", description = "금융, 뭐하지(금융 상품) 즐겨찾기 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BookmarkRes.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 뭐하지(금융 상품) 즐겨찾기 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "금융, 뭐하지(금융 상품) 즐겨찾기 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @PostMapping("/financial-product/{financial_product_id}")
     public ResponseCustom<?> bookmarkFinancialProduct(
