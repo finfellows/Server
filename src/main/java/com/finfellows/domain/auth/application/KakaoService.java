@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finfellows.domain.auth.domain.Token;
 import com.finfellows.domain.auth.domain.repository.TokenRepository;
 import com.finfellows.domain.auth.dto.*;
+import com.finfellows.domain.user.domain.Role;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
+import com.finfellows.global.DefaultAssert;
 import com.finfellows.global.config.security.OAuth2Config;
+import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.error.DefaultAuthenticationException;
 import com.finfellows.global.payload.ErrorCode;
 import com.finfellows.global.payload.Message;
@@ -24,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -53,7 +55,7 @@ public class KakaoService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    private final CustomTokenProvierService customTokenProvierService;
+    private final CustomTokenProviderService customTokenProviderService;
 
 
     @Value("${spring.security.oauth2.client.provider.kakao.authorization-uri}")
@@ -164,6 +166,7 @@ public class KakaoService {
     }
 
 
+    @Transactional
     public AuthRes kakaoLogin(KakaoProfile kakaoProfile) {
 
         // 이미 DB에 회원 정보가 저장되어 있으면 로그인 시키고, 없다면 DB에 등록 후 로그인.
@@ -171,9 +174,10 @@ public class KakaoService {
         Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
         if (!byEmail.isPresent()) {
             User user = User.builder()
-                    .providerId(Long.toString(kakaoProfile.getId()))
+                    .providerId(kakaoProfile.getId())
                     .email(kakaoProfile.getKakaoAccount().getEmail())
                     .name(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                    .role(Role.USER)
                     .build();
 
             User saveUser = userRepository.save(user);
@@ -191,7 +195,7 @@ public class KakaoService {
 
 
 
-        TokenMapping tokenMapping = customTokenProvierService.createToken(authentication);
+        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
 
 
         Token token = Token.builder()
@@ -219,5 +223,112 @@ public class KakaoService {
         return Message.builder()
                 .message("로그아웃 하였습니다.")
                 .build();
+    }
+
+  
+    @Transactional
+    public Message deleteAccount(UserPrincipal userPrincipal) {
+        Optional<User> user = userRepository.findById(userPrincipal.getId());
+        DefaultAssert.isTrue(user.isPresent(), "유저가 올바르지 않습니다.");
+
+        Optional<Token> token = tokenRepository.findByEmail(userPrincipal.getEmail());
+        DefaultAssert.isTrue(token.isPresent(), "토큰이 유효하지 않습니다.");
+
+        userRepository.delete(user.get());
+        tokenRepository.delete(token.get());
+
+
+        return Message.builder()
+                .message("회원 탈퇴 하였습니다.")
+                .build();
+    }
+
+    @Transactional
+    public AuthRes adminSignIn(KakaoProfile kakaoProfile) {
+        Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
+        if (!byEmail.isPresent()) {
+            User user = User.builder()
+                    .providerId(kakaoProfile.getId())
+                    .email(kakaoProfile.getKakaoAccount().getEmail())
+                    .name(kakaoProfile.getKakaoAccount().getProfile().getNickname())
+                    .role(Role.ADMIN)
+                    .build();
+
+            User saveUser = userRepository.save(user);
+
+
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        kakaoProfile.getKakaoAccount().getEmail(),
+                        kakaoProfile.getId() //providerId랑 같다.
+                )
+        );
+
+
+
+        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
+
+
+        Token token = Token.builder()
+                .refreshToken(tokenMapping.getRefreshToken())
+                .email(tokenMapping.getEmail())
+                .build();
+
+        tokenRepository.save(token);
+
+        Token savedToken = tokenRepository.save(token);
+
+
+        return AuthRes.builder()
+                .accessToken(tokenMapping.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .build();
+
+    }
+
+    public ResponseEntity<?> refresh(RefreshTokenReq refreshTokenReq) {
+        //1차 검증
+        boolean checkValid = valid(refreshTokenReq.getRefreshToken());
+        DefaultAssert.isAuthentication(checkValid);
+
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshTokenReq.getRefreshToken());
+        Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getEmail());
+
+        //4. refresh token 정보 값을 업데이트 한다.
+        //시간 유효성 확인
+        TokenMapping tokenMapping;
+
+        Long expirationTime = customTokenProviderService.getExpiration(refreshTokenReq.getRefreshToken());
+        if(expirationTime > 0){
+            tokenMapping = customTokenProviderService.refreshToken(authentication, token.get().getRefreshToken());
+        }else{
+            tokenMapping = customTokenProviderService.createToken(authentication);
+        }
+
+        Token updateToken = token.get().updateRefreshToken(tokenMapping.getRefreshToken());
+        tokenRepository.save(updateToken);
+
+        AuthRes authResponse = AuthRes.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(updateToken.getRefreshToken()).build();
+
+        return ResponseEntity.ok(authResponse);
+    }
+
+    private boolean valid(String refreshToken) {
+
+        // 1. 토큰 형식 물리적 검증
+        boolean validateCheck = customTokenProviderService.validateToken(refreshToken);
+        DefaultAssert.isTrue(validateCheck, "Token 검증에 실패하였습니다.");
+
+        // 2. refresh token 값을 불러온다.
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
+        DefaultAssert.isTrue(token.isPresent(), "탈퇴 처리된 회원입니다.");
+
+        // 3. email 값을 통해 인증값을 불러온다.
+        Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getEmail());
+        DefaultAssert.isTrue(token.get().getEmail().equals(authentication.getName()), "사용자 인증에 실패했습니다.");
+
+        return true;
     }
 }
