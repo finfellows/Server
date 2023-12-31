@@ -18,13 +18,8 @@ import java.time.LocalDateTime;
 @Where(clause = "status = 'ACTIVE'")
 public class FinancialProduct extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
-    private Long id;
-
-    @Column(unique = true, name = "financial_product_code")
-    private String financialProductCode;
+    @EmbeddedId
+    private FinancialProductId id;
 
     @Column(name = "top_financial_group_no")
     private String topFinancialGroupNo;
@@ -73,8 +68,7 @@ public class FinancialProduct extends BaseEntity {
     private FinancialProductType financialProductType;
 
     @Builder
-    public FinancialProduct(String financialProductCode, String topFinancialGroupNo, String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType) {
-        this.financialProductCode = financialProductCode;
+    public FinancialProduct(String topFinancialGroupNo, String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType) {
         this.topFinancialGroupNo = topFinancialGroupNo;
         this.disclosureMonth = disclosureMonth;
         this.companyName = companyName;
