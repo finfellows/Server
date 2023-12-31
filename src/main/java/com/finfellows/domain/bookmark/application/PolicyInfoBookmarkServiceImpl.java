@@ -2,17 +2,20 @@ package com.finfellows.domain.bookmark.application;
 
 import com.finfellows.domain.bookmark.domain.PolicyInfoBookmark;
 import com.finfellows.domain.bookmark.domain.repository.PolicyInfoBookmarkRepository;
+import com.finfellows.domain.bookmark.dto.PolicyInfoBookmarkRes;
 import com.finfellows.domain.policyinfo.domain.PolicyInfo;
 import com.finfellows.domain.policyinfo.domain.repository.PolicyInfoRepository;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.Message;
+import com.finfellows.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,4 +67,15 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
     }
 
 
+    public ResponseCustom<?> findBookmarks(UserPrincipal userPrincipal) {
+        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
+
+        User user = optionalUser.get();
+
+        List<PolicyInfoBookmark> bookmarks = policyInfoBookmarkRepository.findAllByUser(user);
+
+        List<PolicyInfoBookmarkRes> policyInfoBookmarkResList = PolicyInfoBookmarkRes.toDto(bookmarks);
+
+        return ResponseCustom.OK(policyInfoBookmarkResList);
+    }
 }

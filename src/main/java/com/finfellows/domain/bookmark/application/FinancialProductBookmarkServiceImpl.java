@@ -2,19 +2,26 @@ package com.finfellows.domain.bookmark.application;
 
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
+import com.finfellows.domain.bookmark.dto.FinancialProductBookmarkRes;
 import com.finfellows.domain.product.domain.FinancialProduct;
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.Message;
+import com.finfellows.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FinancialProductBookmarkServiceImpl implements BookmarkService{
@@ -64,4 +71,16 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     }
 
 
+    public ResponseCustom findBookmarks(UserPrincipal userPrincipal) {
+        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
+
+        User user = optionalUser.get();
+
+        List<FinancialProductBookmark> bookmarks = financialProductBookmarkRepository.findAllByUser(user);
+
+        List<FinancialProductBookmarkRes> financialProductBookmarkResList = FinancialProductBookmarkRes.toDto(bookmarks);
+
+
+        return ResponseCustom.OK(financialProductBookmarkResList);
+    }
 }
