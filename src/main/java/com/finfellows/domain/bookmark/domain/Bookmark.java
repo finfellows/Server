@@ -25,10 +25,7 @@ public class Bookmark extends BaseEntity{
 
     // 금융 뭐하지 id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "financial_company_no", referencedColumnName = "financial_company_no"),
-            @JoinColumn(name = "financial_product_code", referencedColumnName = "financial_product_code")
-    })
+    @JoinColumn(name = "financial_product_id")
     private FinancialProduct financialProduct;
 
     // 금융 배우자 id

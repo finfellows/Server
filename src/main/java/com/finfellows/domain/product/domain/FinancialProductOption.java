@@ -45,10 +45,7 @@ public class FinancialProductOption extends BaseEntity {
     private String maximumPreferredInterestRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "financial_company_no", referencedColumnName = "financial_company_no"),
-            @JoinColumn(name = "financial_product_code", referencedColumnName = "financial_product_code")
-    })
+    @JoinColumn(name = "financial_product_id")
     private FinancialProduct financialProduct;
 
     @Builder
