@@ -9,7 +9,6 @@ import org.hibernate.annotations.Where;
 @Table(name = "User")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Where(clause = "status = 'ACTIVE'")
 public class User extends BaseEntity {
 
     @Id
@@ -23,14 +22,20 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "provider_id", nullable = false, unique = true, updatable = false)
-    private String providerId;
+    @Column(name = "provider_id", unique = true, updatable = false)
+    private Long providerId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+
 
     @Builder
-    public User(String email, String name, String providerId) {
+    public User(String email, String name, Long providerId, Role role) {
         this.email = email;
         this.name = name;
         this.providerId = providerId;
+        this.role = role;
     }
-
 }
