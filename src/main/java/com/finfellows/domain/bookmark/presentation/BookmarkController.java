@@ -3,7 +3,6 @@ package com.finfellows.domain.bookmark.presentation;
 import com.finfellows.domain.bookmark.application.EduContentBookmarkServiceImpl;
 import com.finfellows.domain.bookmark.application.FinancialProductBookmarkServiceImpl;
 import com.finfellows.domain.bookmark.application.PolicyInfoBookmarkServiceImpl;
-import com.finfellows.domain.bookmark.dto.BookmarkRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
