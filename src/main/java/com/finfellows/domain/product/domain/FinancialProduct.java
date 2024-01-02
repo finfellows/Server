@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "Financial_Product")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Where(clause = "status = 'ACTIVE'")
 public class FinancialProduct extends BaseEntity {
 
     @Id
