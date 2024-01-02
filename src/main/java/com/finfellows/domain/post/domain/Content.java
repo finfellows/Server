@@ -13,6 +13,7 @@ import org.hibernate.annotations.Where;
 @Getter
 @Where(clause = "status = 'ACTIVE'")
 public class Content {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -34,4 +35,5 @@ public class Content {
         this.sequence=sequence;
         this.content=content;
     }
+
 }
