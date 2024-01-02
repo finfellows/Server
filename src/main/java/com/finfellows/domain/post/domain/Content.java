@@ -13,13 +13,14 @@ import org.hibernate.annotations.Where;
 @Getter
 @Where(clause = "status = 'ACTIVE'")
 public class Content {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="post_id")
     private Post post_id;
 
     @Column(name="sequence", nullable = false)
@@ -34,4 +35,5 @@ public class Content {
         this.sequence=sequence;
         this.content=content;
     }
+
 }

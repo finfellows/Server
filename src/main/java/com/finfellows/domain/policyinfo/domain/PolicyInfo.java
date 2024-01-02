@@ -27,4 +27,5 @@ public class PolicyInfo extends BaseEntity {
     public PolicyInfo(String url){
         this.url=url;
     }
+
 }

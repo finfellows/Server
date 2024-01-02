@@ -19,9 +19,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String providerId = authentication.getCredentials().toString();
-        System.out.println("providerId = " + providerId);
+        Long providerIdToInteger = Long.parseLong(providerId);
 
-        UserDetails user = userRepository.findByProviderId(providerId)
+        UserDetails user = userRepository.findByProviderId(providerIdToInteger)
                 .map(UserPrincipal::createUser)
                 .orElseThrow(() -> new UsernameNotFoundException("Provider ID not found: " + providerId));
 
