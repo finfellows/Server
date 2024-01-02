@@ -12,7 +12,6 @@ import org.hibernate.annotations.Where;
 @Table(name = "Financial_Product_Option")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Where(clause = "status = 'ACTIVE'")
 public class FinancialProductOption extends BaseEntity {
 
     @Id
