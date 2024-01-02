@@ -15,6 +15,7 @@ import org.hibernate.annotations.Where;
 @Getter
 @Where(clause = "status = 'ACTIVE'")
 public class EduContent extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -36,4 +37,5 @@ public class EduContent extends BaseEntity {
         this.sequence=sequence;
         this.content=content;
     }
+
 }
