@@ -9,6 +9,7 @@ import com.finfellows.domain.post.domain.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class EduContentService {
     private final EduContentRepository eduContentRepository;
     private final PostRepository postRepository;
+
+    @Transactional
     public EduContent createEduContent(EduContentResponse request) {
         Post post = new Post();
         postRepository.save(post);
@@ -34,6 +37,7 @@ public class EduContentService {
         return savedContent;
     }
 
+    @Transactional(readOnly = true)
     public List<EduContentResponse> getAllEduContents() {
         List<EduContent> eduContents = eduContentRepository.findAll();
         return eduContents.stream()
@@ -45,6 +49,7 @@ public class EduContentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public EduContentResponse getEduContent(Long id) {
         EduContent eduContent = eduContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
@@ -56,6 +61,7 @@ public class EduContentService {
                 .build();
     }
 
+    @Transactional
     public void deleteEduContent(Long id) {
         EduContent eduContent = eduContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
@@ -63,6 +69,7 @@ public class EduContentService {
         eduContentRepository.delete(eduContent);
     }
 
+    @Transactional
     public EduContentResponse updateEduContent(Long id, EduContentRequest request) {
         EduContent eduContent = eduContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));

@@ -9,6 +9,7 @@ import com.finfellows.domain.post.dto.response.ContentResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final PostRepository postRepository;
 
+    @Transactional
     public Content createContent(ContentResponse request) {
         Post post = new Post();
         postRepository.save(post);
@@ -35,6 +37,7 @@ public class ContentService {
         return savedContent;
     }
 
+    @Transactional(readOnly = true)
     public List<ContentResponse> getAllContents() {
         List<Content> contents = contentRepository.findAll();
         return contents.stream()
@@ -47,6 +50,7 @@ public class ContentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ContentResponse getContent(Long id) {
         Content content = contentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Content not found with id: " + id));
@@ -59,6 +63,7 @@ public class ContentService {
                 .build();
     }
 
+    @Transactional
     public void deleteContent(Long id) {
         Content content = contentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Content not found with id: " + id));
@@ -66,6 +71,7 @@ public class ContentService {
         contentRepository.delete(content);
     }
 
+    @Transactional
     public ContentResponse updateContent(Long id, ContentRequest request) {
         Content content = contentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Content not found with id: " + id));
