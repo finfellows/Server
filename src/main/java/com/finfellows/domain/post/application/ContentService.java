@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ContentService {
     private final ContentRepository contentRepository;
     private final PostRepository postRepository;
@@ -37,7 +38,6 @@ public class ContentService {
         return savedContent;
     }
 
-    @Transactional(readOnly = true)
     public List<ContentResponse> getAllContents() {
         List<Content> contents = contentRepository.findAll();
         return contents.stream()
@@ -50,7 +50,6 @@ public class ContentService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public ContentResponse getContent(Long id) {
         Content content = contentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Content not found with id: " + id));
