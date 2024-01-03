@@ -1,3 +1,4 @@
+
 package com.finfellows.domain.post.domain;
 
 import com.finfellows.domain.common.Status;

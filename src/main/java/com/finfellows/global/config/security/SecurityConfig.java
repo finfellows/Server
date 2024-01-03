@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/login/**", "/auth/**", "/oauth2/**", "api/**")
                         .permitAll()
-                        .requestMatchers("/blog/**")
+                        .requestMatchers("/blog/**", "/financial-products/**")
                         .permitAll()
 
                         .requestMatchers(HttpMethod.POST, "https://api.openai.com/v1/completions")

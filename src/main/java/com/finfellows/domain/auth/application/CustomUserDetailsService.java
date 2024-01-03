@@ -5,6 +5,7 @@ import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
@@ -30,13 +32,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserDetails loadUserById(Long id) {
-//        Optional<User> user = userRepository.findById(id);
-        Optional<User> user = userRepository.findByProviderId(Long.toString(id));
-        if (user.isPresent()) {
-            return UserPrincipal.createUser(user.get());
-        }
-
-        throw new UsernameNotFoundException("유효하지 않는 유저입니다.");
+        log.debug("Attempting to load user by ID: {}", id);
+        return userRepository.findById(id)
+                .map(UserPrincipal::createUser)
+                .orElseThrow(() -> {
+                    log.error("User with ID: {} could not be found.", id);
+                    return new UsernameNotFoundException("유효하지 않는 유저입니다.");
+                });
     }
 
 
