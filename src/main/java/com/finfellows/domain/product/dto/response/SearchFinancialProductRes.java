@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 
 @Data
-public class SearchDepositRes {
+public class SearchFinancialProductRes {
 
     private Long id;
     private String productName;
@@ -13,7 +13,7 @@ public class SearchDepositRes {
     private String interestRate;
 
     @QueryProjection
-    public SearchDepositRes(Long id, String productName, String bankName, String maxInterestRate, String interestRate) {
+    public SearchFinancialProductRes(Long id, String productName, String bankName, String maxInterestRate, String interestRate) {
         this.id = id;
         this.productName = productName;
         this.bankName = bankName;

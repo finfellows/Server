@@ -1,8 +1,8 @@
 package com.finfellows.domain.product.presentation;
 
 import com.finfellows.domain.product.application.FinancialProductServiceImpl;
-import com.finfellows.domain.product.dto.condition.DepositSearchCondition;
-import com.finfellows.domain.product.dto.response.SearchDepositRes;
+import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
+import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
@@ -20,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name = "FinancialProducts", description = "FinancialProducts API")
 @RestController
 @RequiredArgsConstructor
@@ -32,16 +30,30 @@ public class FinancialProductController {
 
     @Operation(summary = "예금 정보 조회", description = "예금 정보를 조건에 따라 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "예금 정보 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SearchDepositRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "예금 정보 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SearchFinancialProductRes.class)))}),
             @ApiResponse(responseCode = "400", description = "예금 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/deposit")
-    public ResponseCustom<PagedResponse<SearchDepositRes>> findDepositProducts(
+    public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findDepositProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            @ModelAttribute DepositSearchCondition depositSearchCondition,
+            @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
             Pageable pageable
     ) {
-        return ResponseCustom.OK(financialProductServiceImpl.findDepositProducts(userPrincipal, depositSearchCondition, pageable));
+        return ResponseCustom.OK(financialProductServiceImpl.findDepositProducts(userPrincipal, financialProductSearchCondition, pageable));
+    }
+
+    @Operation(summary = "적금 정보 조회", description = "적금 정보를 조건에 따라 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "적금 정보 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SearchFinancialProductRes.class)))}),
+            @ApiResponse(responseCode = "400", description = "적금 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/saving")
+    public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findSavingProducts(
+            @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
+            Pageable pageable
+    ) {
+        return ResponseCustom.OK(financialProductServiceImpl.findSavingProducts(userPrincipal, financialProductSearchCondition, pageable));
     }
 
 }
