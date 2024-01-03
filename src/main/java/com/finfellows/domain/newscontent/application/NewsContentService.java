@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class NewsContentService {
     private final NewsContentRepository newsContentRepository;
     private final PostRepository postRepository;
@@ -38,6 +37,7 @@ public class NewsContentService {
         return savedContent;
     }
 
+    @Transactional(readOnly = true)
     public List<NewsContentResponse> getAllNewsContents() {
         List<NewsContent> newsContents = newsContentRepository.findAll();
         return newsContents.stream()
@@ -49,7 +49,7 @@ public class NewsContentService {
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional(readOnly = true)
     public NewsContentResponse getNewsContent(Long id) {
         NewsContent newsContent = newsContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("NewsContent not found with id: " + id));
