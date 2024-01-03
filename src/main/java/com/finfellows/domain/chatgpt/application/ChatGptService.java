@@ -12,7 +12,7 @@ public class ChatGptService {
     // 라이브러리 제공
     private final ChatgptService chatgptService;
 
-    @Value("${GPT_Token}")
+    @Value("${chatgpt.api-key}")
     private String apiKey;
 //    private final ObjectMapper objectMapper = new ObjectMapper()
 //            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

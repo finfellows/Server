@@ -31,7 +31,7 @@ public class CommentService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${GPT_Token}")
+    @Value("${chatgpt.api-key}")
     private String apiKey;
     private final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

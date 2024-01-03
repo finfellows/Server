@@ -23,7 +23,7 @@ public class ChatgptConfig {
     public static final String MEDIA_TYPE = "application/json; charset=UTF-8";
     public static final String CHAT_URL = "https://api.openai.com/v1/chat/completions";
 
-    @Value("${GPT_Token}")
+    @Value("${chatgpt.api-key}")
     private String token;
 
     @Bean
