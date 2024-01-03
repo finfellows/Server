@@ -1,4 +1,4 @@
-package com.finfellows.domain.chatgpt.dto;
+package com.finfellows.domain.chatgpt.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finfellows.domain.chatgpt.domain.ChatGptMessage;
