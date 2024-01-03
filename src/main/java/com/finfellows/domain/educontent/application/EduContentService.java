@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class EduContentService {
     private final EduContentRepository eduContentRepository;
     private final PostRepository postRepository;
@@ -37,7 +38,6 @@ public class EduContentService {
         return savedContent;
     }
 
-    @Transactional(readOnly = true)
     public List<EduContentResponse> getAllEduContents() {
         List<EduContent> eduContents = eduContentRepository.findAll();
         return eduContents.stream()
@@ -49,7 +49,7 @@ public class EduContentService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+
     public EduContentResponse getEduContent(Long id) {
         EduContent eduContent = eduContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
