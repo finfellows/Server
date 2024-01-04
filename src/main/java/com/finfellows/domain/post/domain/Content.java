@@ -1,5 +1,7 @@
+
 package com.finfellows.domain.post.domain;
 
+import com.finfellows.domain.common.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,13 +9,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name="Content")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
 public class Content {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -23,17 +26,22 @@ public class Content {
     @JoinColumn(name="post_id")
     private Post post_id;
 
-    @Column(name="sequence", nullable = false)
-    private Long sequence;
+    @Column(name="title")
+    private String title;
 
     @Column(name="content")
     private String content;
 
+
     @Builder
-    public Content(Post post_id, Long sequence, String content){
+    public Content(Post post_id, String title, String content){
         this.post_id=post_id;
-        this.sequence=sequence;
+        this.title=title;
         this.content=content;
     }
 
+    public void updateContent(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

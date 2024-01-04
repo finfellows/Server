@@ -9,12 +9,12 @@ import java.util.List;
 public class PagedResponse<T> {
 
     private int pageNumber;
-    private int totalPages;
+    private int maxPage;
     private List<T> content;
 
     public PagedResponse(Page<T> page) {
         this.pageNumber = page.getNumber();
-        this.totalPages = page.getTotalPages();
+        this.maxPage = page.getTotalPages() - 1;
         this.content = page.getContent();
     }
 

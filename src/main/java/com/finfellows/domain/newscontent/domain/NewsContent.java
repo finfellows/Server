@@ -1,30 +1,27 @@
-package com.finfellows.domain.educontent.domain;
+package com.finfellows.domain.newscontent.domain;
 
 import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.post.domain.Post;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "EduContent")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name="NewsContent")
+@NoArgsConstructor
 @Getter
 @Where(clause = "status = 'ACTIVE'")
-public class EduContent extends BaseEntity {
-
+public class NewsContent extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(name="id", updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="post_id")
     private Post post;
-
 
     @Column(name="title")
     private String title;
@@ -33,7 +30,7 @@ public class EduContent extends BaseEntity {
     private String content;
 
     @Builder
-    public EduContent(Post post, String title, String content){
+    public NewsContent(Post post, String title, String content){
         this.post=post;
         this.title=title;
         this.content=content;
@@ -43,5 +40,4 @@ public class EduContent extends BaseEntity {
         this.title = title;
         this.content = content;
     }
-
 }
