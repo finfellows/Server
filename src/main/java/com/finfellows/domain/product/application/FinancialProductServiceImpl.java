@@ -7,8 +7,10 @@ import com.finfellows.domain.product.domain.repository.FinancialProductOptionRep
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
 import com.finfellows.domain.product.dto.response.DepositDetailRes;
+import com.finfellows.domain.product.dto.response.SavingDetailRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.domain.product.exception.InvalidFinancialProductException;
+import com.finfellows.domain.product.exception.ProductTypeMismatchException;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.PagedResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,9 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         FinancialProduct deposit = financialProductRepository.findById(depositId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
+        if(!deposit.getFinancialProductType().equals(FinancialProductType.DEPOSIT))
+            throw new ProductTypeMismatchException();
+
         List<FinancialProductOption> depositOptions = financialProductOptionRepository.findFinancialProductOptionsByFinancialProduct(deposit);
         List<Integer> terms = depositOptions.stream()
                 .map(FinancialProductOption::getSavingsTerm)
@@ -59,6 +64,28 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .orElse(null);
 
         return DepositDetailRes.toDto(deposit, maxOption, terms);
+    }
+
+    @Override
+    public SavingDetailRes getSavingDetail(UserPrincipal userPrincipal, Long savingId) {
+        FinancialProduct saving = financialProductRepository.findById(savingId)
+                .orElseThrow(InvalidFinancialProductException::new);
+
+        if(!saving.getFinancialProductType().equals(FinancialProductType.SAVING))
+            throw new ProductTypeMismatchException();
+
+        List<FinancialProductOption> savingOptions = financialProductOptionRepository.findFinancialProductOptionsByFinancialProduct(saving);
+        List<Integer> terms = savingOptions.stream()
+                .map(FinancialProductOption::getSavingsTerm)
+                .distinct()
+                .sorted()
+                .toList();
+
+        FinancialProductOption maxOption = savingOptions.stream()
+                .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
+                .orElse(null);
+
+        return SavingDetailRes.toDto(saving, maxOption, terms);
     }
 
 }

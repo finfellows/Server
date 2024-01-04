@@ -3,6 +3,7 @@ package com.finfellows.domain.product.presentation;
 import com.finfellows.domain.product.application.FinancialProductServiceImpl;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
 import com.finfellows.domain.product.dto.response.DepositDetailRes;
+import com.finfellows.domain.product.dto.response.SavingDetailRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
@@ -68,6 +69,19 @@ public class FinancialProductController {
             @PathVariable(name = "deposit-id") Long depositId
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.getDepositDetail(userPrincipal, depositId));
+    }
+
+    @Operation(summary = "적금 상세 정보 조회", description = "적금 상세 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "적금 상세 정보 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = SavingDetailRes.class))}),
+            @ApiResponse(responseCode = "400", description = "적금 상세 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/saving/{saving-id}")
+    public ResponseCustom<SavingDetailRes> getSavingDetail(
+            @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @PathVariable(name = "saving-id") Long savingId
+    ) {
+        return ResponseCustom.OK(financialProductServiceImpl.getSavingDetail(userPrincipal, savingId));
     }
 
 }
