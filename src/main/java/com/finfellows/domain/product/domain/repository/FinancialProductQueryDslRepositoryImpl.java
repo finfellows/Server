@@ -14,6 +14,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.finfellows.domain.product.domain.QFinancialProduct.*;
 import static com.finfellows.domain.product.domain.QFinancialProductOption.*;
@@ -39,7 +40,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 .where(
                         financialProduct.financialProductType.eq(financialProductType),
                         typeEq(financialProductSearchCondition.getType()),
-                        preferentialConditionEq(financialProductSearchCondition.getPreferentialCondition()),
+                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNo()),
                         termEq(financialProductSearchCondition.getTerm())
                 )
                 .orderBy(financialProductOption.maximumPreferredInterestRate.desc())
@@ -54,12 +55,16 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 .where(
                         financialProduct.financialProductType.eq(financialProductType),
                         typeEq(financialProductSearchCondition.getType()),
-                        preferentialConditionEq(financialProductSearchCondition.getPreferentialCondition()),
+                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNo()),
                         termEq(financialProductSearchCondition.getTerm())
                 );
 
         // Page 객체 생성
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
+    }
+
+    private BooleanExpression bankGroupNoEq(String bankType) {
+        return financialProduct.topFinancialGroupNo.eq(Objects.requireNonNullElse(bankType, "020000"));
     }
 
     private BooleanExpression termEq(Integer term) {
@@ -68,10 +73,6 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
     private BooleanExpression typeEq(String type) {
         return type != null ? financialProductOption.financialProduct.joinWay.contains(type) : null;
-    }
-
-    private BooleanExpression preferentialConditionEq(String preferentialCondition) {
-        return preferentialCondition != null ? financialProductOption.financialProduct.specialCondition.contains(preferentialCondition) : null;
     }
 
 }
