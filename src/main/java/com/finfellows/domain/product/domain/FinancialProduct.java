@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Table(name = "Financial_Product")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Where(clause = "status = 'ACTIVE'")
 public class FinancialProduct extends BaseEntity {
 
     @Id
@@ -23,10 +22,19 @@ public class FinancialProduct extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name="disclosure_month")
+    @Column(name = "financial_company_no")
+    private String financialCompanyNo;
+
+    @Column(name = "financial_product_code")
+    private String financialProductCode;
+
+    @Column(name = "top_financial_group_no")
+    private String topFinancialGroupNo;
+
+    @Column(name = "disclosure_month")
     private String disclosureMonth;
 
-    @Column(name="company_name")
+    @Column(name = "company_name")
     private String companyName;
 
     @Column(name = "product_name")
@@ -62,8 +70,15 @@ public class FinancialProduct extends BaseEntity {
     @Column(name = "financial_company_submission_day")
     private LocalDateTime financialCompanySubmissionDay;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "financial_product_type")
+    private FinancialProductType financialProductType;
+
     @Builder
-    public FinancialProduct(String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay) {
+    public FinancialProduct(String financialCompanyNo, String financialProductCode, String topFinancialGroupNo, String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType) {
+        this.financialCompanyNo = financialCompanyNo;
+        this.financialProductCode = financialProductCode;
+        this.topFinancialGroupNo = topFinancialGroupNo;
         this.disclosureMonth = disclosureMonth;
         this.companyName = companyName;
         this.productName = productName;
@@ -77,6 +92,7 @@ public class FinancialProduct extends BaseEntity {
         this.disclosureStartDay = disclosureStartDay;
         this.disclosureEndDay = disclosureEndDay;
         this.financialCompanySubmissionDay = financialCompanySubmissionDay;
+        this.financialProductType = financialProductType;
     }
 
 }

@@ -66,7 +66,6 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
                 .build();
     }
 
-
     public ResponseCustom<?> findBookmarks(UserPrincipal userPrincipal) {
         Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
 

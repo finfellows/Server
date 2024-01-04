@@ -11,18 +11,15 @@ import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.Message;
 import com.finfellows.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class EduContentBookmarkServiceImpl implements BookmarkService{
     private final EduContentBookmarkRepository eduContentBookmarkRepository;
     private final UserRepository userRepository;
@@ -74,7 +71,6 @@ public class EduContentBookmarkServiceImpl implements BookmarkService{
                 .message("즐겨찾기 삭제에 성공했습니다.")
                 .build();
     }
-
 
     public ResponseCustom<List<EduContentBookmarkRes>> findBookmarks(UserPrincipal userPrincipal) {
         Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
