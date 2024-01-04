@@ -48,8 +48,8 @@ public class UserController {
 
     @Operation(summary = "금융, 배우자 즐겨찾기 내역 조회", description = "금융, 배우자(교육) 즐겨찾기 내역을 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육) 즐겨찾기 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "400", description = "금융, 배우자.(교육) 즐겨찾기 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "금융, 배우자.(교육) 즐겨찾기 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/eduContents")
     public ResponseCustom<?> getBookmarkedEduContents(
@@ -60,8 +60,8 @@ public class UserController {
 
     @Operation(summary = "금융, 고마워 즐겨찾기 내역 조회", description = "금융, 고마워(정책) 즐겨찾기 내역을 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 고마워.(정책) 즐겨찾기 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
-            @ApiResponse(responseCode = "400", description = "금융, 고마워.(정책) 즐겨찾기 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 고마워.(정책) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "금융, 고마워.(정책) 즐겨찾기 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/policy-infos")
     public ResponseCustom<?> getBookmarkedPolicyInfos(
