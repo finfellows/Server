@@ -85,5 +85,5 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     private BooleanExpression typeEq(String type) {
         return type != null ? financialProductOption.financialProduct.joinWay.contains(type) : null;
     }
-
+  
 }
