@@ -11,7 +11,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name="Post")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
 public class Post extends BaseEntity {
