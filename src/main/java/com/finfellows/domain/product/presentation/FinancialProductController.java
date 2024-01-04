@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "FinancialProducts", description = "FinancialProducts API")
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +31,18 @@ import org.springframework.web.bind.annotation.*;
 public class FinancialProductController {
 
     private final FinancialProductServiceImpl financialProductServiceImpl;
+
+    @Operation(summary = "은행 리스트 조회", description = "은행 리스트를 조건에 따라 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "은행 리스트 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))}),
+            @ApiResponse(responseCode = "400", description = "은행 리스트 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/bank")
+    public ResponseCustom<List<String>> findBanks(
+            @Parameter(description = "1금융권(020000), 저축은행(030300)", required = true) @RequestParam String bankGroupNo
+    ) {
+        return ResponseCustom.OK(financialProductServiceImpl.findBanks(bankGroupNo));
+    }
 
     @Operation(summary = "예금 정보 조회", description = "예금 정보를 조건에 따라 조회합니다.")
     @ApiResponses(value = {
@@ -39,7 +53,7 @@ public class FinancialProductController {
     public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findDepositProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
-            Pageable pageable
+            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") @RequestParam Pageable pageable
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findDepositProducts(userPrincipal, financialProductSearchCondition, pageable));
     }
@@ -53,7 +67,7 @@ public class FinancialProductController {
     public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findSavingProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
-            Pageable pageable
+            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") @RequestParam Pageable pageable
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findSavingProducts(userPrincipal, financialProductSearchCondition, pageable));
     }

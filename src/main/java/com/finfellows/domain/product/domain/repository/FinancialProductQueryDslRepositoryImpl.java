@@ -63,6 +63,17 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
 
+    @Override
+    public List<String> findBanks(String bankGroupNo) {
+        return queryFactory
+                .select(financialProduct.companyName)
+                .from(financialProduct)
+                .where(bankGroupNoEq(bankGroupNo))
+                .distinct()
+                .orderBy(financialProduct.companyName.asc())
+                .fetch();
+    }
+
     private BooleanExpression bankGroupNoEq(String bankType) {
         return financialProduct.topFinancialGroupNo.eq(Objects.requireNonNullElse(bankType, "020000"));
     }

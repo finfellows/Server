@@ -88,4 +88,9 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         return SavingDetailRes.toDto(saving, maxOption, terms);
     }
 
+    @Override
+    public List<String> findBanks(String bankGroupNo) {
+        return financialProductRepository.findBanks(bankGroupNo);
+    }
+
 }
