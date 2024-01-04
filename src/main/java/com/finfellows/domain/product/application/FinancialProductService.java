@@ -1,6 +1,7 @@
 package com.finfellows.domain.product.application;
 
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
+import com.finfellows.domain.product.dto.response.DepositDetailRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.PagedResponse;
@@ -10,5 +11,6 @@ public interface FinancialProductService {
 
     PagedResponse<SearchFinancialProductRes> findDepositProducts(UserPrincipal userPrincipal, FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable);
     PagedResponse<SearchFinancialProductRes> findSavingProducts(UserPrincipal userPrincipal, FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable);
+    DepositDetailRes getDepositDetail(UserPrincipal userPrincipal, Long depositId);
 
 }

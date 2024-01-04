@@ -2,6 +2,7 @@ package com.finfellows.domain.product.presentation;
 
 import com.finfellows.domain.product.application.FinancialProductServiceImpl;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
+import com.finfellows.domain.product.dto.response.DepositDetailRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
@@ -54,6 +55,19 @@ public class FinancialProductController {
             Pageable pageable
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findSavingProducts(userPrincipal, financialProductSearchCondition, pageable));
+    }
+
+    @Operation(summary = "예금 상세 정보 조회", description = "예금 상세 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "예금 상세 정보 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DepositDetailRes.class))}),
+            @ApiResponse(responseCode = "400", description = "예금 상세 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/deposit/{deposit-id}")
+    public ResponseCustom<DepositDetailRes> getDepositDetail(
+            @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @PathVariable(name = "deposit-id") Long depositId
+    ) {
+        return ResponseCustom.OK(financialProductServiceImpl.getDepositDetail(userPrincipal, depositId));
     }
 
 }
