@@ -2,6 +2,7 @@ package com.finfellows.domain.bookmark.dto;
 
 import com.finfellows.domain.bookmark.domain.EduContentBookmark;
 import com.finfellows.domain.educontent.domain.EduContent;
+import com.finfellows.domain.product.domain.FinancialProductType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 public class EduContentBookmarkRes {
     private Long id;
     private String content;
+
 
     @Builder
     public EduContentBookmarkRes(Long id, String content) {
