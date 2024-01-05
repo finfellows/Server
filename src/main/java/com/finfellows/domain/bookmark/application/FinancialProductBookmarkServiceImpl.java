@@ -28,6 +28,7 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     private final FinancialProductRepository financialProductRepository;
     private final EduContentBookmarkRepository eduContentBookmarkRepository;
 
+
     @Transactional
     @Override
     public Message insert(UserPrincipal userPrincipal, Long id) {

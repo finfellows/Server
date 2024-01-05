@@ -53,7 +53,7 @@ public class FinancialProductController {
     public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findDepositProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
-            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") @RequestParam Pageable pageable
+            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findDepositProducts(userPrincipal, financialProductSearchCondition, pageable));
     }
@@ -67,7 +67,7 @@ public class FinancialProductController {
     public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findSavingProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
-            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") @RequestParam Pageable pageable
+            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findSavingProducts(userPrincipal, financialProductSearchCondition, pageable));
     }
