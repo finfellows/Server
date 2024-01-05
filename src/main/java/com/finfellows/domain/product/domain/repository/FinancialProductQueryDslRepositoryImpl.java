@@ -1,5 +1,6 @@
 package com.finfellows.domain.product.domain.repository;
 
+import com.finfellows.domain.bookmark.domain.QFinancialProductBookmark;
 import com.finfellows.domain.product.domain.FinancialProductType;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
 import com.finfellows.domain.product.dto.response.QSearchFinancialProductRes;
@@ -26,10 +27,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<SearchFinancialProductRes> findFinancialProducts(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType) {
+    public Page<SearchFinancialProductRes> findFinancialProducts(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType, Long userId) {
+        QFinancialProductBookmark financialProductBookmark = QFinancialProductBookmark.financialProductBookmark;
+
         List<SearchFinancialProductRes> results = queryFactory
                 .select(new QSearchFinancialProductRes(
                         financialProduct.id,
+                        financialProductBookmark.id.isNotNull(),
                         financialProduct.productName,
                         financialProduct.companyName,
                         financialProductOption.maximumPreferredInterestRate,
@@ -37,6 +41,8 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 ))
                 .from(financialProductOption)
                 .leftJoin(financialProductOption.financialProduct, financialProduct)
+                .leftJoin(financialProductBookmark)
+                .on(financialProductBookmark.financialProduct.eq(financialProduct).and(financialProductBookmark.user.id.eq(userId)))
                 .where(
                         financialProduct.financialProductType.eq(financialProductType),
                         typeEq(financialProductSearchCondition.getType()),
