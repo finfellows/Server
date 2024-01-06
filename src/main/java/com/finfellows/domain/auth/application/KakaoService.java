@@ -15,6 +15,7 @@ import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.error.DefaultAuthenticationException;
 import com.finfellows.global.payload.ErrorCode;
 import com.finfellows.global.payload.Message;
+import com.finfellows.global.payload.ResponseCustom;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -211,6 +212,7 @@ public class KakaoService {
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(token.getRefreshToken())
+                .role(Role.USER)
                 .build();
     }
 
@@ -310,7 +312,11 @@ public class KakaoService {
         Token updateToken = token.get().updateRefreshToken(tokenMapping.getRefreshToken());
         tokenRepository.save(updateToken);
 
-        AuthRes authResponse = AuthRes.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(updateToken.getRefreshToken()).build();
+        AuthRes authResponse = AuthRes.builder()
+                .accessToken(tokenMapping.getAccessToken())
+                .refreshToken(updateToken.getRefreshToken())
+                .role(Role.ADMIN)
+                .build();
 
         return ResponseEntity.ok(authResponse);
     }
@@ -330,5 +336,11 @@ public class KakaoService {
         DefaultAssert.isTrue(token.get().getEmail().equals(authentication.getName()), "사용자 인증에 실패했습니다.");
 
         return true;
+    }
+
+    public ResponseCustom<?> whoAmI(UserPrincipal userPrincipal) {
+        Optional<User> user = userRepository.findById(userPrincipal.getId());
+        DefaultAssert.isOptionalPresent(user);
+        return ResponseCustom.OK(user);
     }
 }
