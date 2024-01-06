@@ -125,10 +125,14 @@ public class CommentService {
     }
 
     public List<CommentResponse> getAllComments(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
+
         List<Comment> comments = commentRepository.findAllByUserId(userId);
 
         Comment greet = Comment.builder()
                 .greeting("안녕! 나는 금토리야. 도움이 필요하다면 편하게 말해줘.")
+                .user(user)
                 .build();
         commentRepository.save(greet);
 
