@@ -139,7 +139,7 @@ public class CommentService {
                         .greeting(comment.getGreeting())
                         .question(comment.getQuestion())
                         .answer(comment.getAnswer())
-                        .userId(comment.getUser())
+                        .userId(comment.getUser().getId())
                         .build()
                 )
                 .collect(Collectors.toList());

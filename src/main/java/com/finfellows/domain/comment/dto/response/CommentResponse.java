@@ -18,5 +18,5 @@ public class CommentResponse {
     private String greeting;
     private String question;
     private String answer;
-    private User userId;
+    private Long userId;
 }
