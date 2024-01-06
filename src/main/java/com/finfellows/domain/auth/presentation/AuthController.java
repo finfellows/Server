@@ -5,6 +5,7 @@ import com.finfellows.domain.auth.dto.AuthRes;
 import com.finfellows.domain.auth.dto.KakaoProfile;
 import com.finfellows.domain.auth.dto.RefreshTokenReq;
 import com.finfellows.domain.auth.dto.TokenMapping;
+import com.finfellows.domain.user.domain.User;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
@@ -34,14 +35,27 @@ public class AuthController {
 
     private final KakaoService kakaoService;
 
-    @Operation(summary = "카카오 code 발급", description = "카카오 API 서버에 접근 권한을 인가하는 code를 발급받습니다.")
+
+//    @Operation(summary = "카카오 code 발급", description = "카카오 API 서버에 접근 권한을 인가하는 code를 발급받습니다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "code 발급 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
+//            @ApiResponse(responseCode = "400", description = "code 발급 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+//    })
+//    @GetMapping(value = "/login")
+//    public void socialLoginRedirect() throws IOException {
+//        kakaoService.accessRequest();
+//    }
+
+    @Operation(summary = "유저 정보 확인", description = "현재 접속 중인 유저의 정보를 확인합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "code 발급 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
-            @ApiResponse(responseCode = "400", description = "code 발급 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "유저 확인 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @GetMapping(value = "/login")
-    public void socialLoginRedirect() throws IOException {
-        kakaoService.accessRequest();
+    @GetMapping
+    public ResponseCustom<?> whoAmI(
+            @Parameter(description = "AccessToken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ) {
+        return kakaoService.whoAmI(userPrincipal);
     }
 
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 수행합니다.")
@@ -62,7 +76,7 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "관리자 로그인", description = "관리자 권한으로 로그인을 수행합니다.")
+    @Operation(summary = "관리자 회원가입", description = "관리자 권한으로 로그인을 수행합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
             @ApiResponse(responseCode = "400", description = "로그인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
