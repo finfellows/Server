@@ -25,8 +25,8 @@ public class PolicyInfoBookmarkRes {
     public static List<PolicyInfoBookmarkRes> toDto(List<PolicyInfoBookmark> bookmarks) {
         return bookmarks.stream()
                 .map(bookmark -> PolicyInfoBookmarkRes.builder()
-                        .contentName(bookmark.getPolicyInfo().getContentName())
-                        .content(bookmark.getPolicyInfo().getContent())
+                        .contentName(bookmark.getPolicyInfo().getPolyBizSjNm())
+                        .content(bookmark.getPolicyInfo().getPolyItcnCn())
                         .build())
                 .collect(Collectors.toList());
     }

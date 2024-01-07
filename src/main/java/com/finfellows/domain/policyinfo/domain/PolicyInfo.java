@@ -20,15 +20,61 @@ public class PolicyInfo extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "content_name", nullable = false, unique = true)
-    private String contentName;
+    private String polyBizSjNm;
 
-    @Column(name="content", nullable = false, unique = true)
-    private String content;
+    private String polyItcnCn;
+
+    private String sporCn;
+
+    private String bizPrdCn;
+
+    private String rqutPrdCn;
+
+    private String sporScvl;
+
+    private String ageInfo;
+
+    private String prcpCn;
+
+    private String accrRqisCn;
+
+    private String majrRqisCn;
+
+    private String empmSttsCn;
+
+    private String splzRlmRqisCn;
+
+    private String aditRscn;
+
+    private String prcpLmttTrgtCn;
+
+    private String rqutProcCn;
+
+    private String jdgnPresCn;
+
+    private String rqutUrla;
+
+    private String pstnPaprCn;
 
     @Builder
-    public PolicyInfo(String contentName, String content) {
-        this.contentName = contentName;
-        this.content = content;
+    public PolicyInfo(String polyBizSjNm, String polyItcnCn, String sporCn, String bizPrdCn, String rqutPrdCn, String sporScvl, String ageInfo, String prcpCn, String accrRqisCn, String majrRqisCn, String empmSttsCn, String splzRlmRqisCn, String aditRscn, String prcpLmttTrgtCn, String rqutProcCn, String jdgnPresCn, String rqutUrla, String pstnPaprCn) {
+        this.polyBizSjNm = polyBizSjNm;
+        this.polyItcnCn = polyItcnCn;
+        this.sporCn = sporCn;
+        this.bizPrdCn = bizPrdCn;
+        this.rqutPrdCn = rqutPrdCn;
+        this.sporScvl = sporScvl;
+        this.ageInfo = ageInfo;
+        this.prcpCn = prcpCn;
+        this.accrRqisCn = accrRqisCn;
+        this.majrRqisCn = majrRqisCn;
+        this.empmSttsCn = empmSttsCn;
+        this.splzRlmRqisCn = splzRlmRqisCn;
+        this.aditRscn = aditRscn;
+        this.prcpLmttTrgtCn = prcpLmttTrgtCn;
+        this.rqutProcCn = rqutProcCn;
+        this.jdgnPresCn = jdgnPresCn;
+        this.rqutUrla = rqutUrla;
+        this.pstnPaprCn = pstnPaprCn;
     }
 }
