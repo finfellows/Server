@@ -1,5 +1,6 @@
 package com.finfellows.domain.product.application;
 
+import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
 import com.finfellows.domain.product.domain.FinancialProduct;
 import com.finfellows.domain.product.domain.FinancialProductOption;
 import com.finfellows.domain.product.domain.FinancialProductType;
@@ -29,23 +30,24 @@ public class FinancialProductServiceImpl implements FinancialProductService {
 
     private final FinancialProductRepository financialProductRepository;
     private final FinancialProductOptionRepository financialProductOptionRepository;
+    private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
 
     @Override
-    public PagedResponse<SearchFinancialProductRes> findDepositProducts(UserPrincipal userPrincipal, FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable) {
-        Page<SearchFinancialProductRes> financialProducts = financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT);
+    public PagedResponse<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
+        Page<SearchFinancialProductRes> financialProducts = financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT, userPrincipal.getId());
 
         return new PagedResponse<>(financialProducts);
     }
 
     @Override
-    public PagedResponse<SearchFinancialProductRes> findSavingProducts(UserPrincipal userPrincipal, FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable) {
-        Page<SearchFinancialProductRes> financialProducts = financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.SAVING);
+    public PagedResponse<SearchFinancialProductRes> findSavingProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
+        Page<SearchFinancialProductRes> financialProducts = financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.SAVING, userPrincipal.getId());
 
         return new PagedResponse<>(financialProducts);
     }
 
     @Override
-    public DepositDetailRes getDepositDetail(UserPrincipal userPrincipal, Long depositId) {
+    public DepositDetailRes getDepositDetail(final UserPrincipal userPrincipal, final Long depositId) {
         FinancialProduct deposit = financialProductRepository.findById(depositId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
@@ -67,7 +69,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     }
 
     @Override
-    public SavingDetailRes getSavingDetail(UserPrincipal userPrincipal, Long savingId) {
+    public SavingDetailRes getSavingDetail(final UserPrincipal userPrincipal, final Long savingId) {
         FinancialProduct saving = financialProductRepository.findById(savingId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
@@ -89,7 +91,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     }
 
     @Override
-    public List<String> findBanks(String bankGroupNo) {
+    public List<String> findBanks(final String bankGroupNo) {
         return financialProductRepository.findBanks(bankGroupNo);
     }
 

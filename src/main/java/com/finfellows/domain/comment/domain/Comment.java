@@ -11,23 +11,30 @@ import lombok.*;
 @Getter
 public class Comment extends BaseEntity {
 
-    //질문 내용 저장 칼럼 필요함.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="comment_id", updatable = false, nullable = false, unique = true)
     private Long commentId;
 
-    @Column(name="comment_content")
-    private String commentContent;
+    @Column(name = "greeting")
+    private String greeting;
+
+    @Column(name = "question")
+    private String question;
+
+    @Column(name="answer")
+    private String answer;
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User userId;
+    private User user;
 
     @Builder
-    public Comment(Long commentId, String commentContent, User userId){
-        this.commentId=commentId;
-        this.commentContent=commentContent;
-        this.userId=userId;
+    public Comment(String question, String greeting, String answer, User user){
+        this.greeting=greeting;
+        this.question=question;
+        this.answer=answer;
+        this.user=user;
+
     }
 }

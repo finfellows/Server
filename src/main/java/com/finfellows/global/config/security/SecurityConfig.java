@@ -68,6 +68,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/chat-gpt")
                         .permitAll()
 
+                        .requestMatchers("/api/chatbot")
+                        .permitAll()
+
                         .anyRequest()
                         .authenticated());
 

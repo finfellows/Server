@@ -84,6 +84,7 @@ public class CustomTokenProviderService {
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(accessTokenExpiresIn)
+                .claim("role", userPrincipal.getRole())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 

@@ -26,9 +26,14 @@ public class Post extends BaseEntity {
     @JoinColumn(name="writer_id")
     private User writer;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="contentType")
+    private ContentType contentType;
+
     @Builder
-    public Post(User writer){
+    public Post(User writer, ContentType contentType){
         this.writer=writer;
+        this.contentType=contentType;
     }
 
 }

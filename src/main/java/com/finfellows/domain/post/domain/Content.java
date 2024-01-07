@@ -32,12 +32,18 @@ public class Content {
     @Column(name="content")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="contentType")
+    private ContentType contentType;
+
 
     @Builder
     public Content(Post post_id, String title, String content){
         this.post_id=post_id;
         this.title=title;
         this.content=content;
+        this.contentType = ContentType.CONTENT;
+
     }
 
     public void updateContent(String title, String content) {
