@@ -40,6 +40,7 @@ public class CommentService {
     @Autowired
     private RestTemplate restTemplate;
 
+
     @Value("${chatgpt.api-key}")
     private String apiKey;
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -56,7 +57,6 @@ public class CommentService {
 
     // gpt 단답
     public ChatgptResponse getResponse(HttpEntity<ChatgptRequest> chatGptRequestHttpEntity) {
-
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(60000);
         //답변이 길어질 경우 TimeOut Error가 발생하니 1분정도 설정해줍니다.
@@ -90,7 +90,6 @@ public class CommentService {
                 )
         );
     }
-
 
     public String getChatResponse(String question){
         String responseFromGPT=chatGptService.getChatResponse(question);
