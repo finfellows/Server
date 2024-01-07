@@ -10,20 +10,23 @@ import java.util.stream.Collectors;
 @Data
 public class PolicyInfoBookmarkRes {
     private Long id;
-    private String url;
+    private String contentName;
+    private String content;
 
 
     @Builder
-    public PolicyInfoBookmarkRes(Long id, String url) {
-        this.id = id;
-        this.url = url;
+    public PolicyInfoBookmarkRes(String contentName, String content) {
+        this.contentName = contentName;
+        this.content = content;
     }
+
+
 
     public static List<PolicyInfoBookmarkRes> toDto(List<PolicyInfoBookmark> bookmarks) {
         return bookmarks.stream()
                 .map(bookmark -> PolicyInfoBookmarkRes.builder()
-                        .id(bookmark.getPolicyInfo().getId())
-                        .url(bookmark.getPolicyInfo().getUrl())
+                        .contentName(bookmark.getPolicyInfo().getPolyBizSjNm())
+                        .content(bookmark.getPolicyInfo().getPolyItcnCn())
                         .build())
                 .collect(Collectors.toList());
     }

@@ -14,46 +14,24 @@ public class ChatGptService {
 
     @Value("${chatgpt.api-key}")
     private String apiKey;
-//    private final ObjectMapper objectMapper = new ObjectMapper()
-//            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE );
-//    public Flux<String> ask(ChatgptQuestionRequest chatGptQuestionRequest) throws JsonProcessingException {
-//        WebClient client = WebClient.builder()
-//                .baseUrl(ChatgptConfig.CHAT_URL)
-//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-//                .defaultHeader(ChatgptConfig.AUTHORIZATION, ChatgptConfig.BEARER + apiKey)
-//                .build();
-//
-//        List<ChatGptMessage> messages = new ArrayList<>();
-//        messages.add(ChatGptMessage.builder()
-//                .role(ChatgptConfig.ROLE)
-//                .content(chatGptQuestionRequest.getQuestion())
-//                .build());
-//
-//        ChatgptRequest chatGptRequest = new ChatgptRequest(
-//                ChatgptConfig.CHAT_MODEL,
-//                ChatgptConfig.MAX_TOKEN,
-//                ChatgptConfig.TEMPERATURE,
-//                ChatgptConfig.STREAM_TRUE,
-//                messages
-//        );
-//
-//        String requestValue = objectMapper.writeValueAsString(chatGptRequest);
-//
-//        Flux<String> eventStream = client.post()
-//                .bodyValue(requestValue)
-//                .accept(MediaType.TEXT_EVENT_STREAM)
-//                .retrieve()
-//                .bodyToFlux(String.class);
-//
-//        return eventStream;
-//    }
 
     // 단답 답변
     public String getChatResponse(String prompt) {
-        System.out.print(apiKey);
-        // ChatGPT에 질문 전송
-        return chatgptService.sendMessage(prompt);
+        try{
+            String prompt_guide=
+                    "너는 지금 청년들의 금융 지식을 향상시켜주기 위한 챗봇이야. 너의 이름은 '금토리'야. 너는 캐릭터의 역할이기 때문에 텍스트 형식으로 답변을 해야 해. 언어는 한국어로 말해야 하고, 말투는 친구한테 말하는 것처럼 반발로 해." +
+                    "그리고 금융에 관련된 답변만 해야 하고, 만약 금융과 관련이 없는 질문이면 '미안해. 금융과 관련되지 않은 질문은 답변해줄 수 없어.'라고 말하면 돼. " +
+                    "질문은 다음과 같아. 실제로 사용자와 대화하듯이 말해야 하고, 바로 질문에 대한 답을 해. 상식적으로 알 수도 있다는 말은 하지 마." +
+                    "'네'라는 대답은 하지마. 인사말도 하지 마. 그리고 최대한 자세하게 답변해. 다시 한 번 말하지만, 반말로 말해. 그리고 문장은 끝까지 완전한 형태로 말 해";
+            prompt=prompt_guide.concat(prompt);
+            String response=chatgptService.sendMessage(prompt);
+            return response;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "request error";
+        }
     }
+
 }
 
