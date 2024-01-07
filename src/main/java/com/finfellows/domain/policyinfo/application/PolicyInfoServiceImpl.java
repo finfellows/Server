@@ -1,6 +1,7 @@
 package com.finfellows.domain.policyinfo.application;
 
 import com.finfellows.domain.policyinfo.domain.repository.PolicyInfoRepository;
+import com.finfellows.domain.policyinfo.dto.PolicyInfoDetailRes;
 import com.finfellows.domain.policyinfo.dto.SearchPolicyInfoRes;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.PagedResponse;
@@ -22,6 +23,11 @@ public class PolicyInfoServiceImpl implements PolicyInfoService {
         Page<SearchPolicyInfoRes> policyInfos = policyInfoRepository.findPolicyInfos(searchKeyword, pageable, userPrincipal.getId());
 
         return new PagedResponse<>(policyInfos);
+    }
+
+    @Override
+    public PolicyInfoDetailRes findPolicyDetail(UserPrincipal userPrincipal, Long policyId) {
+        return policyInfoRepository.findPolicyDetail(policyId, userPrincipal.getId());
     }
 
 }

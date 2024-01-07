@@ -2,6 +2,8 @@ package com.finfellows.domain.policyinfo.domain.repository;
 
 import com.finfellows.domain.bookmark.domain.QPolicyInfoBookmark;
 import com.finfellows.domain.policyinfo.domain.QPolicyInfo;
+import com.finfellows.domain.policyinfo.dto.PolicyInfoDetailRes;
+import com.finfellows.domain.policyinfo.dto.QPolicyInfoDetailRes;
 import com.finfellows.domain.policyinfo.dto.QSearchPolicyInfoRes;
 import com.finfellows.domain.policyinfo.dto.SearchPolicyInfoRes;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -53,6 +55,42 @@ public class PolicyInfoQueryDslRepositoryImpl implements PolicyInfoQueryDslRepos
                 );
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchCount);
+    }
+
+    @Override
+    public PolicyInfoDetailRes findPolicyDetail(Long policyId, Long userId) {
+        QPolicyInfoBookmark policyInfoBookmark = QPolicyInfoBookmark.policyInfoBookmark;
+
+        List<PolicyInfoDetailRes> result = queryFactory
+                .select(new QPolicyInfoDetailRes(
+                        policyInfoBookmark.id.isNotNull(),
+                        policyInfo.polyBizSjNm,
+                        policyInfo.polyItcnCn,
+                        policyInfo.sporCn,
+                        policyInfo.bizPrdCn,
+                        policyInfo.rqutPrdCn,
+                        policyInfo.sporScvl,
+                        policyInfo.ageInfo,
+                        policyInfo.prcpCn,
+                        policyInfo.accrRqisCn,
+                        policyInfo.majrRqisCn,
+                        policyInfo.empmSttsCn,
+                        policyInfo.splzRlmRqisCn,
+                        policyInfo.aditRscn,
+                        policyInfo.prcpLmttTrgtCn,
+                        policyInfo.rqutProcCn,
+                        policyInfo.jdgnPresCn,
+                        policyInfo.rqutUrla,
+                        policyInfo.pstnPaprCn
+                ))
+                .from(policyInfo)
+                .leftJoin(policyInfoBookmark)
+                .on(policyInfoBookmark.policyInfo.eq(policyInfo).and(policyInfoBookmark.user.id.eq(userId)))
+                .where(
+                        policyInfo.id.eq(policyId)
+                )
+                .fetch();
+        return result.get(0);
     }
 
     private BooleanExpression searchEq(String searchKeyword) {
