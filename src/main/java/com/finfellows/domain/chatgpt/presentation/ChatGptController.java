@@ -1,7 +1,6 @@
 package com.finfellows.domain.chatgpt.presentation;
 
 import com.finfellows.domain.chatgpt.application.ChatGptService;
-
 import com.finfellows.domain.comment.application.CommentService;
 import com.finfellows.domain.comment.domain.QComment;
 import com.finfellows.global.config.security.token.CurrentUser;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ChatGptController {
     private final ChatGptService chatgptService;
-
     private final CommentService commentService;
 
     // 단답 테스트

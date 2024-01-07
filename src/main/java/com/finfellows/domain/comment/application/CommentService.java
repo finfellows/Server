@@ -12,7 +12,6 @@ import com.finfellows.domain.chatgpt.config.ChatgptConfig;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptQuestionRequest;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptRequest;
 import com.finfellows.domain.chatgpt.dto.response.ChatgptResponse;
-
 import com.finfellows.domain.comment.domain.Comment;
 import com.finfellows.domain.comment.domain.repository.CommentRepository;
 import com.finfellows.domain.comment.dto.response.CommentResponse;

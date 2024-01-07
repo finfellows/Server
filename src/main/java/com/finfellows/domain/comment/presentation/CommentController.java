@@ -1,6 +1,5 @@
 package com.finfellows.domain.comment.presentation;
 
-
 import com.finfellows.domain.chatgpt.application.ChatGptService;
 import com.finfellows.domain.comment.application.CommentService;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
