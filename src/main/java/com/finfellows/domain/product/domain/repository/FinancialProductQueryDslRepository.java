@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface FinancialProductQueryDslRepository {
 
-    Page<SearchFinancialProductRes> findFinancialProducts(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType);
+    Page<SearchFinancialProductRes> findFinancialProducts(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType, Long userId);
     List<String> findBanks(String bankGroupNo);
 
 }

@@ -1,5 +1,6 @@
 package com.finfellows.domain.auth.dto;
 
+import com.finfellows.domain.user.domain.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +17,14 @@ public class AuthRes {
     @Schema( type = "string", example ="Bearer", description="권한(Authorization) 값 해더의 명칭을 지정합니다.")
     private String tokenType = "Bearer";
 
+    @Schema( type = "Role", example = "USER", description = "Role을 출력합니다.")
+    private Role role;
+
 
     @Builder
-    public AuthRes(String accessToken, String refreshToken) {
+    public AuthRes(String accessToken, String refreshToken, Role role) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.role = role;
     }
 }

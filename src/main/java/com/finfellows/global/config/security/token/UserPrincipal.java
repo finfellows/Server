@@ -1,5 +1,6 @@
 package com.finfellows.global.config.security.token;
 
+import com.finfellows.domain.user.domain.Role;
 import com.finfellows.domain.user.domain.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,13 +18,15 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     private final Long id;
     private final String email;
     private final String name;
+    private final Role role;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(User user, Long id, String email, String name) {
+    public UserPrincipal(User user, Long id, String email, String name, Role role) {
         this.user = user;
         this.id = id;
         this.email = email;
         this.name = name;
+        this.role = role;
     }
 
     public static UserPrincipal createUser(User user) {
@@ -31,7 +34,8 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                 user,
                 user.getId(),
                 user.getEmail(),
-                user.getName()
+                user.getName(),
+                user.getRole()
         );
     }
 
