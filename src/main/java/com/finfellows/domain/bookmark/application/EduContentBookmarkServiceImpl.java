@@ -5,6 +5,8 @@ import com.finfellows.domain.bookmark.domain.repository.EduContentBookmarkReposi
 import com.finfellows.domain.bookmark.dto.EduContentBookmarkRes;
 import com.finfellows.domain.educontent.domain.EduContent;
 import com.finfellows.domain.educontent.domain.repository.EduContentRepository;
+import com.finfellows.domain.post.domain.Post;
+import com.finfellows.domain.post.domain.repository.PostRepository;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.config.security.token.UserPrincipal;
@@ -24,20 +26,19 @@ public class EduContentBookmarkServiceImpl implements BookmarkService{
     private final EduContentBookmarkRepository eduContentBookmarkRepository;
     private final UserRepository userRepository;
     private final EduContentRepository eduContentRepository;
+    private final PostRepository postRepository;
+
     @Transactional
     @Override
     public Message insert(UserPrincipal userPrincipal, Long id) {
         Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
         Optional<EduContent> optionalEduContent = eduContentRepository.findById(id);
+        Optional<Post> optionalPost = postRepository.findById(id);
 
         User user = optionalUser.get();
         EduContent eduContent = optionalEduContent.get();
+        Post post = optionalPost.get();
 
-//        if (eduContentBookmarkRepository.findByUserAndEduContent(user, eduContent).isPresent()) {
-//            return Message.builder()
-//                    .message("이미 즐겨찾기 목록에 존재합니다.")
-//                    .build();
-//        }
 
         EduContentBookmark eduContentBookmark = EduContentBookmark.builder()
                 .user(user)
