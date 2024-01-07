@@ -69,7 +69,7 @@ public class BookmarkController {
     public ResponseCustom<?> bookmarkPost(
             @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("post_id") Long post_id,
-            @Parameter(description = "", required = true) @RequestParam("contentType") ContentType contentType
+            @Parameter(description = "ContentType을 Params로 입력해주세요. 예시) contentType=EDU_CONTENT", required = true) @RequestParam("contentType") ContentType contentType
     ) {
         return ResponseCustom.OK(postBookmarkService.insert(userPrincipal, post_id, contentType));
     }
@@ -82,10 +82,9 @@ public class BookmarkController {
     @DeleteMapping("/posts/{post_id}")
     public ResponseCustom<?> deleteBookmarkPost(
             @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("post_id") Long post_id,
-            @Parameter(description = "", required = true) @RequestParam("contentType") ContentType contentType
+            @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("post_id") Long post_id
     ) {
-        return ResponseCustom.OK(postBookmarkService.delete(userPrincipal, post_id, contentType));
+        return ResponseCustom.OK(postBookmarkService.delete(userPrincipal, post_id));
     }
 
     @Operation(summary = "금융, 뭐하지 북마크", description = "금융, 뭐하지(금융 상품)를 북마크한다.")

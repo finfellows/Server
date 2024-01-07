@@ -50,4 +50,6 @@ public class EduContent extends BaseEntity {
         this.content = content;
     }
 
+
+
 }

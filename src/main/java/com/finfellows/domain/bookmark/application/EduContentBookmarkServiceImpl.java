@@ -33,11 +33,10 @@ public class EduContentBookmarkServiceImpl implements BookmarkService{
     public Message insert(UserPrincipal userPrincipal, Long id) {
         Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
         Optional<EduContent> optionalEduContent = eduContentRepository.findById(id);
-        Optional<Post> optionalPost = postRepository.findById(id);
 
         User user = optionalUser.get();
         EduContent eduContent = optionalEduContent.get();
-        Post post = optionalPost.get();
+
 
 
         EduContentBookmark eduContentBookmark = EduContentBookmark.builder()
