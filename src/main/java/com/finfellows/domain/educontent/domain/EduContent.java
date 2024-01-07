@@ -1,6 +1,7 @@
 package com.finfellows.domain.educontent.domain;
 
 import com.finfellows.domain.common.BaseEntity;
+import com.finfellows.domain.post.domain.ContentType;
 import com.finfellows.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -25,6 +26,9 @@ public class EduContent extends BaseEntity {
     @JoinColumn(name="post_id")
     private Post post;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="contentType")
+    private ContentType contentType;
 
     @Column(name="title")
     private String title;
@@ -37,6 +41,7 @@ public class EduContent extends BaseEntity {
         this.post=post;
         this.title=title;
         this.content=content;
+        this.contentType = ContentType.EDU_CONTENT;
     }
 
     public void updateContent(String title, String content) {
