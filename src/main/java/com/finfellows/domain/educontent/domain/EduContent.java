@@ -30,6 +30,7 @@ public class EduContent extends BaseEntity {
     @Column(name="contentType")
     private ContentType contentType;
 
+
     @Column(name="title")
     private String title;
 
@@ -42,6 +43,11 @@ public class EduContent extends BaseEntity {
         this.title=title;
         this.content=content;
         this.contentType = ContentType.EDU_CONTENT;
+    }
+
+    public void updateContent(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     public void updateContent(String title, String content) {

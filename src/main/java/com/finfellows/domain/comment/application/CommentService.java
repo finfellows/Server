@@ -3,6 +3,7 @@ package com.finfellows.domain.comment.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.finfellows.domain.chatgpt.domain.ChatGptMessage;
@@ -11,10 +12,12 @@ import com.finfellows.domain.chatgpt.config.ChatgptConfig;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptQuestionRequest;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptRequest;
 import com.finfellows.domain.chatgpt.dto.response.ChatgptResponse;
+
 import com.finfellows.domain.comment.domain.Comment;
 import com.finfellows.domain.comment.domain.repository.CommentRepository;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
 import com.finfellows.domain.user.domain.User;
+
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor

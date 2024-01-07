@@ -2,6 +2,7 @@ package com.finfellows.domain.bookmark.dto;
 
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.product.domain.FinancialProduct;
+import com.finfellows.domain.product.domain.FinancialProductType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,22 +11,23 @@ import java.util.stream.Collectors;
 
 @Data
 public class FinancialProductBookmarkRes {
-    private String productName;
+    private FinancialProductType financialProductType;
     private String companyName;
-    private String maturityInterestRate;
-    private String specialCondition;
+    private String productName;
     private Integer maxLimit;
-    private String joinWay;
+    private String maturityInterestRate;
 
     @Builder
-    public FinancialProductBookmarkRes(String productName, String companyName, String maturityInterestRate, String specialCondition, Integer maxLimit, String joinWay) {
-        this.productName = productName;
+    public FinancialProductBookmarkRes(FinancialProductType financialProductType, String companyName, String productName, Integer maxLimit, String maturityInterestRate) {
+        this.financialProductType = financialProductType;
         this.companyName = companyName;
-        this.maturityInterestRate = maturityInterestRate;
-        this.specialCondition = specialCondition;
+        this.productName = productName;
         this.maxLimit = maxLimit;
-        this.joinWay = joinWay;
+        this.maturityInterestRate = maturityInterestRate;
     }
+
+
+
 
 
 
@@ -36,9 +38,7 @@ public class FinancialProductBookmarkRes {
                 .map(bookmark -> FinancialProductBookmarkRes.builder()
                         .companyName(bookmark.getFinancialProduct().getCompanyName())
                         .productName(bookmark.getFinancialProduct().getProductName())
-                        .joinWay(bookmark.getFinancialProduct().getJoinWay())
                         .maturityInterestRate(bookmark.getFinancialProduct().getMaturityInterestRate())
-                        .specialCondition(bookmark.getFinancialProduct().getSpecialCondition())
                         .maxLimit(bookmark.getFinancialProduct().getMaxLimit())
                         .build())
                 .collect(Collectors.toList());

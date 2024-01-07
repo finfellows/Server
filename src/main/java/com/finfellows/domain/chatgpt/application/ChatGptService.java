@@ -15,6 +15,7 @@ public class ChatGptService {
     @Value("${chatgpt.api-key}")
     private String apiKey;
 
+
     // 단답 답변
     public String getChatResponse(String prompt) {
         try{

@@ -1,5 +1,6 @@
 package com.finfellows.domain.comment.presentation;
 
+
 import com.finfellows.domain.chatgpt.application.ChatGptService;
 import com.finfellows.domain.comment.application.CommentService;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
@@ -57,4 +58,5 @@ public class CommentController {
         List<CommentResponse> responseList=commentService.getAllComments(userPrincipal.getId());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
+
 }

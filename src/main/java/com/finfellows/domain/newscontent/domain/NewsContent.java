@@ -1,7 +1,9 @@
 package com.finfellows.domain.newscontent.domain;
 
 import com.finfellows.domain.common.BaseEntity;
+
 import com.finfellows.domain.post.domain.ContentType;
+
 import com.finfellows.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -40,6 +42,7 @@ public class NewsContent extends BaseEntity {
         this.title=title;
         this.content=content;
         this.contentType = ContentType.NEWS_CONTENT;
+
     }
 
     public void updateContent(String title, String content) {
