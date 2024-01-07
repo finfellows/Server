@@ -2,6 +2,7 @@ package com.finfellows.domain.policyinfo.presentation;
 
 import com.finfellows.domain.policyinfo.application.PolicyInfoServiceImpl;
 import com.finfellows.domain.policyinfo.dto.PolicyInfoDetailRes;
+import com.finfellows.domain.policyinfo.dto.PolicyUpdateReq;
 import com.finfellows.domain.policyinfo.dto.SearchPolicyInfoRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
@@ -53,6 +54,33 @@ public class PolicyInfoController {
             @Parameter(description = "정책 ID를 입력해 주세요") @PathVariable("policy-id") Long policyId
     ) {
         return ResponseCustom.OK(policyInfoServiceImpl.findPolicyDetail(userPrincipal, policyId));
+    }
+
+    @Operation(summary = "정책 삭제", description = "정책을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "정책 삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "정책 삭제 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PatchMapping("/{policy-id}")
+    public ResponseCustom<Void> deletePolicy(
+            @Parameter(description = "정책 ID를 입력해 주세요") @PathVariable("policy-id") Long policyId
+    ) {
+        this.policyInfoServiceImpl.deletePolicy(policyId);
+        return ResponseCustom.OK();
+    }
+
+    @Operation(summary = "정책 수정", description = "정책을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "정책 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "정책 수정 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PutMapping("/{policy-id}")
+    public ResponseCustom<Void> updatePolicy(
+            @Parameter(description = "정책 ID를 입력해 주세요") @PathVariable("policy-id") Long policyId,
+            @Parameter(description = "PolicyUpdateReq Schema를 참고해 주세요.") @RequestBody PolicyUpdateReq policyInfoUpdateReq
+    ) {
+        this.policyInfoServiceImpl.updatePolicy(policyId, policyInfoUpdateReq);
+        return ResponseCustom.OK();
     }
 
 }
