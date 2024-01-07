@@ -35,5 +35,6 @@ public class Comment extends BaseEntity {
         this.question=question;
         this.answer=answer;
         this.user=user;
+
     }
 }

@@ -1,24 +1,21 @@
 package com.finfellows.domain.product.domain.repository;
 
-import com.finfellows.domain.product.domain.FinancialProduct;
+import com.finfellows.domain.bookmark.domain.QFinancialProductBookmark;
 import com.finfellows.domain.product.domain.FinancialProductType;
-import com.finfellows.domain.product.domain.QFinancialProduct;
-import com.finfellows.domain.product.domain.QFinancialProductOption;
-import com.finfellows.domain.product.dto.condition.DepositSearchCondition;
-import com.finfellows.domain.product.dto.response.QSearchDepositRes;
-import com.finfellows.domain.product.dto.response.SearchDepositRes;
-import com.querydsl.core.QueryResults;
+import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
+import com.finfellows.domain.product.dto.response.QSearchFinancialProductRes;
+import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.finfellows.domain.product.domain.QFinancialProduct.*;
 import static com.finfellows.domain.product.domain.QFinancialProductOption.*;
@@ -30,10 +27,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<SearchDepositRes> findFinancialProducts(DepositSearchCondition depositSearchCondition, Pageable pageable) {
-        List<SearchDepositRes> results = queryFactory
-                .select(new QSearchDepositRes(
+    public Page<SearchFinancialProductRes> findFinancialProducts(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType, Long userId) {
+        QFinancialProductBookmark financialProductBookmark = QFinancialProductBookmark.financialProductBookmark;
+
+        List<SearchFinancialProductRes> results = queryFactory
+                .select(new QSearchFinancialProductRes(
                         financialProduct.id,
+                        financialProductBookmark.id.isNotNull(),
                         financialProduct.productName,
                         financialProduct.companyName,
                         financialProductOption.maximumPreferredInterestRate,
@@ -41,11 +41,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 ))
                 .from(financialProductOption)
                 .leftJoin(financialProductOption.financialProduct, financialProduct)
+                .leftJoin(financialProductBookmark)
+                .on(financialProductBookmark.financialProduct.eq(financialProduct).and(financialProductBookmark.user.id.eq(userId)))
                 .where(
-                        financialProduct.financialProductType.eq(FinancialProductType.DEPOSIT),
-                        typeEq(depositSearchCondition.getType()),
-                        preferentialConditionEq(depositSearchCondition.getPreferentialCondition()),
-                        termEq(depositSearchCondition.getTerm())
+                        financialProduct.financialProductType.eq(financialProductType),
+                        typeEq(financialProductSearchCondition.getType()),
+                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNo()),
+                        termEq(financialProductSearchCondition.getTerm())
                 )
                 .orderBy(financialProductOption.maximumPreferredInterestRate.desc())
                 .offset(pageable.getOffset())
@@ -57,14 +59,29 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 .from(financialProductOption)
                 .leftJoin(financialProductOption.financialProduct, financialProduct)
                 .where(
-                        financialProduct.financialProductType.eq(FinancialProductType.DEPOSIT),
-                        typeEq(depositSearchCondition.getType()),
-                        preferentialConditionEq(depositSearchCondition.getPreferentialCondition()),
-                        termEq(depositSearchCondition.getTerm())
+                        financialProduct.financialProductType.eq(financialProductType),
+                        typeEq(financialProductSearchCondition.getType()),
+                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNo()),
+                        termEq(financialProductSearchCondition.getTerm())
                 );
 
         // Page 객체 생성
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public List<String> findBanks(String bankGroupNo) {
+        return queryFactory
+                .select(financialProduct.companyName)
+                .from(financialProduct)
+                .where(bankGroupNoEq(bankGroupNo))
+                .distinct()
+                .orderBy(financialProduct.companyName.asc())
+                .fetch();
+    }
+
+    private BooleanExpression bankGroupNoEq(String bankType) {
+        return financialProduct.topFinancialGroupNo.eq(Objects.requireNonNullElse(bankType, "020000"));
     }
 
     private BooleanExpression termEq(Integer term) {
@@ -74,9 +91,5 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     private BooleanExpression typeEq(String type) {
         return type != null ? financialProductOption.financialProduct.joinWay.contains(type) : null;
     }
-
-    private BooleanExpression preferentialConditionEq(String preferentialCondition) {
-        return preferentialCondition != null ? financialProductOption.financialProduct.specialCondition.contains(preferentialCondition) : null;
-    }
-
+  
 }

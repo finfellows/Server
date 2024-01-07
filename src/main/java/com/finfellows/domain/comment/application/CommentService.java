@@ -3,6 +3,7 @@ package com.finfellows.domain.comment.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.finfellows.domain.chatgpt.domain.ChatGptMessage;
@@ -15,6 +16,7 @@ import com.finfellows.domain.comment.domain.Comment;
 import com.finfellows.domain.comment.domain.repository.CommentRepository;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
 import com.finfellows.domain.user.domain.User;
+
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -36,7 +39,6 @@ public class CommentService {
 
     @Autowired
     private RestTemplate restTemplate;
-
 
     @Value("${chatgpt.api-key}")
     private String apiKey;
@@ -54,6 +56,7 @@ public class CommentService {
 
     // gpt 단답
     public ChatgptResponse getResponse(HttpEntity<ChatgptRequest> chatGptRequestHttpEntity) {
+
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(60000);
         //답변이 길어질 경우 TimeOut Error가 발생하니 1분정도 설정해줍니다.
@@ -87,6 +90,7 @@ public class CommentService {
                 )
         );
     }
+
 
     public String getChatResponse(String question){
         String responseFromGPT=chatGptService.getChatResponse(question);

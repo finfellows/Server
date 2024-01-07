@@ -57,4 +57,5 @@ public class CommentController {
         List<CommentResponse> responseList=commentService.getAllComments(userPrincipal.getId());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
+
 }

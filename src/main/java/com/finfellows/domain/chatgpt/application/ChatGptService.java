@@ -32,6 +32,5 @@ public class ChatGptService {
             return "request error";
         }
     }
-
 }
 

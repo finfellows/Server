@@ -20,12 +20,15 @@ public class PolicyInfo extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name="url", nullable = false, unique = true)
-    private String url;
+    @Column(name = "content_name", nullable = false, unique = true)
+    private String contentName;
+
+    @Column(name="content", nullable = false, unique = true)
+    private String content;
 
     @Builder
-    public PolicyInfo(String url){
-        this.url=url;
+    public PolicyInfo(String contentName, String content) {
+        this.contentName = contentName;
+        this.content = content;
     }
-
 }
