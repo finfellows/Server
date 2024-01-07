@@ -1,6 +1,9 @@
 package com.finfellows.domain.comment.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.finfellows.domain.chatgpt.domain.ChatGptMessage;
@@ -9,7 +12,11 @@ import com.finfellows.domain.chatgpt.config.ChatgptConfig;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptQuestionRequest;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptRequest;
 import com.finfellows.domain.chatgpt.dto.response.ChatgptResponse;
+import com.finfellows.domain.comment.domain.Comment;
 import com.finfellows.domain.comment.domain.repository.CommentRepository;
+import com.finfellows.domain.comment.dto.response.CommentResponse;
+import com.finfellows.domain.user.domain.User;
+
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +89,67 @@ public class CommentService {
                         )
                 )
         );
+    }
+
+
+    public String getChatResponse(String question){
+        String responseFromGPT=chatGptService.getChatResponse(question);
+        return responseFromGPT;
+    }
+
+    public void saveComment(Long userId, String question, String answer) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
+
+        question = extractPromptFromJson(question);
+        answer = answer.replaceAll("\\n", "");
+        answer = answer.replaceAll("금토리: ", "");
+        answer = answer.replaceAll("네. ", "");
+
+        Comment comment = Comment.builder()
+                .question(question)
+                .answer(answer)
+                .user(user)
+                .build();
+        commentRepository.save(comment);
+    }
+
+    // JSON에서 "prompt" 부분 추출하는 메소드
+    private String extractPromptFromJson(String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(json);
+            if (jsonNode.has("prompt")) {
+                return jsonNode.get("prompt").asText();
+            }
+        } catch (JsonProcessingException e) {
+            System.out.print("텍스트 변환 실패");
+        }
+        return json;
+    }
+
+    public List<CommentResponse> getAllComments(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Comment> comments = commentRepository.findAllByUserId(userId);
+
+        Comment greet = Comment.builder()
+                .greeting("안녕! 나는 금토리야. 도움이 필요하다면 편하게 말해줘.")
+                .user(user)
+                .build();
+        commentRepository.save(greet);
+
+        return comments.stream()
+                .map(comment -> CommentResponse.builder()
+                        .commentId(comment.getCommentId())
+                        .created_at(comment.getCreatedAt())
+                        .greeting(comment.getGreeting())
+                        .question(comment.getQuestion())
+                        .answer(comment.getAnswer())
+                        .userId(comment.getUser().getId())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 }
