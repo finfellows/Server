@@ -1,15 +1,16 @@
 package com.finfellows.domain.product.application;
 
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
+import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.product.domain.FinancialProduct;
 import com.finfellows.domain.product.domain.FinancialProductOption;
 import com.finfellows.domain.product.domain.FinancialProductType;
+import com.finfellows.domain.product.domain.repository.CmaRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductOptionRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
+import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
-import com.finfellows.domain.product.dto.response.DepositDetailRes;
-import com.finfellows.domain.product.dto.response.SavingDetailRes;
-import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
+import com.finfellows.domain.product.dto.response.*;
 import com.finfellows.domain.product.exception.InvalidFinancialProductException;
 import com.finfellows.domain.product.exception.ProductTypeMismatchException;
 import com.finfellows.global.config.security.token.UserPrincipal;
@@ -30,7 +31,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
 
     private final FinancialProductRepository financialProductRepository;
     private final FinancialProductOptionRepository financialProductOptionRepository;
-    private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
+    private final CmaRepository cmaRepository;
 
     @Override
     public PagedResponse<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
@@ -93,6 +94,21 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     @Override
     public List<String> findBanks(final String bankGroupNo) {
         return financialProductRepository.findBanks(bankGroupNo);
+    }
+
+    @Override
+    public PagedResponse<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable) {
+        Page<SearchCmaRes> cmaProducts = financialProductRepository.findCmaProducts(cmaSearchCondition, pageable, userPrincipal.getId());
+
+        return new PagedResponse<>(cmaProducts);
+    }
+
+    @Override
+    public CmaDetailRes getCmaDetail(UserPrincipal userPrincipal, Long cmaId) {
+        CMA cma = cmaRepository.findById(cmaId)
+                .orElseThrow(InvalidFinancialProductException::new);
+
+        return CmaDetailRes.toDto(cma);
     }
 
 }
