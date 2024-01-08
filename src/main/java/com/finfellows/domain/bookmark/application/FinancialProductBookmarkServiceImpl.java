@@ -4,6 +4,8 @@ import com.finfellows.domain.bookmark.domain.CmaBookmark;
 import com.finfellows.domain.bookmark.domain.repository.CmaBookmarkRepository;
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
+import com.finfellows.domain.bookmark.dto.CmaBookmarkRes;
+import com.finfellows.domain.bookmark.dto.CmaFinancialProductBookmarkRes;
 import com.finfellows.domain.bookmark.dto.FinancialProductBookmarkRes;
 import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.product.domain.FinancialProduct;
@@ -72,18 +74,25 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
                 .build();
     }
 
-    public ResponseCustom<List<FinancialProductBookmarkRes>> findBookmarks(UserPrincipal userPrincipal) {
-        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
+    @Transactional
+    public ResponseCustom<CmaFinancialProductBookmarkRes> findBookmarks(UserPrincipal userPrincipal) {
+        User user = userRepository.findByEmail(userPrincipal.getEmail())
+                .orElseThrow(RuntimeException::new);
 
-        User user = optionalUser.get();
 
         List<FinancialProductBookmark> bookmarks = financialProductBookmarkRepository.findAllByUser(user);
 
+        List<CmaBookmark> cmaBookmarks = cmaBookmarkRepository.findAllByUser(user);
+
 
         List<FinancialProductBookmarkRes> financialProductBookmarkResList = FinancialProductBookmarkRes.toDto(bookmarks);
+        List<CmaBookmarkRes> cmaBookmarkResList = CmaBookmarkRes.toDto(cmaBookmarks);
+
+        CmaFinancialProductBookmarkRes cmaFinancialProductBookmarkRes = new CmaFinancialProductBookmarkRes(financialProductBookmarkResList, cmaBookmarkResList);
 
 
-        return ResponseCustom.OK(financialProductBookmarkResList);
+
+        return ResponseCustom.OK(cmaFinancialProductBookmarkRes);
     }
 
     @Transactional
@@ -103,6 +112,26 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
 
         return Message.builder()
                 .message("즐겨찾기 추가에 성공했습니다.")
+                .build();
+    }
+
+    @Transactional
+    public Message cmaDelete(UserPrincipal userPrincipal, Long cmaId) {
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
+
+        CMA cma = cmaRepository.findById(cmaId)
+                .orElseThrow(RuntimeException::new);
+
+        CmaBookmark cmaBookmark = CmaBookmark.builder()
+                .user(user)
+                .cma(cma)
+                .build();
+
+        cmaBookmarkRepository.delete(cmaBookmark);
+
+        return Message.builder()
+                .message("즐겨찾기 삭제에 성공했습니다.")
                 .build();
     }
 
