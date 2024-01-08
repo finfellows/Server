@@ -1,9 +1,13 @@
 package com.finfellows.domain.bookmark.application;
 
+import com.finfellows.domain.bookmark.domain.CmaBookmark;
+import com.finfellows.domain.bookmark.domain.repository.CmaBookmarkRepository;
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
 import com.finfellows.domain.bookmark.dto.FinancialProductBookmarkRes;
+import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.product.domain.FinancialProduct;
+import com.finfellows.domain.product.domain.repository.CmaRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
 import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
@@ -23,6 +27,8 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
     private final UserRepository userRepository;
     private final FinancialProductRepository financialProductRepository;
+    private final CmaRepository cmaRepository;
+    private final CmaBookmarkRepository cmaBookmarkRepository;
 
 
     @Transactional
@@ -78,6 +84,26 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
 
 
         return ResponseCustom.OK(financialProductBookmarkResList);
+    }
+
+    @Transactional
+    public Message cmaInsert(UserPrincipal userPrincipal, Long cmaId) {
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
+
+        CMA cma = cmaRepository.findById(cmaId)
+                .orElseThrow(RuntimeException::new);
+
+        CmaBookmark cmaBookmark = CmaBookmark.builder()
+                .user(user)
+                .cma(cma)
+                .build();
+
+        cmaBookmarkRepository.save(cmaBookmark);
+
+        return Message.builder()
+                .message("즐겨찾기 추가에 성공했습니다.")
+                .build();
     }
 
 }
