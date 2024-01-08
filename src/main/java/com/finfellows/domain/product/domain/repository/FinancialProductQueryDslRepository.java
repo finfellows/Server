@@ -1,6 +1,5 @@
 package com.finfellows.domain.product.domain.repository;
 
-import com.finfellows.domain.product.domain.CmaType;
 import com.finfellows.domain.product.domain.FinancialProductType;
 import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;

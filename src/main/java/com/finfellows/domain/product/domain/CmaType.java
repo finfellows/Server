@@ -13,4 +13,13 @@ public enum CmaType {
 
     private final String value;
 
+    public static CmaType fromString(String text) {
+        for (CmaType cmaType : CmaType.values()) {
+            if (cmaType.name().equalsIgnoreCase(text)) {
+                return cmaType;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found");
+    }
+
 }

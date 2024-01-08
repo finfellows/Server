@@ -2,6 +2,7 @@ package com.finfellows.domain.product.domain.repository;
 
 import com.finfellows.domain.bookmark.domain.QCmaBookmark;
 import com.finfellows.domain.bookmark.domain.QFinancialProductBookmark;
+import com.finfellows.domain.product.domain.CmaType;
 import com.finfellows.domain.product.domain.FinancialProductType;
 import com.finfellows.domain.product.domain.QCMA;
 import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
@@ -88,7 +89,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                         cMA.maturityInterestRate
                 ))
                 .where(
-                        cMA.cmaType.eq(cmaSearchCondition.getCmaType().getValue())
+                        cMA.cmaType.eq(CmaType.fromString(cmaSearchCondition.getCmaType()).getValue())
                 )
                 .from(cMA)
                 .leftJoin(cmaBookmark)
@@ -102,7 +103,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 .select(cMA.count())
                 .from(cMA)
                 .where(
-                        cMA.cmaType.eq(cmaSearchCondition.getCmaType().toString())
+                        cMA.cmaType.eq(CmaType.valueOf(cmaSearchCondition.getCmaType()).getValue())
                 );
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);

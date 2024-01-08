@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CmaSearchCondition {
 
-    @Schema(type = "string", example = "RP, BALHENG, JONGGEUM", description = "CMA 타입입니다.")
-    private CmaType cmaType;
+    @Schema(type = "string", example = "RP, BALHAENG, JONGGEUM", description = "CMA 타입입니다.")
+    private String cmaType;
 
 }
