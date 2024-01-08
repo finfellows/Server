@@ -6,9 +6,11 @@ import com.finfellows.domain.product.domain.FinancialProductOption;
 import com.finfellows.domain.product.domain.FinancialProductType;
 import com.finfellows.domain.product.domain.repository.FinancialProductOptionRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
+import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
 import com.finfellows.domain.product.dto.response.DepositDetailRes;
 import com.finfellows.domain.product.dto.response.SavingDetailRes;
+import com.finfellows.domain.product.dto.response.SearchCmaRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.domain.product.exception.InvalidFinancialProductException;
 import com.finfellows.domain.product.exception.ProductTypeMismatchException;
@@ -93,6 +95,13 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     @Override
     public List<String> findBanks(final String bankGroupNo) {
         return financialProductRepository.findBanks(bankGroupNo);
+    }
+
+    @Override
+    public PagedResponse<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable) {
+        Page<SearchCmaRes> cmaProducts = financialProductRepository.findCmaProducts(cmaSearchCondition, pageable, userPrincipal.getId());
+
+        return new PagedResponse<>(cmaProducts);
     }
 
 }

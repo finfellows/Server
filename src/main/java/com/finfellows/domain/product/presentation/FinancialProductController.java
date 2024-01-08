@@ -1,9 +1,11 @@
 package com.finfellows.domain.product.presentation;
 
 import com.finfellows.domain.product.application.FinancialProductServiceImpl;
+import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
 import com.finfellows.domain.product.dto.response.DepositDetailRes;
 import com.finfellows.domain.product.dto.response.SavingDetailRes;
+import com.finfellows.domain.product.dto.response.SearchCmaRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
@@ -96,6 +98,20 @@ public class FinancialProductController {
             @PathVariable(name = "saving-id") Long savingId
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.getSavingDetail(userPrincipal, savingId));
+    }
+
+    @Operation(summary = "CMA 정보 조회", description = "CMA 정보를 조건에 따라 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "CMA 정보 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SearchFinancialProductRes.class)))}),
+            @ApiResponse(responseCode = "400", description = "CMA 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/cma")
+    public ResponseCustom<PagedResponse<SearchCmaRes>> findCmaProducts(
+            @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @ModelAttribute CmaSearchCondition cmaSearchCondition,
+            @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
+    ) {
+        return ResponseCustom.OK(financialProductServiceImpl.findCmaProducts(userPrincipal, cmaSearchCondition, pageable));
     }
 
 }

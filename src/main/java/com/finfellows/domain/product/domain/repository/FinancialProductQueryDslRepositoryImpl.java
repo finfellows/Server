@@ -1,9 +1,14 @@
 package com.finfellows.domain.product.domain.repository;
 
+import com.finfellows.domain.bookmark.domain.QCmaBookmark;
 import com.finfellows.domain.bookmark.domain.QFinancialProductBookmark;
 import com.finfellows.domain.product.domain.FinancialProductType;
+import com.finfellows.domain.product.domain.QCMA;
+import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
+import com.finfellows.domain.product.dto.response.QSearchCmaRes;
 import com.finfellows.domain.product.dto.response.QSearchFinancialProductRes;
+import com.finfellows.domain.product.dto.response.SearchCmaRes;
 import com.finfellows.domain.product.dto.response.SearchFinancialProductRes;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Objects;
 
+import static com.finfellows.domain.product.domain.QCMA.*;
 import static com.finfellows.domain.product.domain.QFinancialProduct.*;
 import static com.finfellows.domain.product.domain.QFinancialProductOption.*;
 
@@ -66,6 +72,39 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                 );
 
         // Page 객체 생성
+        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<SearchCmaRes> findCmaProducts(CmaSearchCondition cmaSearchCondition, Pageable pageable, Long userId) {
+        QCmaBookmark cmaBookmark = QCmaBookmark.cmaBookmark;
+
+        List<SearchCmaRes> results = queryFactory
+                .select(new QSearchCmaRes(
+                        cMA.id,
+                        cmaBookmark.id.isNotNull(),
+                        cMA.productName,
+                        cMA.companyName,
+                        cMA.maturityInterestRate
+                ))
+                .where(
+                        cMA.cmaType.eq(cmaSearchCondition.getCmaType().getValue())
+                )
+                .from(cMA)
+                .leftJoin(cmaBookmark)
+                .on(cmaBookmark.cma.eq(cMA).and(cmaBookmark.user.id.eq(userId)))
+                .orderBy(cMA.maturityInterestRate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(cMA.count())
+                .from(cMA)
+                .where(
+                        cMA.cmaType.eq(cmaSearchCondition.getCmaType().toString())
+                );
+
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
 
