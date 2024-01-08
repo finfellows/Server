@@ -1,8 +1,9 @@
-package com.finfellows.domain.educontent.domain;
+package com.finfellows.domain.bookmark.domain;
 
 import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.post.domain.ContentType;
 import com.finfellows.domain.post.domain.Post;
+import com.finfellows.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,45 +12,31 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "EduContent")
+@Table(name = "PostBookmark")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
-public class EduContent extends BaseEntity {
-
+public class PostBookmark extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="post_id")
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="contentType")
     private ContentType contentType;
 
-
-    @Column(name="title")
-    private String title;
-
-    @Column(name="content")
-    private String content;
-
     @Builder
-    public EduContent(Post post, String title, String content){
-        this.post=post;
-        this.title=title;
-        this.content=content;
-        this.contentType = ContentType.EDU_CONTENT;
+    public PostBookmark(User user, Post post, ContentType contentType) {
+        this.user = user;
+        this.post = post;
+        this.contentType = contentType;
     }
-
-    public void updateContent(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
-
-
 }

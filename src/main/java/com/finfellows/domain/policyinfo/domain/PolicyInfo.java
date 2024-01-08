@@ -1,6 +1,7 @@
 package com.finfellows.domain.policyinfo.domain;
 
 import com.finfellows.domain.common.BaseEntity;
+import com.finfellows.domain.policyinfo.dto.PolicyUpdateReq;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -56,6 +57,27 @@ public class PolicyInfo extends BaseEntity {
 
     private String pstnPaprCn;
 
+    public void updatePolicyInfo(PolicyUpdateReq policyUpdateReq) {
+        this.polyBizSjNm = policyUpdateReq.getPolyBizSjNm();
+        this.polyItcnCn = policyUpdateReq.getPolyItcnCn();
+        this.sporCn = policyUpdateReq.getSporCn();
+        this.bizPrdCn = policyUpdateReq.getBizPrdCn();
+        this.rqutPrdCn = policyUpdateReq.getRqutPrdCn();
+        this.sporScvl = policyUpdateReq.getSporScvl();
+        this.ageInfo = policyUpdateReq.getAgeInfo();
+        this.prcpCn = policyUpdateReq.getPrcpCn();
+        this.accrRqisCn = policyUpdateReq.getAccrRqisCn();
+        this.majrRqisCn = policyUpdateReq.getMajrRquisCn();
+        this.empmSttsCn = policyUpdateReq.getEmpmSttsCn();
+        this.splzRlmRqisCn = policyUpdateReq.getSpizRlmRqisCn();
+        this.aditRscn = policyUpdateReq.getAditRscn();
+        this.prcpLmttTrgtCn = policyUpdateReq.getPrcpLmttTrgtCn();
+        this.rqutProcCn = policyUpdateReq.getRqutProcCn();
+        this.jdgnPresCn = policyUpdateReq.getJdgnPresCn();
+        this.rqutUrla = policyUpdateReq.getRqutUrla();
+        this.pstnPaprCn = policyUpdateReq.getPstnPaprCn();
+    }
+
     @Builder
     public PolicyInfo(String polyBizSjNm, String polyItcnCn, String sporCn, String bizPrdCn, String rqutPrdCn, String sporScvl, String ageInfo, String prcpCn, String accrRqisCn, String majrRqisCn, String empmSttsCn, String splzRlmRqisCn, String aditRscn, String prcpLmttTrgtCn, String rqutProcCn, String jdgnPresCn, String rqutUrla, String pstnPaprCn) {
         this.polyBizSjNm = polyBizSjNm;
@@ -77,4 +99,5 @@ public class PolicyInfo extends BaseEntity {
         this.rqutUrla = rqutUrla;
         this.pstnPaprCn = pstnPaprCn;
     }
+
 }
