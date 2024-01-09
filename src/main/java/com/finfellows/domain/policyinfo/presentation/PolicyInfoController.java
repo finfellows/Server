@@ -7,7 +7,6 @@ import com.finfellows.domain.policyinfo.dto.SearchPolicyInfoRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
-import com.finfellows.global.payload.PagedResponse;
 import com.finfellows.global.payload.ResponseCustom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,7 @@ public class PolicyInfoController {
             @ApiResponse(responseCode = "400", description = "정책 리스트 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping
-    public ResponseCustom<PagedResponse<SearchPolicyInfoRes>> findPolicyInfos(
+    public ResponseCustom<Page<SearchPolicyInfoRes>> findPolicyInfos(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "검색어를 입력해 주세요") @RequestParam(required = false) String searchKeyword,
             @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
