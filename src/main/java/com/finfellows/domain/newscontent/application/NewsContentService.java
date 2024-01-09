@@ -1,16 +1,17 @@
 package com.finfellows.domain.newscontent.application;
 
 import com.finfellows.domain.bookmark.domain.repository.EduContentBookmarkRepository;
-import com.finfellows.domain.educontent.domain.EduContent;
 import com.finfellows.domain.newscontent.domain.NewsContent;
 import com.finfellows.domain.newscontent.domain.repository.NewsContentRepository;
 import com.finfellows.domain.newscontent.dto.request.NewsContentRequest;
 import com.finfellows.domain.newscontent.dto.response.NewsContentResponse;
 import com.finfellows.domain.post.domain.Post;
 import com.finfellows.domain.post.domain.repository.PostRepository;
-import com.finfellows.domain.user.domain.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +43,9 @@ public class NewsContentService {
         return savedContent;
     }
 
-    public List<NewsContentResponse> getAllNewsContents(Long userId) {
-        List<NewsContent> newsContents = newsContentRepository.findAll();
-        return newsContents.stream()
+    public Page<NewsContentResponse> getAllNewsContents(Long userId, Pageable pageable) {
+        Page<NewsContent> newsContentsPage = newsContentRepository.findAll(pageable);
+        List<NewsContentResponse> newsContentsResponses = newsContentsPage.getContent().stream()
                 .map(newsContent -> NewsContentResponse.builder()
                         .id(newsContent.getId())
                         .title(newsContent.getTitle())
@@ -52,6 +53,8 @@ public class NewsContentService {
                         .bookmarked(checkBookmarked(userId, newsContent.getId())) // 북마크 여부 확인
                         .build())
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(newsContentsResponses, pageable, newsContentsPage.getTotalElements());
     }
 
     public NewsContentResponse getNewsContent(Long id) {

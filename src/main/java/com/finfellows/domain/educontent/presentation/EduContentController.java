@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +43,9 @@ public class EduContentController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EduContentResponse.class)))
     })
     @GetMapping
-    public ResponseEntity<List<EduContentResponse>> getAllEduContents(@CurrentUser UserPrincipal userPrincipal) {
-        List<EduContentResponse> responseList = eduContentService.getAllEduContents(userPrincipal.getId());
-        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    public ResponseEntity<Page<EduContentResponse>> getAllEduContents(@CurrentUser UserPrincipal userPrincipal, Pageable pageable) {
+        Page<EduContentResponse> responsePage = eduContentService.getAllEduContents(userPrincipal.getId(), pageable);
+        return new ResponseEntity<>(responsePage, HttpStatus.OK);
     }
 
     @Operation(summary = "교육콘텐츠 상세 내용 조회", description = "교육콘텐츠 상세 내용을 조회합니다.")

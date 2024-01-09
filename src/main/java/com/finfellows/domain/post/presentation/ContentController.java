@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +42,9 @@ public class ContentController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ContentResponse.class))
     })
     @GetMapping("")
-    public ResponseEntity<List<ContentResponse>> getAllContents() {
-        List<ContentResponse> responseList = contentService.getAllContents();
-        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    public ResponseEntity<Page<ContentResponse>> getAllContents(Pageable pageable) {
+        Page<ContentResponse> responsePage = contentService.getAllContents(pageable);
+        return new ResponseEntity<>(responsePage, HttpStatus.OK);
     }
 
 
