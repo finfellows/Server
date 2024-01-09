@@ -78,3 +78,4 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
         return ResponseCustom.OK(policyInfoBookmarkResList);
     }
 }
+

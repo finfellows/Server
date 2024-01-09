@@ -1,5 +1,6 @@
 package com.finfellows.domain.bookmark.dto;
 
+import com.finfellows.domain.bookmark.domain.CmaBookmark;
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.product.domain.FinancialProduct;
 import com.finfellows.domain.product.domain.FinancialProductType;
@@ -36,6 +37,7 @@ public class FinancialProductBookmarkRes {
     public static List<FinancialProductBookmarkRes> toDto(List<FinancialProductBookmark> bookmarks) {
         return bookmarks.stream()
                 .map(bookmark -> FinancialProductBookmarkRes.builder()
+                        .financialProductType(bookmark.getFinancialProduct().getFinancialProductType())
                         .companyName(bookmark.getFinancialProduct().getCompanyName())
                         .productName(bookmark.getFinancialProduct().getProductName())
                         .maturityInterestRate(bookmark.getFinancialProduct().getMaturityInterestRate())
@@ -44,4 +46,6 @@ public class FinancialProductBookmarkRes {
                 .collect(Collectors.toList());
 
     }
+
+
 }
