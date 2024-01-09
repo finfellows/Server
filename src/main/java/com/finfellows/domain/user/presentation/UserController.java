@@ -3,6 +3,9 @@ package com.finfellows.domain.user.presentation;
 import com.finfellows.domain.bookmark.application.FinancialProductBookmarkServiceImpl;
 import com.finfellows.domain.bookmark.application.PolicyInfoBookmarkServiceImpl;
 import com.finfellows.domain.bookmark.application.PostBookmarkServiceImpl;
+import com.finfellows.domain.bookmark.dto.CmaFinancialProductBookmarkRes;
+import com.finfellows.domain.bookmark.dto.PolicyInfoBookmarkRes;
+import com.finfellows.domain.bookmark.dto.PostBookmarkRes;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
@@ -32,7 +35,7 @@ public class UserController {
 
     @Operation(summary = "금융, 뭐하지 즐겨찾기 내역 조회", description = "금융, 뭐하지(금융 상품) 즐겨찾기 내역을 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 뭐하지.(금융 상품) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 뭐하지.(금융 상품) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = CmaFinancialProductBookmarkRes.class) ) } ),
             @ApiResponse(responseCode = "400", description = "금융, 뭐하지.(금융 상품) 즐겨찾기 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/financial-products")
@@ -44,7 +47,7 @@ public class UserController {
 
     @Operation(summary = "금융, 배우자 즐겨찾기 내역 조회", description = "금융, 배우자(교육, 뉴스) 즐겨찾기 내역을 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육, 뉴스) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육, 뉴스) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PostBookmarkRes.class) ) } ),
             @ApiResponse(responseCode = "400", description = "금융, 배우자.(교육, 뉴스) 즐겨찾기 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/posts")
@@ -56,7 +59,7 @@ public class UserController {
 
     @Operation(summary = "금융, 고마워 즐겨찾기 내역 조회", description = "금융, 고마워(정책) 즐겨찾기 내역을 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "금융, 고마워.(정책) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "200", description = "금융, 고마워.(정책) 즐겨찾기 조회 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = PolicyInfoBookmarkRes.class) ) } ),
             @ApiResponse(responseCode = "400", description = "금융, 고마워.(정책) 즐겨찾기 조회 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
     @GetMapping("/policy-infos")
