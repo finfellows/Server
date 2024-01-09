@@ -24,7 +24,7 @@ public class EduContentService {
     private final EduContentBookmarkRepository eduContentBookmarkRepository;
 
     @Transactional
-    public EduContent createEduContent(EduContentResponse request) {
+    public EduContent createEduContent(EduContentRequest request) {
         Post post = new Post();
         postRepository.save(post);
 

@@ -30,7 +30,7 @@ public class ContentController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ContentResponse.class)))
     })
     @PostMapping("")
-    public ResponseEntity<com.finfellows.domain.post.domain.Content> saveContent(@RequestBody ContentResponse request) {
+    public ResponseEntity<com.finfellows.domain.post.domain.Content> saveContent(@RequestBody ContentRequest request) {
         com.finfellows.domain.post.domain.Content response = contentService.createContent(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

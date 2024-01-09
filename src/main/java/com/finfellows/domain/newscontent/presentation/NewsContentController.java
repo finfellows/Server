@@ -31,7 +31,7 @@ public class NewsContentController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NewsContentResponse.class)))
     })
     @PostMapping("")
-    public ResponseEntity<NewsContent> saveNewsContent(@RequestBody NewsContentResponse request) {
+    public ResponseEntity<NewsContent> saveNewsContent(@RequestBody NewsContentRequest request) {
         NewsContent response = newsContentService.createNewsContent(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

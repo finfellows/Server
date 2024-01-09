@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 @Data
 public class PolicyInfoBookmarkRes {
-    private Long id;
     private String contentName;
     private String content;
 

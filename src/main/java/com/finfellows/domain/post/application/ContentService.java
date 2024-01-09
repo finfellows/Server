@@ -22,7 +22,7 @@ public class ContentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Content createContent(ContentResponse request) {
+    public Content createContent(ContentRequest request) {
         Post post = new Post();
         postRepository.save(post);
 
