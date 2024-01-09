@@ -1,5 +1,6 @@
 package com.finfellows.domain.product.application;
 
+import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
 import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.product.domain.FinancialProduct;
@@ -14,7 +15,6 @@ import com.finfellows.domain.product.dto.response.*;
 import com.finfellows.domain.product.exception.InvalidFinancialProductException;
 import com.finfellows.domain.product.exception.ProductTypeMismatchException;
 import com.finfellows.global.config.security.token.UserPrincipal;
-import com.finfellows.global.payload.PagedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,26 +32,26 @@ public class FinancialProductServiceImpl implements FinancialProductService {
 
     private final FinancialProductRepository financialProductRepository;
     private final FinancialProductOptionRepository financialProductOptionRepository;
+    private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
     private final CmaRepository cmaRepository;
 
     @Override
-    public PagedResponse<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
-        Page<SearchFinancialProductRes> financialProducts = financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT, userPrincipal.getId());
-
-        return new PagedResponse<>(financialProducts);
+    public Page<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
+        return financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT, userPrincipal.getId());
     }
 
     @Override
-    public PagedResponse<SearchFinancialProductRes> findSavingProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
-        Page<SearchFinancialProductRes> financialProducts = financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.SAVING, userPrincipal.getId());
-
-        return new PagedResponse<>(financialProducts);
+    public Page<SearchFinancialProductRes> findSavingProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
+        return financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.SAVING, userPrincipal.getId());
     }
 
     @Override
     public DepositDetailRes getDepositDetail(final UserPrincipal userPrincipal, final Long depositId) {
         FinancialProduct deposit = financialProductRepository.findById(depositId)
                 .orElseThrow(InvalidFinancialProductException::new);
+
+        Optional<FinancialProductBookmark> bookmark = financialProductBookmarkRepository
+                .findByUserAndFinancialProduct(userPrincipal.getUser(), deposit);
 
         if(!deposit.getFinancialProductType().equals(FinancialProductType.DEPOSIT))
             throw new ProductTypeMismatchException();
@@ -66,13 +67,16 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
                 .orElse(null);
 
-        return DepositDetailRes.toDto(deposit, maxOption, terms);
+        return DepositDetailRes.toDto(bookmark, deposit, maxOption, terms);
     }
 
     @Override
     public SavingDetailRes getSavingDetail(final UserPrincipal userPrincipal, final Long savingId) {
         FinancialProduct saving = financialProductRepository.findById(savingId)
                 .orElseThrow(InvalidFinancialProductException::new);
+
+        Optional<FinancialProductBookmark> bookmark = financialProductBookmarkRepository
+                .findByUserAndFinancialProduct(userPrincipal.getUser(), saving);
 
         if(!saving.getFinancialProductType().equals(FinancialProductType.SAVING))
             throw new ProductTypeMismatchException();
@@ -88,7 +92,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
                 .orElse(null);
 
-        return SavingDetailRes.toDto(saving, maxOption, terms);
+        return SavingDetailRes.toDto(bookmark, saving, maxOption, terms);
     }
 
     @Override
@@ -97,10 +101,8 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     }
 
     @Override
-    public PagedResponse<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable) {
-        Page<SearchCmaRes> cmaProducts = financialProductRepository.findCmaProducts(cmaSearchCondition, pageable, userPrincipal.getId());
-
-        return new PagedResponse<>(cmaProducts);
+    public Page<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable) {
+        return financialProductRepository.findCmaProducts(cmaSearchCondition, pageable, userPrincipal.getId());
     }
 
     @Override
