@@ -8,4 +8,5 @@ public interface BookmarkService {
     Message insert(UserPrincipal userPrincipal, Long id);
 
     Message delete(UserPrincipal userPrincipal, Long id);
+
 }
