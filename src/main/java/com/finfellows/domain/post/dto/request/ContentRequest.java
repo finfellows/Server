@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContentRequest {
-    private Long id;
     private LocalDateTime created_at;
     private String title;
     private String content;
