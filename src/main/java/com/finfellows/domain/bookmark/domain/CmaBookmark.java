@@ -1,5 +1,6 @@
 package com.finfellows.domain.bookmark.domain;
 
+import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.user.domain.User;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
-public class CmaBookmark {
+public class CmaBookmark extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

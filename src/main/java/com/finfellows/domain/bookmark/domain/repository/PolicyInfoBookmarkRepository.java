@@ -14,4 +14,5 @@ public interface PolicyInfoBookmarkRepository extends JpaRepository<PolicyInfoBo
     Optional<PolicyInfoBookmark> findByUserAndPolicyInfo(User user, PolicyInfo policyInfo);
 
     List<PolicyInfoBookmark> findAllByUser(User user);
+
 }

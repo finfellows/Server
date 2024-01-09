@@ -124,4 +124,17 @@ public class BookmarkController {
         return ResponseCustom.OK(financialProductBookmarkService.cmaInsert(userPrincipal, cmaId));
     }
 
+    @Operation(summary = "금융, 뭐하지(CMA) 북마크 삭제", description = "금융, 뭐하지(CMA) 북마크를 삭제한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "금융, 뭐하지(CMA) 즐겨찾기 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
+            @ApiResponse(responseCode = "400", description = "금융, 뭐하지(CMA) 즐겨찾기 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
+    })
+    @DeleteMapping("/cma/{cma-id}")
+    public ResponseCustom<Message> deleteBookmarkCma(
+            @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "금융, 뭐하지(금융 상품) id를 입력해주세요.", required = true) @Valid @PathVariable("cma-id") Long cmaId
+    ) {
+        return ResponseCustom.OK(financialProductBookmarkService.cmaDelete(userPrincipal, cmaId));
+    }
+
 }
