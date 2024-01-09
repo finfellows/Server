@@ -9,6 +9,9 @@ import com.finfellows.domain.post.domain.Post;
 import com.finfellows.domain.post.domain.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +43,10 @@ public class EduContentService {
         return savedContent;
     }
 
-    public List<EduContentResponse> getAllEduContents(Long userId) {
-        List<EduContent> eduContents = eduContentRepository.findAll();
-        return eduContents.stream()
+    public Page<EduContentResponse> getAllEduContents(Long userId, Pageable pageable) {
+        Page<EduContent> eduContentPage = eduContentRepository.findAll(pageable);
+
+        List<EduContentResponse> eduContentResponses = eduContentPage.getContent().stream()
                 .map(eduContent -> EduContentResponse.builder()
                         .id(eduContent.getId())
                         .title(eduContent.getTitle())
@@ -50,6 +54,8 @@ public class EduContentService {
                         .bookmarked(checkBookmarked(userId, eduContent.getId()))
                         .build())
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(eduContentResponses, pageable, eduContentPage.getTotalElements());
     }
 
     public EduContentResponse getEduContent(Long id) {
