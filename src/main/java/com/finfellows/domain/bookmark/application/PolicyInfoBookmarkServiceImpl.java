@@ -66,10 +66,10 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
                 .build();
     }
 
+    @Transactional
     public ResponseCustom<?> findBookmarks(UserPrincipal userPrincipal) {
-        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
-
-        User user = optionalUser.get();
+        User user = userRepository.findByEmail(userPrincipal.getEmail())
+                .orElseThrow(RuntimeException::new);
 
         List<PolicyInfoBookmark> bookmarks = policyInfoBookmarkRepository.findAllByUser(user);
 

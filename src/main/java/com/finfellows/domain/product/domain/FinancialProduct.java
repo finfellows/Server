@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Financial_Product")
@@ -73,6 +74,9 @@ public class FinancialProduct extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "financial_product_type")
     private FinancialProductType financialProductType;
+
+    @OneToMany(mappedBy = "financialProduct", fetch = FetchType.LAZY)
+    private List<FinancialProductOption> financialProductOption;
 
     @Builder
     public FinancialProduct(String financialCompanyNo, String financialProductCode, String topFinancialGroupNo, String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType) {
