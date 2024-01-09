@@ -26,7 +26,7 @@ public class NewsContentService {
     private final EduContentBookmarkRepository eduContentBookmarkRepository;
 
     @Transactional
-    public NewsContent createNewsContent(NewsContentResponse request) {
+    public NewsContent createNewsContent(NewsContentRequest request) {
         Post post = new Post();
         postRepository.save(post);
 
