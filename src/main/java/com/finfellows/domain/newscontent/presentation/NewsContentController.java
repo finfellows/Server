@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,7 @@ public class NewsContentController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NewsContentResponse.class)))
     })
     @PostMapping("")
-    public ResponseEntity<NewsContent> saveNewsContent(@RequestBody NewsContentResponse request) {
+    public ResponseEntity<NewsContent> saveNewsContent(@RequestBody NewsContentRequest request) {
         NewsContent response = newsContentService.createNewsContent(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -41,9 +43,9 @@ public class NewsContentController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NewsContentResponse.class)))
     })
     @GetMapping
-    public ResponseEntity<List<NewsContentResponse>> getAllNewsContents(@CurrentUser UserPrincipal userPrincipal) {
-        List<NewsContentResponse> responseList = newsContentService.getAllNewsContents(userPrincipal.getId());
-        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    public ResponseEntity<Page<NewsContentResponse>> getAllNewsContents(@CurrentUser UserPrincipal userPrincipal, Pageable pageable) {
+        Page<NewsContentResponse> responsePage = newsContentService.getAllNewsContents(userPrincipal.getId(), pageable);
+        return new ResponseEntity<>(responsePage, HttpStatus.OK);
     }
 
     @Operation(summary = "뉴스콘텐츠 상세 내용 조회", description = "뉴스콘텐츠 상세 내용을 조회합니다.")
