@@ -7,7 +7,6 @@ import com.finfellows.domain.product.dto.response.*;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.ErrorResponse;
-import com.finfellows.global.payload.PagedResponse;
 import com.finfellows.global.payload.ResponseCustom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +49,7 @@ public class FinancialProductController {
             @ApiResponse(responseCode = "400", description = "예금 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/deposit")
-    public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findDepositProducts(
+    public ResponseCustom<Page<SearchFinancialProductRes>> findDepositProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
             @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
@@ -63,7 +63,7 @@ public class FinancialProductController {
             @ApiResponse(responseCode = "400", description = "적금 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/saving")
-    public ResponseCustom<PagedResponse<SearchFinancialProductRes>> findSavingProducts(
+    public ResponseCustom<Page<SearchFinancialProductRes>> findSavingProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute FinancialProductSearchCondition financialProductSearchCondition,
             @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
@@ -103,7 +103,7 @@ public class FinancialProductController {
             @ApiResponse(responseCode = "400", description = "CMA 정보 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/cma")
-    public ResponseCustom<PagedResponse<SearchCmaRes>> findCmaProducts(
+    public ResponseCustom<Page<SearchCmaRes>> findCmaProducts(
             @Parameter(description = "AccessToken 을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @ModelAttribute CmaSearchCondition cmaSearchCondition,
             @Parameter(description = "조회 할 페이지와 페이지 크기를 입력해주세요") Pageable pageable
