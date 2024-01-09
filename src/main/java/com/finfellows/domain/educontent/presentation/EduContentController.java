@@ -31,7 +31,7 @@ public class EduContentController {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EduContentResponse.class)))
     })
     @PostMapping("")
-    public ResponseEntity<EduContent> saveEduContent(@RequestBody EduContentResponse request) {
+    public ResponseEntity<EduContent> saveEduContent(@RequestBody EduContentRequest request) {
         EduContent response = eduContentService.createEduContent(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
