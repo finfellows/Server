@@ -44,7 +44,18 @@ public class EduContentController {
     })
     @GetMapping
     public ResponseEntity<Page<EduContentResponse>> getAllEduContents(@CurrentUser UserPrincipal userPrincipal, Pageable pageable) {
-        Page<EduContentResponse> responsePage = eduContentService.getAllEduContents(userPrincipal.getId(), pageable);
+        Page<EduContentResponse> responsePage;
+
+        if (userPrincipal != null) {
+            responsePage = eduContentService.getAllEduContents(userPrincipal.getId(), pageable);
+        } else {
+            responsePage = eduContentService.getAllEduContents(null, pageable);
+        }
+
+        // userPrincipal이 null이면 bookmarked를 null로 설정
+        if (userPrincipal == null) {
+            responsePage.getContent().forEach(eduContentResponse -> eduContentResponse.setBookmarked(null));
+        }
         return new ResponseEntity<>(responsePage, HttpStatus.OK);
     }
 

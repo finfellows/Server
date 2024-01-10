@@ -44,7 +44,17 @@ public class NewsContentController {
     })
     @GetMapping
     public ResponseEntity<Page<NewsContentResponse>> getAllNewsContents(@CurrentUser UserPrincipal userPrincipal, Pageable pageable) {
-        Page<NewsContentResponse> responsePage = newsContentService.getAllNewsContents(userPrincipal.getId(), pageable);
+        Page<NewsContentResponse> responsePage;
+
+        if (userPrincipal != null) {
+            responsePage = newsContentService.getAllNewsContents(userPrincipal.getId(), pageable);
+        } else {
+            responsePage = newsContentService.getAllNewsContents(null, pageable);
+        }
+        // userPrincipal이 null이면 bookmarked를 null로 설정
+        if (userPrincipal == null) {
+            responsePage.getContent().forEach(newsContentResponse -> newsContentResponse.setBookmarked(null));
+        }
         return new ResponseEntity<>(responsePage, HttpStatus.OK);
     }
 
