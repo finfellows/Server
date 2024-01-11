@@ -1,6 +1,7 @@
 package com.finfellows.domain.comment.presentation;
 
 import com.finfellows.domain.comment.application.CommentService;
+import com.finfellows.domain.comment.dto.request.CommentRequest;
 import com.finfellows.domain.comment.dto.response.CommentListResponse;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
 import com.finfellows.global.config.security.token.CurrentUser;
@@ -41,7 +42,8 @@ public class CommentController {
     @PostMapping("")
     public ResponseEntity<CommentResponse> getChatResponse(
             @CurrentUser UserPrincipal userPrincipal,
-            @RequestBody String question) {
+            @RequestBody CommentRequest request) {
+        String question=request.getQuestion();
         String answer = commentService.getChatResponse(question);
 
         if (userPrincipal == null) {
