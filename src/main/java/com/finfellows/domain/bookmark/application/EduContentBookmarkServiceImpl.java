@@ -30,11 +30,6 @@ public class EduContentBookmarkServiceImpl implements BookmarkService{
         User user = optionalUser.get();
         EduContent eduContent = optionalEduContent.get();
 
-//        if (eduContentBookmarkRepository.findByUserAndEduContent(user, eduContent).isPresent()) {
-//            return Message.builder()
-//                    .message("이미 즐겨찾기 목록에 존재합니다.")
-//                    .build();
-//        }
 
         EduContentBookmark eduContentBookmark = EduContentBookmark.builder()
                 .user(user)

@@ -41,11 +41,11 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     @Transactional
     @Override
     public Message insert(UserPrincipal userPrincipal, Long id) {
-        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
-        Optional<FinancialProduct> optionalFinancialProduct = financialProductRepository.findById(id);
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
 
-        User user = optionalUser.get();
-        FinancialProduct financialProduct = optionalFinancialProduct.get();
+        FinancialProduct financialProduct = financialProductRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
 
 
         FinancialProductBookmark financialProductBookmark = FinancialProductBookmark.builder()
@@ -63,11 +63,11 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     @Transactional
     @Override
     public Message delete(UserPrincipal userPrincipal, Long id) {
-        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
-        Optional<FinancialProduct> optionalFinancialProduct = financialProductRepository.findById(id);
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
 
-        User user = optionalUser.get();
-        FinancialProduct financialProduct = optionalFinancialProduct.get();
+        FinancialProduct financialProduct = financialProductRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
 
         FinancialProductBookmark financialProductBookmark = financialProductBookmarkRepository.findByUserAndFinancialProduct(user, financialProduct).get();
 
