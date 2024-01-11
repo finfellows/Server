@@ -11,7 +11,7 @@ import com.finfellows.domain.chatgpt.config.ChatgptConfig;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptRequest;
 import com.finfellows.domain.comment.domain.Comment;
 import com.finfellows.domain.comment.domain.repository.CommentRepository;
-import com.finfellows.domain.comment.dto.response.CommentResponse;
+import com.finfellows.domain.comment.dto.response.CommentListResponse;
 import com.finfellows.domain.user.domain.User;
 
 import com.finfellows.domain.user.domain.repository.UserRepository;
@@ -25,6 +25,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.finfellows.domain.user.domain.QUser.user;
 
 
 @Service
@@ -72,9 +74,9 @@ public class CommentService {
         try {
             String prompt_guide=
                     "너는 지금 청년들의 금융 지식을 향상시켜주기 위한 챗봇이야. 너의 이름은 '금토리'야. 너는 캐릭터의 역할이기 때문에 텍스트 형식으로 답변을 해야 해. 언어는 한국어로 말해야 하고, 말투는 친구한테 말하는 것처럼 반발로 해." +
-                            "그리고 금융에 관련된 답변만 해야 하고, 만약 금융과 관련이 없는 질문이면 '미안해. 금융과 관련되지 않은 질문은 답변해줄 수 없어.'라고 말하면 돼. " +
+                            "그리고 금융, 투자, 자산, 저축, 은행, 돈에 관련된 답변만 해야 하고, 만약 금융과 관련이 없는 질문이면 '미안해. 금융과 관련되지 않은 질문은 답변해줄 수 없어.'라고 말하면 돼. " +
                             "질문은 다음과 같아. 실제로 사용자와 대화하듯이 말해야 하고, 바로 질문에 대한 답을 해. 상식적으로 알 수도 있다는 말은 하지 마." +
-                            "'네'라는 대답은 하지마. 인사말도 하지 마. 그리고 최대한 자세하게 답변해. 다시 한 번 말하지만, 반말로 말해. 그리고 문장은 끝까지 완전한 형태로 말 해";
+                            "'네'라는 대답은 하지마. 인사말도 하지 마. 그리고 최대한 자세하게 답변해. 다시 한 번 말하지만, 반말로 말해. 그리고 문장은 끝까지 완전한 형태로 말 해. 답변 길이는 3줄 분량보다 넘지 마.";
             question=prompt_guide.concat(question);
 
             List<ChatGptMessage> messages = new ArrayList<>();
@@ -94,8 +96,6 @@ public class CommentService {
             HttpEntity<ChatgptRequest> httpEntity = buildHttpEntity(chatRequest);
 
             String response = getResponse(httpEntity);
-
-            // 여기에서 필요에 따라 response를 가공하거나 사용할 수 있습니다.
             String content = extractContentFromJson(response);
             return content;
 
@@ -153,20 +153,14 @@ public class CommentService {
         return json;
     }
 
-    public List<CommentResponse> getAllComments(Long userId) {
+    public List<CommentListResponse> getAllComments(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Comment> comments = commentRepository.findAllByUserId(userId);
 
-        Comment greet = Comment.builder()
-                .greeting("안녕! 나는 금토리야. 도움이 필요하다면 편하게 말해줘.")
-                .user(user)
-                .build();
-        commentRepository.save(greet);
-
         return comments.stream()
-                .map(comment -> CommentResponse.builder()
+                .map(comment -> CommentListResponse.builder()
                         .commentId(comment.getCommentId())
                         .created_at(comment.getCreatedAt())
                         .greeting(comment.getGreeting())
@@ -176,5 +170,25 @@ public class CommentService {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    public List<CommentListResponse> getGreeting() {
+        return Collections.singletonList(
+                CommentListResponse.builder()
+                        .greeting("안녕! 나는 금토리야. 도움이 필요하다면 편하게 말해줘.")
+                        .build()
+        );
+    }
+
+    public void saveGreeting(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
+        List<Comment> comments = commentRepository.findAllByUserId(userId);
+
+        Comment greet = Comment.builder()
+                .greeting("안녕! 나는 금토리야. 도움이 필요하다면 편하게 말해줘.")
+                .user(user)
+                .build();
+        commentRepository.save(greet);
     }
 }
