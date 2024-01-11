@@ -28,11 +28,10 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
     @Transactional
     @Override
     public Message insert(UserPrincipal userPrincipal, Long id) {
-        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
-        Optional<PolicyInfo> optionalPolicyInfo = policyInfoRepository.findById(id);
-
-        User user = optionalUser.get();
-        PolicyInfo policyInfo = optionalPolicyInfo.get();
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
+        PolicyInfo policyInfo = policyInfoRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
 
         PolicyInfoBookmark policyInfoBookmark = PolicyInfoBookmark.builder()
                 .user(user)
@@ -50,11 +49,11 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
     @Transactional
     @Override
     public Message delete(UserPrincipal userPrincipal, Long id) {
-        Optional<User> optionalUser = userRepository.findByEmail(userPrincipal.getEmail());
-        Optional<PolicyInfo> optionalPolicyInfo = policyInfoRepository.findById(id);
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
 
-        User user = optionalUser.get();
-        PolicyInfo policyInfo = optionalPolicyInfo.get();
+        PolicyInfo policyInfo = policyInfoRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
 
         PolicyInfoBookmark policyInfoBookmark = policyInfoBookmarkRepository.findByUserAndPolicyInfo(user, policyInfo).get();
 

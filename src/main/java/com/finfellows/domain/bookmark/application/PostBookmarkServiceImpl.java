@@ -28,11 +28,10 @@ public class PostBookmarkServiceImpl {
 
     @Transactional
     public Message insert(UserPrincipal userPrincipal, Long postId, ContentType contentType) {
-        Optional<User> optionalUser = userRepository.findById(userPrincipal.getId());
-        Optional<Post> optionalPost = postRepository.findById(postId);
-
-        User user = optionalUser.get();
-        Post post = optionalPost.get();
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
+        Post post = postRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
 
 
         PostBookmark postBookmark = PostBookmark.builder()
@@ -50,11 +49,10 @@ public class PostBookmarkServiceImpl {
 
     @Transactional
     public Message delete(UserPrincipal userPrincipal, Long postId) {
-        Optional<User> optionalUser = userRepository.findById(userPrincipal.getId());
-        Optional<Post> optionalPost = postRepository.findById(postId);
-
-        User user = optionalUser.get();
-        Post post = optionalPost.get();
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(RuntimeException::new);
 
         PostBookmark postBookmark = postBookmarkRepository.findByUserAndPost(user, post).get();
 
@@ -68,9 +66,8 @@ public class PostBookmarkServiceImpl {
 
     @Transactional
     public ResponseCustom<?> findBookmarks(UserPrincipal userPrincipal) {
-        Optional<User> optionalUser = userRepository.findById(userPrincipal.getId());
-
-        User user = optionalUser.get();
+        User user = userRepository.findById(userPrincipal.getId())
+                .orElseThrow(RuntimeException::new);
 
         List<PostBookmark> bookmarks = postBookmarkRepository.findAllByUser(user);
 
