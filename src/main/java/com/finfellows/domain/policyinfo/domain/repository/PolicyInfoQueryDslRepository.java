@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface PolicyInfoQueryDslRepository {
 
-    Page<SearchPolicyInfoRes> findPolicyInfos(String searchKeyword, Pageable pageable, Long userId);
+    Page<SearchPolicyInfoRes> findPolicyInfos(String searchKeyword, Pageable pageable);
+    Page<SearchPolicyInfoRes> findPolicyInfosWithAuthorization(String searchKeyword, Pageable pageable, Long userId);
     PolicyInfoDetailRes findPolicyDetail(Long policyId, Long userId);
+
 }

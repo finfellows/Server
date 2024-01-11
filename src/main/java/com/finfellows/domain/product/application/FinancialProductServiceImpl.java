@@ -37,12 +37,18 @@ public class FinancialProductServiceImpl implements FinancialProductService {
 
     @Override
     public Page<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
-        return financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT, userPrincipal.getId());
+        if (userPrincipal != null) {
+            return financialProductRepository.findFinancialProductsWithAuthorization(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT, userPrincipal.getId());
+        }
+        return financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.DEPOSIT);
     }
 
     @Override
     public Page<SearchFinancialProductRes> findSavingProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
-        return financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.SAVING, userPrincipal.getId());
+        if (userPrincipal != null) {
+            return financialProductRepository.findFinancialProductsWithAuthorization(financialProductSearchCondition, pageable, FinancialProductType.SAVING, userPrincipal.getId());
+        }
+        return financialProductRepository.findFinancialProducts(financialProductSearchCondition, pageable, FinancialProductType.SAVING);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         Optional<FinancialProductBookmark> bookmark = financialProductBookmarkRepository
                 .findByUserAndFinancialProduct(userPrincipal.getUser(), deposit);
 
-        if(!deposit.getFinancialProductType().equals(FinancialProductType.DEPOSIT))
+        if (!deposit.getFinancialProductType().equals(FinancialProductType.DEPOSIT))
             throw new ProductTypeMismatchException();
 
         List<FinancialProductOption> depositOptions = financialProductOptionRepository.findFinancialProductOptionsByFinancialProduct(deposit);
@@ -78,7 +84,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         Optional<FinancialProductBookmark> bookmark = financialProductBookmarkRepository
                 .findByUserAndFinancialProduct(userPrincipal.getUser(), saving);
 
-        if(!saving.getFinancialProductType().equals(FinancialProductType.SAVING))
+        if (!saving.getFinancialProductType().equals(FinancialProductType.SAVING))
             throw new ProductTypeMismatchException();
 
         List<FinancialProductOption> savingOptions = financialProductOptionRepository.findFinancialProductOptionsByFinancialProduct(saving);
