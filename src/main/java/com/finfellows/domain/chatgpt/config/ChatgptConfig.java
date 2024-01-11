@@ -14,7 +14,7 @@ import java.time.Duration;
 public class ChatgptConfig {
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER = "Bearer ";
-    public static final String CHAT_MODEL = "gpt-3.5-turbo";
+    public static final String CHAT_MODEL = "gpt-3.5-turbo-1106";
     public static final Integer MAX_TOKEN = 300;
     public static final Boolean STREAM_TRUE = true;
     public static final Boolean STREAM_FALSE = false;
