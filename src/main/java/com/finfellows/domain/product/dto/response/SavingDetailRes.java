@@ -15,7 +15,6 @@ import java.util.Optional;
 @Builder
 public class SavingDetailRes {
 
-    private Boolean isLikend;
     private Boolean isLiked;
     private String productName;
     private String bankName;
@@ -28,7 +27,7 @@ public class SavingDetailRes {
 
     public static SavingDetailRes toDto(Optional<FinancialProductBookmark> bookmark, FinancialProduct deposit, FinancialProductOption depositOption, List<Integer> terms) {
         return SavingDetailRes.builder()
-                .isLikend(bookmark.isPresent())
+                .isLiked(bookmark.isPresent())
                 .productName(deposit.getProductName())
                 .bankName(deposit.getCompanyName())
                 .maxInterestRate(depositOption.getMaximumPreferredInterestRate())

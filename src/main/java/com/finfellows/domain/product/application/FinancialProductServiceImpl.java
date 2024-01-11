@@ -1,6 +1,8 @@
 package com.finfellows.domain.product.application;
 
+import com.finfellows.domain.bookmark.domain.CmaBookmark;
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
+import com.finfellows.domain.bookmark.domain.repository.CmaBookmarkRepository;
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
 import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.product.domain.FinancialProduct;
@@ -33,6 +35,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     private final FinancialProductRepository financialProductRepository;
     private final FinancialProductOptionRepository financialProductOptionRepository;
     private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
+    private final CmaBookmarkRepository cmaBookmarkRepository;
     private final CmaRepository cmaRepository;
 
     @Override
@@ -56,8 +59,9 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         FinancialProduct deposit = financialProductRepository.findById(depositId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
-        Optional<FinancialProductBookmark> bookmark = financialProductBookmarkRepository
-                .findByUserAndFinancialProduct(userPrincipal.getUser(), deposit);
+        Optional<FinancialProductBookmark> bookmark = Optional.empty();
+        if (userPrincipal != null)
+            bookmark = financialProductBookmarkRepository.findByUserAndFinancialProduct(userPrincipal.getUser(), deposit);
 
         if (!deposit.getFinancialProductType().equals(FinancialProductType.DEPOSIT))
             throw new ProductTypeMismatchException();
@@ -81,8 +85,9 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         FinancialProduct saving = financialProductRepository.findById(savingId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
-        Optional<FinancialProductBookmark> bookmark = financialProductBookmarkRepository
-                .findByUserAndFinancialProduct(userPrincipal.getUser(), saving);
+        Optional<FinancialProductBookmark> bookmark = Optional.empty();
+        if (userPrincipal != null)
+            bookmark = financialProductBookmarkRepository.findByUserAndFinancialProduct(userPrincipal.getUser(), saving);
 
         if (!saving.getFinancialProductType().equals(FinancialProductType.SAVING))
             throw new ProductTypeMismatchException();
@@ -108,7 +113,10 @@ public class FinancialProductServiceImpl implements FinancialProductService {
 
     @Override
     public Page<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable) {
-        return financialProductRepository.findCmaProducts(cmaSearchCondition, pageable, userPrincipal.getId());
+        if (userPrincipal != null) {
+            return financialProductRepository.findCmaProductsWithAuthorization(cmaSearchCondition, pageable, userPrincipal.getId());
+        }
+        return financialProductRepository.findCmaProducts(cmaSearchCondition, pageable);
     }
 
     @Override
@@ -116,7 +124,11 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         CMA cma = cmaRepository.findById(cmaId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
-        return CmaDetailRes.toDto(cma);
+        Optional<CmaBookmark> bookmark = Optional.empty();
+        if (userPrincipal != null)
+            bookmark = cmaBookmarkRepository.findCmaBookmarkByCmaAndUser(cma, userPrincipal.getUser());
+
+        return CmaDetailRes.toDto(cma, bookmark);
     }
 
 }
