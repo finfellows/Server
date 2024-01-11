@@ -24,7 +24,7 @@ public class OpenApiConfig {
     public OpenAPI openAPI(@Value("OpenAPI") String appVersion) {
         Server prodServer = new Server();
         Server localServer = new Server();
-        prodServer.setUrl("https://api.finfellows.com");
+        prodServer.setUrl("https://api.finfellows.co.kr");
         localServer.setUrl("http://localhost:8080");
         Info info = new Info().title("FinFellow API").version(appVersion)
                 .description("FinFellow 웹 애플리케이션 API입니다.")
