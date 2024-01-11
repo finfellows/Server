@@ -151,7 +151,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     }
 
     @Override
-    public Page<SearchCmaRes> findCmaProducts(CmaSearchCondition cmaSearchCondition, Pageable pageable, Long userId) {
+    public Page<SearchCmaRes> findCmaProducts(CmaSearchCondition cmaSearchCondition, Pageable pageable) {
         List<SearchCmaRes> results = queryFactory
                 .select(new QSearchCmaRes(
                         cMA.id,
