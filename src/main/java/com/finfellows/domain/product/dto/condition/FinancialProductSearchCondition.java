@@ -15,4 +15,7 @@ public class FinancialProductSearchCondition {
     @Schema(type = "string", example = "누구나 가입", description = "금융 상품 상품 유형입니다.")
     private String type;
 
+    @Schema(type = "string", example = "은행 이름", description = "은행 이름입니다.")
+    private String bankName;
+
 }

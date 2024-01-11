@@ -24,7 +24,10 @@ public class PolicyInfoServiceImpl implements PolicyInfoService {
 
     @Override
     public Page<SearchPolicyInfoRes> findPolicyInfos(UserPrincipal userPrincipal, String searchKeyword, Pageable pageable) {
-        return policyInfoRepository.findPolicyInfos(searchKeyword, pageable, userPrincipal.getId());
+        if (userPrincipal != null) {
+            return policyInfoRepository.findPolicyInfosWithAuthorization(searchKeyword, pageable, userPrincipal.getId());
+        }
+        return policyInfoRepository.findPolicyInfos(searchKeyword, pageable);
     }
 
     @Override
