@@ -200,7 +200,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
     private BooleanExpression typeEq(String type) {
         if (type == null) return null;
-        if (type.equals("누구나 가능")) {
+        if (type.equals("누구나 가입")) {
             String[] keywords = {
                     "제한없음", "실명의 개인", "개인(개인사업자 포함)", "만 14세 이상 개인고객",
                     "만 17세 이상 실명의 개인 및 개인사업자", "실명의 개인 또는 개인사업자 (1인 다계좌 가입 가능함)",
@@ -209,15 +209,15 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     "만 19세 이상 실명의 개인고객 (1인 1계좌 한정)", "실명의 개인, 법인", "인터넷뱅킹, 스마트폰뱅킹 전용"
             };
 
-            BooleanExpression expression = financialProductOption.financialProduct.joinWay.contains(type);
+            BooleanExpression expression = financialProductOption.financialProduct.joinMember.contains(type);
 
             for (String keyword : keywords) {
-                expression = expression.or(financialProductOption.financialProduct.joinWay.contains(keyword));
+                expression = expression.or(financialProductOption.financialProduct.joinMember.contains(keyword));
             }
 
             return expression;
         }
-        return financialProductOption.financialProduct.joinWay.contains(type);
+        return financialProductOption.financialProduct.joinMember.contains(type);
     }
 
     private BooleanExpression bankNameEq(String bankName) {
