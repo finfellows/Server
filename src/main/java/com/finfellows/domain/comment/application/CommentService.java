@@ -7,11 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.finfellows.domain.chatgpt.domain.ChatGptMessage;
-import com.finfellows.domain.chatgpt.application.ChatGptService;
 import com.finfellows.domain.chatgpt.config.ChatgptConfig;
-import com.finfellows.domain.chatgpt.dto.request.ChatgptQuestionRequest;
 import com.finfellows.domain.chatgpt.dto.request.ChatgptRequest;
-import com.finfellows.domain.chatgpt.dto.response.ChatgptResponse;
 import com.finfellows.domain.comment.domain.Comment;
 import com.finfellows.domain.comment.domain.repository.CommentRepository;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
@@ -34,7 +31,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
     private final UserRepository userRepository;
-    private final ChatGptService chatGptService;
     private final CommentRepository commentRepository;
 
     @Autowired
@@ -56,44 +52,74 @@ public class CommentService {
     }
 
     // gpt 단답
-    public ChatgptResponse getResponse(HttpEntity<ChatgptRequest> chatGptRequestHttpEntity) {
+    public String getResponse(HttpEntity<ChatgptRequest> chatGptRequestHttpEntity) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(60000);
-        //답변이 길어질 경우 TimeOut Error가 발생하니 1분정도 설정해줍니다.
-        requestFactory.setReadTimeout(60 * 1000);   //  1min = 60 sec * 1,000ms
+        requestFactory.setReadTimeout(60 * 1000);
         restTemplate.setRequestFactory(requestFactory);
 
-        ResponseEntity<ChatgptResponse> responseEntity = restTemplate.postForEntity(
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 ChatgptConfig.CHAT_URL,
                 chatGptRequestHttpEntity,
-                ChatgptResponse.class);
+                String.class);
 
-        return responseEntity.getBody();
+        String responseBody = responseEntity.getBody();
+
+        return responseBody;
     }
 
-    // gpt 단답
-    public ChatgptResponse askQuestion(ChatgptQuestionRequest questionRequest) {
-        List<ChatGptMessage> messages = new ArrayList<>();
-        messages.add(ChatGptMessage.builder()
-                .role(ChatgptConfig.ROLE)
-                .content(questionRequest.getQuestion())
-                .build());
-        return this.getResponse(
-                this.buildHttpEntity(
-                        new ChatgptRequest(
-                                ChatgptConfig.CHAT_MODEL,
-                                ChatgptConfig.MAX_TOKEN,
-                                ChatgptConfig.TEMPERATURE,
-                                ChatgptConfig.STREAM_FALSE,
-                                messages
-                        )
-                )
-        );
+    public String getChatResponse(String question) {
+        try {
+            String prompt_guide=
+                    "너는 지금 청년들의 금융 지식을 향상시켜주기 위한 챗봇이야. 너의 이름은 '금토리'야. 너는 캐릭터의 역할이기 때문에 텍스트 형식으로 답변을 해야 해. 언어는 한국어로 말해야 하고, 말투는 친구한테 말하는 것처럼 반발로 해." +
+                            "그리고 금융에 관련된 답변만 해야 하고, 만약 금융과 관련이 없는 질문이면 '미안해. 금융과 관련되지 않은 질문은 답변해줄 수 없어.'라고 말하면 돼. " +
+                            "질문은 다음과 같아. 실제로 사용자와 대화하듯이 말해야 하고, 바로 질문에 대한 답을 해. 상식적으로 알 수도 있다는 말은 하지 마." +
+                            "'네'라는 대답은 하지마. 인사말도 하지 마. 그리고 최대한 자세하게 답변해. 다시 한 번 말하지만, 반말로 말해. 그리고 문장은 끝까지 완전한 형태로 말 해";
+            question=prompt_guide.concat(question);
+
+            List<ChatGptMessage> messages = new ArrayList<>();
+            messages.add(ChatGptMessage.builder()
+                    .role(ChatgptConfig.ROLE)
+                    .content(question)
+                    .build());
+
+            ChatgptRequest chatRequest = ChatgptRequest.builder()
+                    .model(ChatgptConfig.CHAT_MODEL)
+                    .maxTokens(ChatgptConfig.MAX_TOKEN)
+                    .temperature(ChatgptConfig.TEMPERATURE)
+                    .stream(ChatgptConfig.STREAM_FALSE)
+                    .messages(messages)
+                    .build();
+
+            HttpEntity<ChatgptRequest> httpEntity = buildHttpEntity(chatRequest);
+
+            String response = getResponse(httpEntity);
+
+            // 여기에서 필요에 따라 response를 가공하거나 사용할 수 있습니다.
+            String content = extractContentFromJson(response);
+            return content;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "request error";
+        }
     }
 
-    public String getChatResponse(String question){
-        String responseFromGPT=chatGptService.getChatResponse(question);
-        return responseFromGPT;
+    // JSON에서 "content" 부분 추출하는 메소드
+    private String extractContentFromJson(String jsonResponse) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+            if (jsonNode.has("choices") && jsonNode.get("choices").isArray()) {
+                JsonNode firstChoice = jsonNode.get("choices").get(0);
+                if (firstChoice.has("message") && firstChoice.get("message").has("content")) {
+                    return firstChoice.get("message").get("content").asText();
+                }
+            }
+        } catch (JsonProcessingException e) {
+            System.out.println("JSON 파싱 실패");
+        }
+        return jsonResponse;
     }
 
     public void saveComment(Long userId, String question, String answer) {
@@ -118,8 +144,8 @@ public class CommentService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(json);
-            if (jsonNode.has("prompt")) {
-                return jsonNode.get("prompt").asText();
+            if (jsonNode.has("question")) {
+                return jsonNode.get("question").asText();
             }
         } catch (JsonProcessingException e) {
             System.out.print("텍스트 변환 실패");
