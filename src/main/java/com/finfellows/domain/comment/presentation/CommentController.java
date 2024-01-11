@@ -1,9 +1,7 @@
 package com.finfellows.domain.comment.presentation;
 
-import com.finfellows.domain.chatgpt.application.ChatGptService;
 import com.finfellows.domain.comment.application.CommentService;
 import com.finfellows.domain.comment.dto.response.CommentResponse;
-import com.finfellows.domain.user.application.UserService;
 import com.finfellows.global.config.security.token.CurrentUser;
 import com.finfellows.global.config.security.token.UserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,15 +24,13 @@ import java.util.List;
 @Tag(name="Chatbot",description = "Chatbot API")
 public class CommentController {
     private CommentService commentService;
-    private ChatGptService chatGptService;
-    private UserService userService;
+    //private UserService userService;
 
 
     @Autowired
-    public CommentController(CommentService commentService, ChatGptService chatGptService, UserService userService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.chatGptService = chatGptService;
-        this.userService = userService;
+        //this.userService = userService;
     }
 
     @Operation(summary = "챗봇 질의응답 저장", description = "챗봇 질문과 답변을 저장합니다.")
