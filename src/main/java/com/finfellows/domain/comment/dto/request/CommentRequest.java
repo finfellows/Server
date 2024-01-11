@@ -13,10 +13,5 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRequest {
-    private Long commentId;
-    private LocalDateTime created_at;
-    private String greeting;
     private String question;
-    private String answer;
-    private Long userId;
 }
