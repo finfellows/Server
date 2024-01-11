@@ -217,7 +217,10 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
             return expression;
         }
-        return financialProductOption.financialProduct.joinMember.contains(type);
+        return financialProductOption.financialProduct.joinMember.contains(type)
+                .or(financialProductOption.financialProduct.productName.contains(type))
+                .or(financialProductOption.financialProduct.specialCondition.contains(type))
+                .or(financialProductOption.financialProduct.etcNote.contains(type));
     }
 
     private BooleanExpression bankNameEq(String bankName) {
