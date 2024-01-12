@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EduContentRequest {
-    private Long id;
     private LocalDateTime created_at;
     private String title;
     private String content;
