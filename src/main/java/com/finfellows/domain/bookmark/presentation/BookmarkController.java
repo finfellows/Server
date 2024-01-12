@@ -153,5 +153,17 @@ public class BookmarkController {
 //            return ResponseCustom.OK(new Message("All bookmarks deleted successfully."));
 //    }
 
+//        @Operation(summary = "금융, 고마워 북마크 삭제", description = "Deletes all policyInfos.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "All bookmarks deleted successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+//            @ApiResponse(responseCode = "500", description = "Internal server error", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+//    })
+//    @DeleteMapping("/allPolicyInfos")
+//    public ResponseCustom<?> deleteAllBookmarks2() {
+//            bookmarkCleanupService.deleteAllBookmarksPolicyInfo();
+//            return ResponseCustom.OK(new Message("All bookmarks deleted successfully."));
+//    }
+
+
 
 }
