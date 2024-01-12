@@ -26,11 +26,12 @@ public class SavingDetailRes {
     private String joinMember;
     private String etcNote;
 
-    public static SavingDetailRes toDto(Optional<FinancialProductBookmark> bookmark, FinancialProduct deposit, FinancialProductOption depositOption, List<Integer> terms) {
+    public static SavingDetailRes toDto(Optional<FinancialProductBookmark> bookmark, String bankLogoUrl, FinancialProduct deposit, FinancialProductOption depositOption, List<Integer> terms) {
         return SavingDetailRes.builder()
                 .isLiked(bookmark.isPresent())
                 .productName(deposit.getProductName())
                 .bankName(deposit.getCompanyName())
+                .bankLogoUrl(bankLogoUrl)
                 .maxInterestRate(depositOption.getMaximumPreferredInterestRate())
                 .interestRate(depositOption.getInterestRate())
                 .savingTerms(terms)

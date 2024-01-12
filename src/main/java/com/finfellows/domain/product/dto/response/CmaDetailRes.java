@@ -26,12 +26,13 @@ public class CmaDetailRes {
     private String etcNote;
     private String productUrl;
 
-    public static CmaDetailRes toDto(final CMA cma, final Optional<CmaBookmark> bookmark) {
+    public static CmaDetailRes toDto(final CMA cma, final Optional<CmaBookmark> bookmark, String bankLogoUrl) {
         return CmaDetailRes.builder()
                 .isLiked(bookmark.isPresent())
                 .productName(cma.getProductName())
                 .cmaType(cma.getCmaType())
                 .bankName(cma.getCompanyName())
+                .bankLogoUrl(bankLogoUrl)
                 .maturityInterestRate(cma.getMaturityInterestRate())
                 .specialCondition(cma.getSpecialCondition())
                 .joinWay(cma.getJoinWay())

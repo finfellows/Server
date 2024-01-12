@@ -59,6 +59,8 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         FinancialProduct deposit = financialProductRepository.findById(depositId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
+        Bank bank = bankRepository.findByBankName(deposit.getCompanyName());
+
         Optional<FinancialProductBookmark> bookmark = Optional.empty();
         if (userPrincipal != null)
             bookmark = financialProductBookmarkRepository.findByUserAndFinancialProduct(userPrincipal.getUser(), deposit);
@@ -77,13 +79,15 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
                 .orElse(null);
 
-        return DepositDetailRes.toDto(bookmark, deposit, maxOption, terms);
+        return DepositDetailRes.toDto(bookmark, bank.getBankUrl(), deposit, maxOption, terms);
     }
 
     @Override
     public SavingDetailRes getSavingDetail(final UserPrincipal userPrincipal, final Long savingId) {
         FinancialProduct saving = financialProductRepository.findById(savingId)
                 .orElseThrow(InvalidFinancialProductException::new);
+
+        Bank bank = bankRepository.findByBankName(saving.getCompanyName());
 
         Optional<FinancialProductBookmark> bookmark = Optional.empty();
         if (userPrincipal != null)
@@ -103,7 +107,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
                 .orElse(null);
 
-        return SavingDetailRes.toDto(bookmark, saving, maxOption, terms);
+        return SavingDetailRes.toDto(bookmark, bank.getBankUrl(), saving, maxOption, terms);
     }
 
     @Override
@@ -124,11 +128,13 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         CMA cma = cmaRepository.findById(cmaId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
+        Bank bank = bankRepository.findByBankName(cma.getCompanyName());
+
         Optional<CmaBookmark> bookmark = Optional.empty();
         if (userPrincipal != null)
             bookmark = cmaBookmarkRepository.findCmaBookmarkByCmaAndUser(cma, userPrincipal.getUser());
 
-        return CmaDetailRes.toDto(cma, bookmark);
+        return CmaDetailRes.toDto(cma, bookmark, bank.getBankUrl());
     }
 
     @Override
