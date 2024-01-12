@@ -4,25 +4,27 @@ import com.finfellows.domain.bookmark.domain.CmaBookmark;
 import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.bookmark.domain.repository.CmaBookmarkRepository;
 import com.finfellows.domain.bookmark.domain.repository.FinancialProductBookmarkRepository;
-import com.finfellows.domain.product.domain.CMA;
-import com.finfellows.domain.product.domain.FinancialProduct;
-import com.finfellows.domain.product.domain.FinancialProductOption;
-import com.finfellows.domain.product.domain.FinancialProductType;
+import com.finfellows.domain.product.domain.*;
+import com.finfellows.domain.product.domain.repository.BankRepository;
 import com.finfellows.domain.product.domain.repository.CmaRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductOptionRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
 import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
+import com.finfellows.domain.product.dto.request.BankUploadReq;
 import com.finfellows.domain.product.dto.response.*;
 import com.finfellows.domain.product.exception.InvalidFinancialProductException;
 import com.finfellows.domain.product.exception.ProductTypeMismatchException;
 import com.finfellows.global.config.security.token.UserPrincipal;
+import com.finfellows.global.infrastructure.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,9 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
     private final CmaBookmarkRepository cmaBookmarkRepository;
     private final CmaRepository cmaRepository;
+    private final BankRepository bankRepository;
+
+    private final S3Uploader s3Uploader;
 
     @Override
     public Page<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
@@ -129,6 +134,22 @@ public class FinancialProductServiceImpl implements FinancialProductService {
             bookmark = cmaBookmarkRepository.findCmaBookmarkByCmaAndUser(cma, userPrincipal.getUser());
 
         return CmaDetailRes.toDto(cma, bookmark);
+    }
+
+    @Override
+    @Transactional
+    public Void bankUpload(BankUploadReq bankUploadReq, String bankLogoImg) {
+            Bank bank = Bank.builder()
+                    .bankName(bankUploadReq.getKor_co_nm())
+                    .bankCode(bankUploadReq.getFin_co_no())
+                    .bankLogoUrl(bankLogoImg)
+                    .bankUrl(bankUploadReq.getHomp_url())
+                    .bankTel(bankUploadReq.getCal_tel())
+                    .build();
+
+            bankRepository.save(bank);
+
+        return null;
     }
 
 }
