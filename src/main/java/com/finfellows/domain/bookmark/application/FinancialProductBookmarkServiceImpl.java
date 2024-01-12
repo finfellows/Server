@@ -53,6 +53,12 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
                 .financialProduct(financialProduct)
                 .build();
 
+        if (financialProductBookmarkRepository.findByUserAndFinancialProduct(user, financialProduct).isPresent()) {
+            return Message.builder()
+                    .message("이미 즐겨찾기에 추가되었습니다.")
+                    .build();
+        }
+
         financialProductBookmarkRepository.save(financialProductBookmark);
 
         return Message.builder()
@@ -112,6 +118,14 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
                 .user(user)
                 .cma(cma)
                 .build();
+
+
+        if (cmaBookmarkRepository.findByUserAndCma(user, cma).isPresent()) {
+            return Message.builder()
+                    .message("이미 즐겨찾기에 추가되었습니다.")
+                    .build();
+        }
+
 
         cmaBookmarkRepository.save(cmaBookmark);
 
