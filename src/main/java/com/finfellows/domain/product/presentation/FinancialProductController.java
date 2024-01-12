@@ -37,7 +37,7 @@ public class FinancialProductController {
 
     @Operation(summary = "은행 리스트 조회", description = "은행 리스트를 조건에 따라 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "은행 리스트 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))}),
+            @ApiResponse(responseCode = "200", description = "은행 리스트 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SearchBankRes.class)))}),
             @ApiResponse(responseCode = "400", description = "은행 리스트 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/bank")
