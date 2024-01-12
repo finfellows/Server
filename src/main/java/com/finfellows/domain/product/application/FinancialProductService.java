@@ -18,7 +18,7 @@ public interface FinancialProductService {
     Page<SearchFinancialProductRes> findSavingProducts(UserPrincipal userPrincipal, FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable);
     DepositDetailRes getDepositDetail(UserPrincipal userPrincipal, Long depositId);
     SavingDetailRes getSavingDetail(UserPrincipal userPrincipal, Long savingId);
-    List<String> findBanks(String bankType);
+    List<SearchBankRes> findBanks(String[] bankType);
     Page<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable);
     CmaDetailRes getCmaDetail(UserPrincipal userPrincipal, Long cmaId);
     Void bankUpload(BankUploadReq bankUploadReq, String bankLogoImg) throws IOException;

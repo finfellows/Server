@@ -41,8 +41,8 @@ public class FinancialProductController {
             @ApiResponse(responseCode = "400", description = "은행 리스트 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/bank")
-    public ResponseCustom<List<String>> findBanks(
-            @Parameter(description = "1금융권(020000), 저축은행(030300)", required = true) @RequestParam String bankGroupNo
+    public ResponseCustom<List<SearchBankRes>> findBanks(
+            @Parameter(description = "1금융권(020000), 저축은행(030300)", required = true) @RequestParam String[] bankGroupNo
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findBanks(bankGroupNo));
     }

@@ -18,6 +18,7 @@ public class CmaDetailRes {
     private String productName;
     private String cmaType;
     private String bankName;
+    private String bankLogoUrl;
     private String maturityInterestRate;
     private String specialCondition;
     private String joinWay;

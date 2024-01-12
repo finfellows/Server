@@ -59,9 +59,6 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-
-	//S3
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.500'
 }
 
 tasks.named('test') {

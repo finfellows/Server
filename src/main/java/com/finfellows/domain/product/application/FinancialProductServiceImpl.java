@@ -16,15 +16,12 @@ import com.finfellows.domain.product.dto.response.*;
 import com.finfellows.domain.product.exception.InvalidFinancialProductException;
 import com.finfellows.domain.product.exception.ProductTypeMismatchException;
 import com.finfellows.global.config.security.token.UserPrincipal;
-import com.finfellows.global.infrastructure.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +37,6 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     private final CmaBookmarkRepository cmaBookmarkRepository;
     private final CmaRepository cmaRepository;
     private final BankRepository bankRepository;
-
-    private final S3Uploader s3Uploader;
 
     @Override
     public Page<SearchFinancialProductRes> findDepositProducts(final UserPrincipal userPrincipal, final FinancialProductSearchCondition financialProductSearchCondition, final Pageable pageable) {
@@ -112,7 +107,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
     }
 
     @Override
-    public List<String> findBanks(final String bankGroupNo) {
+    public List<SearchBankRes> findBanks(final String[] bankGroupNo) {
         return financialProductRepository.findBanks(bankGroupNo);
     }
 

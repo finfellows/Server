@@ -18,6 +18,7 @@ public class SavingDetailRes {
     private Boolean isLiked;
     private String productName;
     private String bankName;
+    private String bankLogoUrl;
     private String maxInterestRate;
     private String interestRate;
     private List<Integer> savingTerms;

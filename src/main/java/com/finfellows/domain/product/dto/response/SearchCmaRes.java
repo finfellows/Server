@@ -10,14 +10,16 @@ public class SearchCmaRes {
     private Boolean isLiked;
     private String productName;
     private String bankName;
+    private String bankLogoUrl;
     private String maturityInterestRate;
 
     @QueryProjection
-    public SearchCmaRes(Long id, Boolean isLiked, String productName, String bankName, String maturityInterestRate) {
+    public SearchCmaRes(Long id, Boolean isLiked, String productName, String bankName, String bankLogoUrl, String maturityInterestRate) {
         this.id = id;
         this.isLiked = isLiked;
         this.productName = productName;
         this.bankName = bankName;
+        this.bankLogoUrl = bankLogoUrl;
         this.maturityInterestRate = maturityInterestRate;
     }
 
