@@ -15,4 +15,6 @@ public interface CmaBookmarkRepository extends JpaRepository<CmaBookmark, Long> 
 
     @Query("SELECT bm FROM CmaBookmark bm WHERE bm.user = :user AND bm.cma = :cma")
     Optional<CmaBookmark> findByUserAndCma(@Param("user") User user, @Param("cma") CMA cma);
+
+    Optional<CmaBookmark> findCmaBookmarkByCmaAndUser(CMA cma, User user);
 }
