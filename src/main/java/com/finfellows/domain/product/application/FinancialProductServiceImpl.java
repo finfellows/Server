@@ -153,4 +153,20 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         return null;
     }
 
+    @Override
+    @Transactional
+    public Void bankUpload(BankUploadReq bankUploadReq, String bankLogoImg) {
+            Bank bank = Bank.builder()
+                    .bankName(bankUploadReq.getKor_co_nm())
+                    .bankCode(bankUploadReq.getFin_co_no())
+                    .bankLogoUrl(bankLogoImg)
+                    .bankUrl(bankUploadReq.getHomp_url())
+                    .bankTel(bankUploadReq.getCal_tel())
+                    .build();
+
+            bankRepository.save(bank);
+
+        return null;
+    }
+
 }
