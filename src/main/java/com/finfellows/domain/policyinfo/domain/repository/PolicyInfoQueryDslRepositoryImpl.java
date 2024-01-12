@@ -7,6 +7,7 @@ import com.finfellows.domain.policyinfo.dto.QPolicyInfoDetailRes;
 import com.finfellows.domain.policyinfo.dto.QSearchPolicyInfoRes;
 import com.finfellows.domain.policyinfo.dto.SearchPolicyInfoRes;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class PolicyInfoQueryDslRepositoryImpl implements PolicyInfoQueryDslRepos
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<SearchPolicyInfoRes> findPolicyInfos(String searchKeyword, Pageable pageable, Long userId) {
+    public Page<SearchPolicyInfoRes> findPolicyInfosWithAuthorization(String searchKeyword, Pageable pageable, Long userId) {
         QPolicyInfoBookmark policyInfoBookmark = QPolicyInfoBookmark.policyInfoBookmark;
 
         List<SearchPolicyInfoRes> results = queryFactory
@@ -39,6 +40,34 @@ public class PolicyInfoQueryDslRepositoryImpl implements PolicyInfoQueryDslRepos
                 .from(policyInfo)
                 .leftJoin(policyInfoBookmark)
                 .on(policyInfoBookmark.policyInfo.eq(policyInfo).and(policyInfoBookmark.user.id.eq(userId)))
+                .where(
+                        searchEq(searchKeyword)
+                )
+                .orderBy(policyInfo.polyBizSjNm.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(policyInfo.count())
+                .from(policyInfo)
+                .where(
+                        searchEq(searchKeyword)
+                );
+
+        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchCount);
+    }
+
+    @Override
+    public Page<SearchPolicyInfoRes> findPolicyInfos(String searchKeyword, Pageable pageable) {
+        List<SearchPolicyInfoRes> results = queryFactory
+                .select(new QSearchPolicyInfoRes(
+                        policyInfo.id,
+                        policyInfo.polyBizSjNm,
+                        policyInfo.polyItcnCn,
+                        Expressions.constant(false)
+                ))
+                .from(policyInfo)
                 .where(
                         searchEq(searchKeyword)
                 )

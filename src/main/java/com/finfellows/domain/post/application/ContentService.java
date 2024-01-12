@@ -8,6 +8,9 @@ import com.finfellows.domain.post.dto.request.ContentRequest;
 import com.finfellows.domain.post.dto.response.ContentResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +25,7 @@ public class ContentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Content createContent(ContentResponse request) {
+    public Content createContent(ContentRequest request) {
         Post post = new Post();
         postRepository.save(post);
 
@@ -38,9 +41,9 @@ public class ContentService {
         return savedContent;
     }
 
-    public List<ContentResponse> getAllContents() {
-        List<Content> contents = contentRepository.findAll();
-        return contents.stream()
+    public Page<ContentResponse> getAllContents(Pageable pageable) {
+        Page<Content> contentsPage=contentRepository.findAll(pageable);
+        List<ContentResponse> contentsResponses = contentsPage.getContent().stream()
                 .map(content -> ContentResponse.builder()
                         .id(content.getId())
                         .created_at(content.getPost_id().getCreatedAt()) // 수정된 부분
@@ -48,6 +51,8 @@ public class ContentService {
                         .content(content.getContent())
                         .build())
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(contentsResponses, pageable, contentsPage.getTotalElements());
     }
 
     public ContentResponse getContent(Long id) {

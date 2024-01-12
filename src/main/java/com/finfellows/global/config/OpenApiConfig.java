@@ -1,5 +1,6 @@
 package com.finfellows.global.config;
 
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
+import java.util.List;
+
 @Configuration
 public class OpenApiConfig {
 
@@ -19,6 +22,10 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI(@Value("OpenAPI") String appVersion) {
+        Server prodServer = new Server();
+        Server localServer = new Server();
+        prodServer.setUrl("https://api.finfellows.co.kr");
+        localServer.setUrl("http://localhost:8080");
         Info info = new Info().title("FinFellow API").version(appVersion)
                 .description("FinFellow 웹 애플리케이션 API입니다.")
                 .termsOfService("http://swagger.io/terms/")
@@ -38,7 +45,8 @@ public class OpenApiConfig {
                                                 .bearerFormat("JWT")
                                 )
                 )
-                .info(info);
+                .info(info)
+                .servers(List.of(prodServer, localServer));
     }
 
 }

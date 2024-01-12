@@ -15,4 +15,6 @@ public interface EduContentBookmarkRepository extends JpaRepository<EduContentBo
     List<EduContentBookmark> findAllByUser(User user);
 
     boolean existsByUser_IdAndEduContent_Id(Long userId, Long id);
+
 }
+

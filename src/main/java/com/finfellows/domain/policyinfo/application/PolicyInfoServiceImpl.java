@@ -8,7 +8,6 @@ import com.finfellows.domain.policyinfo.dto.PolicyUpdateReq;
 import com.finfellows.domain.policyinfo.dto.SearchPolicyInfoRes;
 import com.finfellows.domain.policyinfo.exception.InvalidPolicyInfoException;
 import com.finfellows.global.config.security.token.UserPrincipal;
-import com.finfellows.global.payload.PagedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +23,11 @@ public class PolicyInfoServiceImpl implements PolicyInfoService {
     private final PolicyInfoRepository policyInfoRepository;
 
     @Override
-    public PagedResponse<SearchPolicyInfoRes> findPolicyInfos(UserPrincipal userPrincipal, String searchKeyword, Pageable pageable) {
-        Page<SearchPolicyInfoRes> policyInfos = policyInfoRepository.findPolicyInfos(searchKeyword, pageable, userPrincipal.getId());
-
-        return new PagedResponse<>(policyInfos);
+    public Page<SearchPolicyInfoRes> findPolicyInfos(UserPrincipal userPrincipal, String searchKeyword, Pageable pageable) {
+        if (userPrincipal != null) {
+            return policyInfoRepository.findPolicyInfosWithAuthorization(searchKeyword, pageable, userPrincipal.getId());
+        }
+        return policyInfoRepository.findPolicyInfos(searchKeyword, pageable);
     }
 
     @Override
