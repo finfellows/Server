@@ -79,7 +79,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
                 .orElse(null);
 
-        return DepositDetailRes.toDto(bookmark, bank.getBankUrl(), deposit, maxOption, terms);
+        return DepositDetailRes.toDto(bookmark, bank.getBankLogoUrl(), bank.getBankUrl(), deposit, maxOption, terms);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
                 .orElse(null);
 
-        return SavingDetailRes.toDto(bookmark, bank.getBankUrl(), saving, maxOption, terms);
+        return SavingDetailRes.toDto(bookmark, bank.getBankLogoUrl(), bank.getBankUrl(), saving, maxOption, terms);
     }
 
     @Override
@@ -134,21 +134,21 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         if (userPrincipal != null)
             bookmark = cmaBookmarkRepository.findCmaBookmarkByCmaAndUser(cma, userPrincipal.getUser());
 
-        return CmaDetailRes.toDto(cma, bookmark, bank.getBankUrl());
+        return CmaDetailRes.toDto(cma, bookmark, bank.getBankLogoUrl(), bank.getBankUrl());
     }
 
     @Override
     @Transactional
     public Void bankUpload(BankUploadReq bankUploadReq, String bankLogoImg) {
-            Bank bank = Bank.builder()
-                    .bankName(bankUploadReq.getKor_co_nm())
-                    .bankCode(bankUploadReq.getFin_co_no())
-                    .bankLogoUrl(bankLogoImg)
-                    .bankUrl(bankUploadReq.getHomp_url())
-                    .bankTel(bankUploadReq.getCal_tel())
-                    .build();
+        Bank bank = Bank.builder()
+                .bankName(bankUploadReq.getKor_co_nm())
+                .bankCode(bankUploadReq.getFin_co_no())
+                .bankLogoUrl(bankLogoImg)
+                .bankUrl(bankUploadReq.getHomp_url())
+                .bankTel(bankUploadReq.getCal_tel())
+                .build();
 
-            bankRepository.save(bank);
+        bankRepository.save(bank);
 
         return null;
     }

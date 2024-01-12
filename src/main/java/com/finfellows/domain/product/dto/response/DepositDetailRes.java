@@ -19,6 +19,7 @@ public class DepositDetailRes {
     private String productName;
     private String bankName;
     private String bankLogoUrl;
+    private String bankHomepageUrl;
     private String maxInterestRate;
     private String interestRate;
     private List<Integer> savingTerms;
@@ -26,12 +27,13 @@ public class DepositDetailRes {
     private String joinMember;
     private String etcNote;
 
-    public static DepositDetailRes toDto(Optional<FinancialProductBookmark> bookmark, String bankLogoUrl, FinancialProduct deposit, FinancialProductOption depositOption, List<Integer> terms) {
+    public static DepositDetailRes toDto(Optional<FinancialProductBookmark> bookmark, String bankLogoUrl, String bankHomepageUrl, FinancialProduct deposit, FinancialProductOption depositOption, List<Integer> terms) {
         return DepositDetailRes.builder()
                 .isLiked(bookmark.isPresent())
                 .productName(deposit.getProductName())
                 .bankName(deposit.getCompanyName())
                 .bankLogoUrl(bankLogoUrl)
+                .bankHomepageUrl(bankHomepageUrl)
                 .maxInterestRate(depositOption.getMaximumPreferredInterestRate())
                 .interestRate(depositOption.getInterestRate())
                 .savingTerms(terms)
