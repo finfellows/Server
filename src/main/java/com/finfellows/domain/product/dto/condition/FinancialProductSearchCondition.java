@@ -6,16 +6,16 @@ import lombok.Data;
 @Data
 public class FinancialProductSearchCondition {
 
-    @Schema(type = "string", example = "020000(1금융권), 030300(저축은행)", description = "은행 종류입니다.")
-    private String bankGroupNo;
+    @Schema(type = "array", implementation = String.class, example = "[\"020000\", \"030300\"]", description = "은행 종류입니다.")
+    private String[] bankGroupNos;
 
-    @Schema(type = "int", example = "6", description = "금융 상품 기간입니다.")
-    private Integer term;
+    @Schema(type = "array", implementation = Integer.class, example = "[6, 12]", description = "금융 상품 기간입니다.")
+    private Integer[] terms;
 
-    @Schema(type = "string", example = "누구나 가입", description = "금융 상품 상품 유형입니다.")
-    private String type;
+    @Schema(type = "array", implementation = String.class, example = "[\"누구나 가입\", \"특정 조건\"]", description = "금유 상품 유형입니다.")
+    private String[] types;
 
-    @Schema(type = "string", example = "은행 이름", description = "은행 이름입니다.")
-    private String bankName;
+    @Schema(type = "array", implementation = String.class, example = "[\"은행A\", \"은행B\"]", description = "은행 이름입니다.")
+    private String[] bankNames;
 
 }
