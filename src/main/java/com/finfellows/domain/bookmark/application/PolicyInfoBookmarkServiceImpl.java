@@ -38,6 +38,12 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
                 .policyInfo(policyInfo)
                 .build();
 
+        if (policyInfoBookmarkRepository.findByUserAndPolicyInfo(user, policyInfo).isPresent()) {
+            return Message.builder()
+                    .message("이미 즐겨찾기에 추가되었습니다.")
+                    .build();
+        }
+
         policyInfoBookmarkRepository.save(policyInfoBookmark);
 
 
@@ -67,7 +73,7 @@ public class PolicyInfoBookmarkServiceImpl implements BookmarkService {
 
     @Transactional
     public ResponseCustom<?> findBookmarks(UserPrincipal userPrincipal) {
-        User user = userRepository.findByEmail(userPrincipal.getEmail())
+        User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(RuntimeException::new);
 
         List<PolicyInfoBookmark> bookmarks = policyInfoBookmarkRepository.findAllByUser(user);

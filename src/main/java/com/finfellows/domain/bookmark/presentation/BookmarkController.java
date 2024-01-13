@@ -1,5 +1,6 @@
 package com.finfellows.domain.bookmark.presentation;
 
+import com.finfellows.domain.bookmark.application.BookmarkCleanupService;
 import com.finfellows.domain.bookmark.application.FinancialProductBookmarkServiceImpl;
 import com.finfellows.domain.bookmark.application.PolicyInfoBookmarkServiceImpl;
 import com.finfellows.domain.bookmark.application.PostBookmarkServiceImpl;
@@ -30,6 +31,9 @@ public class BookmarkController {
     private final FinancialProductBookmarkServiceImpl financialProductBookmarkService;
     private final PolicyInfoBookmarkServiceImpl policyInfoBookmarkService;
     private final PostBookmarkServiceImpl postBookmarkService;
+
+    private final BookmarkCleanupService bookmarkCleanupService;
+
 
 
     @Operation(summary = "금융, 고마워 북마크", description = "금융, 고마워(정책)를 북마크한다.")
@@ -136,5 +140,30 @@ public class BookmarkController {
     ) {
         return ResponseCustom.OK(financialProductBookmarkService.cmaDelete(userPrincipal, cmaId));
     }
+
+
+//    @Operation(summary = "모든 금융, 뭐하지 북마크 삭제", description = "Deletes all financial product and CMA bookmarks.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "All bookmarks deleted successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+//            @ApiResponse(responseCode = "500", description = "Internal server error", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+//    })
+//    @DeleteMapping("/all")
+//    public ResponseCustom<?> deleteAllBookmarks() {
+//            bookmarkCleanupService.deleteAllBookmarks();
+//            return ResponseCustom.OK(new Message("All bookmarks deleted successfully."));
+//    }
+
+//        @Operation(summary = "금융, 고마워 북마크 삭제", description = "Deletes all policyInfos.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "All bookmarks deleted successfully", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+//            @ApiResponse(responseCode = "500", description = "Internal server error", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+//    })
+//    @DeleteMapping("/allPolicyInfos")
+//    public ResponseCustom<?> deleteAllBookmarks2() {
+//            bookmarkCleanupService.deleteAllBookmarksPolicyInfo();
+//            return ResponseCustom.OK(new Message("All bookmarks deleted successfully."));
+//    }
+
+
 
 }

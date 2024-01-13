@@ -30,7 +30,7 @@ public class PostBookmarkServiceImpl {
     public Message insert(UserPrincipal userPrincipal, Long postId, ContentType contentType) {
         User user = userRepository.findById(userPrincipal.getId())
                 .orElseThrow(RuntimeException::new);
-        Post post = postRepository.findById(userPrincipal.getId())
+        Post post = postRepository.findById(postId)
                 .orElseThrow(RuntimeException::new);
 
 
@@ -39,6 +39,13 @@ public class PostBookmarkServiceImpl {
                 .post(post)
                 .contentType(contentType)
                 .build();
+
+
+        if (postBookmarkRepository.findByUserAndPost(user, post).isPresent()) {
+            return Message.builder()
+                    .message("이미 즐겨찾기에 추가되었습니다.")
+                    .build();
+        }
 
         postBookmarkRepository.save(postBookmark);
 

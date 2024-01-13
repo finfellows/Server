@@ -1,6 +1,7 @@
 
 package com.finfellows.domain.post.domain;
 
+import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.common.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Where(clause = "status = 'ACTIVE'")
-public class Content {
+public class Content extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
