@@ -14,13 +14,14 @@ import java.util.stream.Collectors;
 
 @Data
 public class PostBookmarkRes {
+    private Long postId;
     private String title;
     private String content;
     private ContentType contentType;
 
-
     @Builder
-    public PostBookmarkRes(String title, String content, ContentType contentType) {
+    public PostBookmarkRes(Long postId, String title, String content, ContentType contentType) {
+        this.postId = postId;
         this.title = title;
         this.content = content;
         this.contentType = contentType;
@@ -37,16 +38,18 @@ public class PostBookmarkRes {
 
             if (contentType == ContentType.EDU_CONTENT) {
                 for (EduContent eduContent : post.getEduContent()) {
+                    Long postId = eduContent.getId();
                     String title = eduContent.getTitle();
                     String content = eduContent.getContent();
-                    results.add(new PostBookmarkRes(title, content, contentType));
+                    results.add(new PostBookmarkRes(postId, title, content, contentType));
                 }
             }
             if (contentType == ContentType.NEWS_CONTENT) {
                 for (NewsContent newsContent : post.getNewsContent()) {
+                    Long postId = newsContent.getId();
                     String title = newsContent.getTitle();
                     String content = newsContent.getContent();
-                    results.add(new PostBookmarkRes(title, content, contentType));
+                    results.add(new PostBookmarkRes(postId, title, content, contentType));
                 }
             }
         }
