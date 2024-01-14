@@ -38,7 +38,7 @@ public class NewsContentController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "뉴스콘텐츠 전체 목록 조회", description = "뉴스콘텐츠 전체 목록을 조회합니다.")
+    @Operation(summary = "뉴스콘텐츠 전체 목록 조회", description = "뉴스콘텐츠 전체 목록을 조회합니다. 비로그인 시 북마크 여부는 null입니다.")
     @ApiResponse(responseCode = "200", description = "뉴스콘텐츠 목록 조회 성공", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = NewsContentResponse.class)))
     })
