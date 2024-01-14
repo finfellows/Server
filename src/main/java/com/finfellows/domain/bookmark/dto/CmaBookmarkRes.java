@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class CmaBookmarkRes {
+    private Long cmaId;
     private String companyName;
     private String productName;
     private String cmaType;
@@ -17,7 +18,8 @@ public class CmaBookmarkRes {
 
 
     @Builder
-    public CmaBookmarkRes(String companyName, String productName, String cmaType, String maturityInterestRate, String specialCondition) {
+    public CmaBookmarkRes(Long cmaId, String companyName, String productName, String cmaType, String maturityInterestRate, String specialCondition) {
+        this.cmaId = cmaId;
         this.companyName = companyName;
         this.productName = productName;
         this.cmaType = cmaType;
@@ -30,6 +32,7 @@ public class CmaBookmarkRes {
     public static List<CmaBookmarkRes> toDto(List<CmaBookmark> cmaBookmarks) {
         return cmaBookmarks.stream()
                 .map(bookmark -> CmaBookmarkRes.builder()
+                        .cmaId(bookmark.getCma().getId())
                         .cmaType(bookmark.getCma().getCmaType())
                         .productName(bookmark.getCma().getProductName())
                         .companyName(bookmark.getCma().getCompanyName())
