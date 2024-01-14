@@ -2,15 +2,12 @@ package com.finfellows.domain.product.domain.repository;
 
 import com.finfellows.domain.bookmark.domain.QCmaBookmark;
 import com.finfellows.domain.bookmark.domain.QFinancialProductBookmark;
-import com.finfellows.domain.product.domain.CmaType;
-import com.finfellows.domain.product.domain.FinancialProductType;
-import com.finfellows.domain.product.domain.QBank;
-import com.finfellows.domain.product.domain.QCMA;
+import com.finfellows.domain.product.domain.*;
 import com.finfellows.domain.product.dto.condition.CmaSearchCondition;
 import com.finfellows.domain.product.dto.condition.FinancialProductSearchCondition;
 import com.finfellows.domain.product.dto.response.*;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +16,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.finfellows.domain.product.domain.QBank.*;
 import static com.finfellows.domain.product.domain.QCMA.*;
 import static com.finfellows.domain.product.domain.QFinancialProduct.*;
 import static com.finfellows.domain.product.domain.QFinancialProductOption.*;
+import static com.finfellows.domain.product.domain.repository.QFinancialProductOptionOrderByDefault.*;
+import static com.finfellows.domain.product.domain.repository.QFinancialProductOptionOrderByMax.*;
 
 @RequiredArgsConstructor
 @Repository
@@ -36,88 +35,184 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     @Override
     public Page<SearchFinancialProductRes> findFinancialProductsWithAuthorization(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType, Long userId) {
         QFinancialProductBookmark financialProductBookmark = QFinancialProductBookmark.financialProductBookmark;
+        String interestRateType = financialProductSearchCondition.getInterestRateType();
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
-        List<SearchFinancialProductRes> results = queryFactory
-                .select(new QSearchFinancialProductRes(
-                        financialProduct.id,
-                        financialProductBookmark.id.isNotNull(),
-                        financialProduct.productName,
-                        financialProduct.companyName,
-                        bank.bankLogoUrl,
-                        financialProductOption.maximumPreferredInterestRate,
-                        financialProductOption.interestRate
-                ))
-                .from(financialProductOption)
-                .leftJoin(financialProductOption.financialProduct, financialProduct)
-                .leftJoin(bank)
-                .on(financialProductOption.financialProduct.companyName.contains(bank.bankName))
-                .leftJoin(financialProductBookmark)
-                .on(financialProductBookmark.financialProduct.eq(financialProduct).and(financialProductBookmark.user.id.eq(userId)))
-                .where(
-                        financialProduct.financialProductType.eq(financialProductType),
-                        typeEq(financialProductSearchCondition.getTypes()),
-                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                        termEq(financialProductSearchCondition.getTerms())
-                )
-                .orderBy(financialProductOption.maximumPreferredInterestRate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        List<SearchFinancialProductRes> results;
+        JPAQuery<Long> countQuery;
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(financialProductOption.count())
-                .from(financialProductOption)
-                .leftJoin(financialProductOption.financialProduct, financialProduct)
-                .where(
-                        financialProduct.financialProductType.eq(financialProductType),
-                        typeEq(financialProductSearchCondition.getTypes()),
-                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                        termEq(financialProductSearchCondition.getTerms()),
-                        bankNameEq(financialProductSearchCondition.getBankNames())
-                );
+        if ("DEFAULT".equals(interestRateType)) {
+            orderSpecifiers.add(financialProductOptionOrderByDefault.interestRate.desc());
+            orderSpecifiers.add(financialProductOptionOrderByDefault.maximumPreferredInterestRate.desc());
 
-        // Page 객체 생성
+            results = queryFactory
+                    .select(new QSearchFinancialProductRes(
+                            financialProductOptionOrderByDefault.financialProductId,
+                            financialProductBookmark.id.isNotNull(),
+                            financialProductOptionOrderByDefault.productName,
+                            financialProductOptionOrderByDefault.companyName,
+                            bank.bankLogoUrl,
+                            financialProductOptionOrderByDefault.maximumPreferredInterestRate,
+                            financialProductOptionOrderByDefault.interestRate
+                    ))
+                    .from(financialProductOptionOrderByDefault)
+                    .leftJoin(bank).on(financialProductOptionOrderByDefault.companyName.contains(bank.bankName))
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms())
+                    )
+                    .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            countQuery = queryFactory
+                    .select(financialProductOptionOrderByDefault.count())
+                    .from(financialProductOptionOrderByDefault)
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
+                    );
+        } else {
+            orderSpecifiers.add(financialProductOptionOrderByMax.maximumPreferredInterestRate.desc());
+            orderSpecifiers.add(financialProductOptionOrderByMax.interestRate.desc());
+
+            results = queryFactory
+                    .select(new QSearchFinancialProductRes(
+                            financialProductOptionOrderByMax.financialProductId,
+                            financialProductBookmark.id.isNotNull(),
+                            financialProductOptionOrderByMax.productName,
+                            financialProductOptionOrderByMax.companyName,
+                            bank.bankLogoUrl,
+                            financialProductOptionOrderByMax.maximumPreferredInterestRate,
+                            financialProductOptionOrderByMax.interestRate
+                    ))
+                    .from(financialProductOptionOrderByMax)
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.companyName.contains(bank.bankName))
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms())
+                    )
+                    .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            countQuery = queryFactory
+                    .select(financialProductOptionOrderByMax.count())
+                    .from(financialProductOptionOrderByMax)
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
+                    );
+        }
+
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
 
     @Override
     public Page<SearchFinancialProductRes> findFinancialProducts(FinancialProductSearchCondition financialProductSearchCondition, Pageable pageable, FinancialProductType financialProductType) {
-        List<SearchFinancialProductRes> results = queryFactory
-                .select(new QSearchFinancialProductRes(
-                        financialProduct.id,
-                        Expressions.constant(false),
-                        financialProduct.productName,
-                        financialProduct.companyName,
-                        bank.bankLogoUrl,
-                        financialProductOption.maximumPreferredInterestRate,
-                        financialProductOption.interestRate
-                ))
-                .from(financialProductOption)
-                .leftJoin(financialProductOption.financialProduct, financialProduct)
-                .leftJoin(bank)
-                .on(financialProductOption.financialProduct.companyName.contains(bank.bankName))
-                .where(
-                        financialProduct.financialProductType.eq(financialProductType),
-                        typeEq(financialProductSearchCondition.getTypes()),
-                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                        termEq(financialProductSearchCondition.getTerms()),
-                        bankNameEq(financialProductSearchCondition.getBankNames())
-                )
-                .orderBy(financialProductOption.maximumPreferredInterestRate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        String interestRateType = financialProductSearchCondition.getInterestRateType();
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(financialProductOption.count())
-                .from(financialProductOption)
-                .leftJoin(financialProductOption.financialProduct, financialProduct)
-                .where(
-                        financialProduct.financialProductType.eq(financialProductType),
-                        typeEq(financialProductSearchCondition.getTypes()),
-                        bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                        termEq(financialProductSearchCondition.getTerms())
-                );
+        List<SearchFinancialProductRes> results;
+        JPAQuery<Long> countQuery;
+
+        if ("DEFAULT".equals(interestRateType)) {
+            orderSpecifiers.add(financialProductOptionOrderByDefault.interestRate.desc());
+            orderSpecifiers.add(financialProductOptionOrderByDefault.maximumPreferredInterestRate.desc());
+
+            results = queryFactory
+                    .select(new QSearchFinancialProductRes(
+                            financialProductOptionOrderByDefault.financialProductId,
+                            Expressions.constant(false),
+                            financialProductOptionOrderByDefault.productName,
+                            financialProductOptionOrderByDefault.companyName,
+                            bank.bankLogoUrl,
+                            financialProductOptionOrderByDefault.maximumPreferredInterestRate,
+                            financialProductOptionOrderByDefault.interestRate
+                    ))
+                    .from(financialProductOptionOrderByDefault)
+                    .leftJoin(bank).on(financialProductOptionOrderByDefault.companyName.contains(bank.bankName))
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms())
+                    )
+                    .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            countQuery = queryFactory
+                    .select(financialProductOptionOrderByDefault.count())
+                    .from(financialProductOptionOrderByDefault)
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
+                    );
+        } else {
+            orderSpecifiers.add(financialProductOptionOrderByMax.maximumPreferredInterestRate.desc());
+            orderSpecifiers.add(financialProductOptionOrderByMax.interestRate.desc());
+
+            results = queryFactory
+                    .select(new QSearchFinancialProductRes(
+                            financialProductOptionOrderByMax.financialProductId,
+                            Expressions.constant(false),
+                            financialProductOptionOrderByMax.productName,
+                            financialProductOptionOrderByMax.companyName,
+                            bank.bankLogoUrl,
+                            financialProductOptionOrderByMax.maximumPreferredInterestRate,
+                            financialProductOptionOrderByMax.interestRate
+                    ))
+                    .from(financialProductOptionOrderByMax)
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.companyName.contains(bank.bankName))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms())
+                    )
+                    .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            countQuery = queryFactory
+                    .select(financialProductOptionOrderByMax.count())
+                    .from(financialProductOptionOrderByMax)
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .where(
+                            financialProduct.financialProductType.eq(financialProductType),
+                            typeEq(financialProductSearchCondition.getTypes()),
+                            bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
+                    );
+        }
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
@@ -211,12 +306,12 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     }
 
     private BooleanExpression bankGroupNoEq(String[] bankTypes) {
-        if(bankTypes == null || bankTypes.length == 0) return null;
+        if (bankTypes == null || bankTypes.length == 0) return null;
         return financialProduct.topFinancialGroupNo.in(bankTypes);
     }
 
     private BooleanExpression termEq(Integer[] terms) {
-        if(terms == null || terms.length == 0) return null;
+        if (terms == null || terms.length == 0) return null;
         return financialProductOption.savingsTerm.in(terms);
     }
 
@@ -264,7 +359,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
 
     private BooleanExpression bankNameEq(String[] bankNames) {
-        if(bankNames == null || bankNames.length == 0) return null;
+        if (bankNames == null || bankNames.length == 0) return null;
         BooleanExpression expression = financialProductOption.financialProduct.companyName.contains(bankNames[0]);
         for (int i = 1; i < bankNames.length; i++) {
             expression = expression.or(financialProductOption.financialProduct.companyName.contains(bankNames[i]));
