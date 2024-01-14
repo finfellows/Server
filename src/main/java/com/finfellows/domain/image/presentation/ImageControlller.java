@@ -23,7 +23,7 @@ public class ImageControlller {
     private final ImageService imageService;
     @Operation(summary = "이미지 업로드", description = "S3 버킷에 이미지를 업로드 합니다. 파라미터로 image 파일을 요청하고, url 주소로 응답합니다. ")
     @ApiResponse(responseCode = "200", description = "이미지 업로드 및 url 변환 성공", content = {
-            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = CommentListResponse.class)))
+            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ImageResponse.class)))
     })
     @PostMapping
     public ResponseEntity<ImageResponse> uploadImage(@RequestParam MultipartFile image) throws IOException {
