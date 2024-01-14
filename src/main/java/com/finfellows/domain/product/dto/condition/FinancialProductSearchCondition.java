@@ -18,4 +18,7 @@ public class FinancialProductSearchCondition {
     @Schema(type = "array", implementation = String.class, example = "[\"은행A\", \"은행B\"]", description = "은행 이름입니다.")
     private String[] bankNames;
 
+    @Schema(type = "string", example = "MAX, DEFAULT", description = "이율 정렬 기준입니다.")
+    private String interestRateType;
+
 }
