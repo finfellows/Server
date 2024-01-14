@@ -1,6 +1,5 @@
 package com.finfellows.domain.image.presentation;
 
-import com.finfellows.domain.comment.dto.response.CommentListResponse;
 import com.finfellows.domain.image.application.ImageService;
 import com.finfellows.domain.image.dto.response.ImageResponse;
 import io.swagger.v3.oas.annotations.Operation;
