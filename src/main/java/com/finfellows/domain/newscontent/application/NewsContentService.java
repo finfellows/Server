@@ -48,6 +48,7 @@ public class NewsContentService {
         List<NewsContentResponse> newsContentsResponses = newsContentsPage.getContent().stream()
                 .map(newsContent -> NewsContentResponse.builder()
                         .id(newsContent.getId())
+                        .created_at(newsContent.getCreatedAt())
                         .title(newsContent.getTitle())
                         .content(newsContent.getContent())
                         .bookmarked(checkBookmarked(userId, newsContent.getId())) // 북마크 여부 확인
@@ -63,6 +64,7 @@ public class NewsContentService {
 
         return NewsContentResponse.builder()
                 .id(newsContent.getId())
+                .created_at(newsContent.getCreatedAt())
                 .title(newsContent.getTitle())
                 .content(newsContent.getContent())
                 .build();
