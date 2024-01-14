@@ -38,8 +38,8 @@ public class EduContentController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "교육콘텐츠 전체 목록 조회", description = "교육콘텐츠 전체 목록을 조회합니다.")
-    @ApiResponse(responseCode = "200", description = "E교육콘텐츠 목록 조회 성공", content = {
+    @Operation(summary = "교육콘텐츠 전체 목록 조회", description = "교육콘텐츠 전체 목록을 조회합니다. 비로그인 시 북마크 여부는 null입니다.")
+    @ApiResponse(responseCode = "200", description = "교육콘텐츠 목록 조회 성공", content = {
             @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EduContentResponse.class)))
     })
     @GetMapping
