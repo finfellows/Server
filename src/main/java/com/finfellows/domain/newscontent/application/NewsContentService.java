@@ -64,6 +64,7 @@ public class NewsContentService {
 
         return NewsContentResponse.builder()
                 .id(newsContent.getId())
+                .created_at(newsContent.getCreatedAt())
                 .title(newsContent.getTitle())
                 .content(newsContent.getContent())
                 .build();
