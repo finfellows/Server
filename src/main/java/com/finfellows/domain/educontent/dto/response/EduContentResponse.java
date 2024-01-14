@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EduContentResponse {
     private Long id;
-    private LocalDateTime created_at;
     private String title;
     private String content;
     private Boolean bookmarked;
