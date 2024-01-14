@@ -63,7 +63,8 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms())
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -103,7 +104,8 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms())
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -155,7 +157,8 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms())
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -194,7 +197,8 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms())
+                            termEq(financialProductSearchCondition.getTerms()),
+                            bankNameEq(financialProductSearchCondition.getBankNames())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -334,22 +338,22 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
                 for (String keyword : keywords) {
                     if (expression == null) {
-                        expression = financialProductOption.financialProduct.joinMember.contains(keyword);
+                        expression = financialProduct.joinMember.contains(keyword);
                     } else {
-                        expression = expression.or(financialProductOption.financialProduct.joinMember.contains(keyword));
+                        expression = expression.or(financialProduct.joinMember.contains(keyword));
                     }
                 }
             } else {
                 if (expression == null) {
-                    expression = financialProductOption.financialProduct.joinMember.contains(type)
-                            .or(financialProductOption.financialProduct.productName.contains(type))
-                            .or(financialProductOption.financialProduct.specialCondition.contains(type))
-                            .or(financialProductOption.financialProduct.etcNote.contains(type));
+                    expression = financialProduct.joinMember.contains(type)
+                            .or(financialProduct.productName.contains(type))
+                            .or(financialProduct.specialCondition.contains(type))
+                            .or(financialProduct.etcNote.contains(type));
                 } else {
-                    expression = expression.or(financialProductOption.financialProduct.joinMember.contains(type))
-                            .or(financialProductOption.financialProduct.productName.contains(type))
-                            .or(financialProductOption.financialProduct.specialCondition.contains(type))
-                            .or(financialProductOption.financialProduct.etcNote.contains(type));
+                    expression = expression.or(financialProduct.joinMember.contains(type))
+                            .or(financialProduct.productName.contains(type))
+                            .or(financialProduct.specialCondition.contains(type))
+                            .or(financialProduct.etcNote.contains(type));
                 }
             }
         }
@@ -360,9 +364,9 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
     private BooleanExpression bankNameEq(String[] bankNames) {
         if (bankNames == null || bankNames.length == 0) return null;
-        BooleanExpression expression = financialProductOption.financialProduct.companyName.contains(bankNames[0]);
+        BooleanExpression expression = financialProduct.companyName.contains(bankNames[0]);
         for (int i = 1; i < bankNames.length; i++) {
-            expression = expression.or(financialProductOption.financialProduct.companyName.contains(bankNames[i]));
+            expression = expression.or(financialProduct.companyName.contains(bankNames[i]));
         }
         return expression;
     }
