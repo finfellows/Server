@@ -12,6 +12,4 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class ImageRequest {
     private MultipartFile image;
-
-
 }
