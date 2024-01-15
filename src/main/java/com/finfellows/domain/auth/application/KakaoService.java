@@ -16,6 +16,7 @@ import com.finfellows.global.error.DefaultAuthenticationException;
 import com.finfellows.global.payload.ErrorCode;
 import com.finfellows.global.payload.Message;
 import com.finfellows.global.payload.ResponseCustom;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -169,7 +170,7 @@ public class KakaoService {
 
 
     @Transactional
-    public AuthRes kakaoLogin(KakaoProfile kakaoProfile) {
+    public AuthRes kakaoLogin(KakaoProfile kakaoProfile, HttpServletResponse response) {
 
         // 이미 DB에 회원 정보가 저장되어 있으면 로그인 시키고, 없다면 DB에 등록 후 로그인.
 
@@ -210,6 +211,14 @@ public class KakaoService {
         Token savedToken = tokenRepository.save(token);
 
 
+        // 쿠키 생성 및 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
+        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
+
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(token.getRefreshToken())
@@ -247,7 +256,7 @@ public class KakaoService {
     }
 
     @Transactional
-    public AuthRes adminSignIn(KakaoProfile kakaoProfile) {
+    public AuthRes adminSignIn(KakaoProfile kakaoProfile, HttpServletResponse response) {
         Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
         if (!byEmail.isPresent()) {
             User user = User.builder()
@@ -282,6 +291,13 @@ public class KakaoService {
         tokenRepository.save(token);
 
         Token savedToken = tokenRepository.save(token);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
+        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
 
 
         return AuthRes.builder()
