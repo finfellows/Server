@@ -35,7 +35,7 @@ public class CmaBookmarkRes {
                         .cmaId(bookmark.getCma().getId())
                         .cmaType(bookmark.getCma().getCmaType())
                         .productName(bookmark.getCma().getProductName())
-                        .companyName(bookmark.getCma().getCompanyName())
+                        .companyName(bookmark.getCma().getBankName())
                         .maturityInterestRate(bookmark.getCma().getMaturityInterestRate())
                         .specialCondition(bookmark.getCma().getSpecialCondition())
                         .build())

@@ -32,7 +32,7 @@ public class CmaDetailRes {
                 .isLiked(bookmark.isPresent())
                 .productName(cma.getProductName())
                 .cmaType(cma.getCmaType())
-                .bankName(cma.getCompanyName())
+                .bankName(cma.getBankName())
                 .bankLogoUrl(bankLogoUrl)
                 .bankHomepageUrl(bankHomepageUrl)
                 .maturityInterestRate(cma.getMaturityInterestRate())

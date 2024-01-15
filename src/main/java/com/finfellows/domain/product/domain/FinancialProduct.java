@@ -29,14 +29,11 @@ public class FinancialProduct extends BaseEntity {
     @Column(name = "financial_product_code")
     private String financialProductCode;
 
-    @Column(name = "top_financial_group_no")
-    private String topFinancialGroupNo;
-
     @Column(name = "disclosure_month")
     private String disclosureMonth;
 
-    @Column(name = "company_name")
-    private String companyName;
+    @JoinColumn(name = "bank_name")
+    private String bankName;
 
     @Column(name = "product_name")
     private String productName;
@@ -79,12 +76,11 @@ public class FinancialProduct extends BaseEntity {
     private List<FinancialProductOption> financialProductOption;
 
     @Builder
-    public FinancialProduct(String financialCompanyNo, String financialProductCode, String topFinancialGroupNo, String disclosureMonth, String companyName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType) {
+    public FinancialProduct(String financialCompanyNo, String financialProductCode, String disclosureMonth, String bankName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType, List<FinancialProductOption> financialProductOption) {
         this.financialCompanyNo = financialCompanyNo;
         this.financialProductCode = financialProductCode;
-        this.topFinancialGroupNo = topFinancialGroupNo;
         this.disclosureMonth = disclosureMonth;
-        this.companyName = companyName;
+        this.bankName = bankName;
         this.productName = productName;
         this.joinWay = joinWay;
         this.maturityInterestRate = maturityInterestRate;
@@ -97,6 +93,7 @@ public class FinancialProduct extends BaseEntity {
         this.disclosureEndDay = disclosureEndDay;
         this.financialCompanySubmissionDay = financialCompanySubmissionDay;
         this.financialProductType = financialProductType;
+        this.financialProductOption = financialProductOption;
     }
 
 }

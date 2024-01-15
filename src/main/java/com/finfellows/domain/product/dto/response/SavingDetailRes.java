@@ -31,7 +31,7 @@ public class SavingDetailRes {
         return SavingDetailRes.builder()
                 .isLiked(bookmark.isPresent())
                 .productName(deposit.getProductName())
-                .bankName(deposit.getCompanyName())
+                .bankName(deposit.getBankName())
                 .bankLogoUrl(bankLogoUrl)
                 .bankHomepageUrl(bankHomepageUrl)
                 .maxInterestRate(depositOption.getMaximumPreferredInterestRate())

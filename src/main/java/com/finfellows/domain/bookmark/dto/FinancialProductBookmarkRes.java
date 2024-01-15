@@ -43,7 +43,7 @@ public class FinancialProductBookmarkRes {
             for (FinancialProductOption financialProductOption : financialProduct.getFinancialProductOption()) {
                 Long financialProductId = financialProduct.getId();
                 FinancialProductType financialProductType = financialProduct.getFinancialProductType();
-                String companyName = financialProduct.getCompanyName();
+                String companyName = financialProduct.getBankName();
                 String productName = financialProduct.getProductName();
                 String interestRate = financialProductOption.getInterestRate();
                 String maximumPreferredInterestRate = financialProductOption.getMaximumPreferredInterestRate();
