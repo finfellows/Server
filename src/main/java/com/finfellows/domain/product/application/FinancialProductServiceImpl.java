@@ -59,7 +59,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         FinancialProduct deposit = financialProductRepository.findById(depositId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
-        Bank bank = bankRepository.findByBankName(deposit.getCompanyName());
+        Bank bank = bankRepository.findByBankName(deposit.getBankName());
 
         Optional<FinancialProductBookmark> bookmark = Optional.empty();
         if (userPrincipal != null)
@@ -87,7 +87,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         FinancialProduct saving = financialProductRepository.findById(savingId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
-        Bank bank = bankRepository.findByBankName(saving.getCompanyName());
+        Bank bank = bankRepository.findByBankName(saving.getBankName());
 
         Optional<FinancialProductBookmark> bookmark = Optional.empty();
         if (userPrincipal != null)
@@ -128,7 +128,7 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         CMA cma = cmaRepository.findById(cmaId)
                 .orElseThrow(InvalidFinancialProductException::new);
 
-        Bank bank = bankRepository.findByBankName(cma.getCompanyName());
+        Bank bank = bankRepository.findByBankName(cma.getBankName());
 
         Optional<CmaBookmark> bookmark = Optional.empty();
         if (userPrincipal != null)

@@ -42,7 +42,7 @@ public class FinancialProductController {
     })
     @GetMapping("/bank")
     public ResponseCustom<List<SearchBankRes>> findBanks(
-            @Parameter(description = "1금융권(020000), 저축은행(030300)", required = true) @RequestParam String[] bankGroupNo
+            @Parameter(description = "1금융권(020000), 저축은행(030300), 투자은행(04000)", required = true) @RequestParam String[] bankGroupNo
     ) {
         return ResponseCustom.OK(financialProductServiceImpl.findBanks(bankGroupNo));
     }

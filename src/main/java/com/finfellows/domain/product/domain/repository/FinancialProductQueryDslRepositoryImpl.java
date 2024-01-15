@@ -50,13 +50,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByDefault.financialProductId,
                             financialProductBookmark.id.isNotNull(),
                             financialProductOptionOrderByDefault.productName,
-                            financialProductOptionOrderByDefault.companyName,
+                            financialProductOptionOrderByDefault.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByDefault.maximumPreferredInterestRate,
                             financialProductOptionOrderByDefault.interestRate
                     ))
                     .from(financialProductOptionOrderByDefault)
-                    .leftJoin(bank).on(financialProductOptionOrderByDefault.companyName.contains(bank.bankName))
+                    .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
@@ -74,7 +74,9 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
             countQuery = queryFactory
                     .select(financialProductOptionOrderByDefault.count())
                     .from(financialProductOptionOrderByDefault)
+                    .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -91,15 +93,15 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByMax.financialProductId,
                             financialProductBookmark.id.isNotNull(),
                             financialProductOptionOrderByMax.productName,
-                            financialProductOptionOrderByMax.companyName,
+                            financialProductOptionOrderByMax.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByMax.maximumPreferredInterestRate,
                             financialProductOptionOrderByMax.interestRate
                     ))
                     .from(financialProductOptionOrderByMax)
-                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
-                    .leftJoin(bank).on(financialProductOptionOrderByMax.companyName.contains(bank.bankName))
-                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id)).fetchJoin()
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName)).fetchJoin()
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId))).fetchJoin()
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -115,7 +117,9 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
             countQuery = queryFactory
                     .select(financialProductOptionOrderByMax.count())
                     .from(financialProductOptionOrderByMax)
-                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id)).fetchJoin()
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName)).fetchJoin()
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId))).fetchJoin()
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -145,13 +149,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByDefault.financialProductId,
                             Expressions.constant(false),
                             financialProductOptionOrderByDefault.productName,
-                            financialProductOptionOrderByDefault.companyName,
+                            financialProductOptionOrderByDefault.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByDefault.maximumPreferredInterestRate,
                             financialProductOptionOrderByDefault.interestRate
                     ))
                     .from(financialProductOptionOrderByDefault)
-                    .leftJoin(bank).on(financialProductOptionOrderByDefault.companyName.contains(bank.bankName))
+                    .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
@@ -168,6 +172,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
             countQuery = queryFactory
                     .select(financialProductOptionOrderByDefault.count())
                     .from(financialProductOptionOrderByDefault)
+                    .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
@@ -185,14 +190,14 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByMax.financialProductId,
                             Expressions.constant(false),
                             financialProductOptionOrderByMax.productName,
-                            financialProductOptionOrderByMax.companyName,
+                            financialProductOptionOrderByMax.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByMax.maximumPreferredInterestRate,
                             financialProductOptionOrderByMax.interestRate
                     ))
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
-                    .leftJoin(bank).on(financialProductOptionOrderByMax.companyName.contains(bank.bankName))
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -209,6 +214,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .select(financialProductOptionOrderByMax.count())
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -230,15 +236,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                         cMA.id,
                         cmaBookmark.id.isNotNull(),
                         cMA.productName,
-                        cMA.companyName,
+                        bank.bankName,
                         bank.bankLogoUrl,
                         cMA.maturityInterestRate
                 ))
                 .from(cMA)
-                .leftJoin(cmaBookmark)
-                .on(cmaBookmark.cma.eq(cMA).and(cmaBookmark.user.id.eq(userId)))
-                .leftJoin(bank)
-                .on(cMA.companyName.contains(bank.bankName))
+                .leftJoin(cmaBookmark).on(cmaBookmark.cma.eq(cMA).and(cmaBookmark.user.id.eq(userId)))
+                .leftJoin(bank).on(cMA.bankName.eq(bank.bankName))
                 .where(
                         cmaTypeEq(cmaSearchCondition.getCmaTypes()),
                         cmaBankNameEq(cmaSearchCondition.getBankNames())
@@ -251,6 +255,8 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
         JPAQuery<Long> countQuery = queryFactory
                 .select(cMA.count())
                 .from(cMA)
+                .leftJoin(cmaBookmark).on(cmaBookmark.cma.eq(cMA).and(cmaBookmark.user.id.eq(userId)))
+                .leftJoin(bank).on(cMA.bankName.eq(bank.bankName))
                 .where(
                         cmaTypeEq(cmaSearchCondition.getCmaTypes()),
                         cmaBankNameEq(cmaSearchCondition.getBankNames())
@@ -266,13 +272,12 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                         cMA.id,
                         Expressions.constant(false),
                         cMA.productName,
-                        cMA.companyName,
+                        bank.bankName,
                         bank.bankLogoUrl,
                         cMA.maturityInterestRate
                 ))
                 .from(cMA)
-                .leftJoin(bank)
-                .on(cMA.companyName.contains(bank.bankName))
+                .leftJoin(bank).on(cMA.bankName.eq(bank.bankName))
                 .where(
                         cmaTypeEq(cmaSearchCondition.getCmaTypes()),
                         cmaBankNameEq(cmaSearchCondition.getBankNames())
@@ -285,6 +290,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
         JPAQuery<Long> countQuery = queryFactory
                 .select(cMA.count())
                 .from(cMA)
+                .leftJoin(bank).on(cMA.bankName.eq(bank.bankName))
                 .where(
                         cmaTypeEq(cmaSearchCondition.getCmaTypes()),
                         cmaBankNameEq(cmaSearchCondition.getBankNames())
@@ -297,21 +303,18 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
     public List<SearchBankRes> findBanks(String[] bankGroupNos) {
         return queryFactory
                 .select(new QSearchBankRes(
-                        financialProduct.companyName,
+                        bank.bankName,
                         bank.bankLogoUrl
                 ))
-                .from(financialProduct)
-                .leftJoin(bank)
-                .on(financialProduct.companyName.contains(bank.bankName))
+                .from(bank)
                 .where(bankGroupNoEq(bankGroupNos))
-                .distinct()
-                .orderBy(financialProduct.companyName.asc())
+                .orderBy(bank.bankName.asc())
                 .fetch();
     }
 
     private BooleanExpression bankGroupNoEq(String[] bankTypes) {
         if (bankTypes == null || bankTypes.length == 0) return null;
-        return financialProduct.topFinancialGroupNo.in(bankTypes);
+        return bank.topFinancialGroupNo.in(bankTypes);
     }
 
     private BooleanExpression termEq(Integer[] terms) {
@@ -364,9 +367,9 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
     private BooleanExpression bankNameEq(String[] bankNames) {
         if (bankNames == null || bankNames.length == 0) return null;
-        BooleanExpression expression = financialProduct.companyName.contains(bankNames[0]);
+        BooleanExpression expression = bank.bankName.eq(bankNames[0]);
         for (int i = 1; i < bankNames.length; i++) {
-            expression = expression.or(financialProduct.companyName.contains(bankNames[i]));
+            expression = expression.or(bank.bankName.eq(bankNames[i]));
         }
         return expression;
     }
@@ -397,9 +400,9 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
         BooleanExpression expression = null;
         for (String bankName : bankNames) {
             if (expression == null) {
-                expression = cMA.companyName.contains(bankName);
+                expression = cMA.bankName.eq(bankName);
             } else {
-                expression = expression.or(cMA.companyName.contains(bankName));
+                expression = expression.or(cMA.bankName.eq(bankName));
             }
         }
 
