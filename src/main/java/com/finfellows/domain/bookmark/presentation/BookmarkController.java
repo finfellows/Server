@@ -62,18 +62,18 @@ public class BookmarkController {
         return ResponseCustom.OK(policyInfoBookmarkService.delete(userPrincipal, policy_info_id));
     }
 
-    @Operation(summary = "금융, 배우자 북마크", description = "금융, 배우자(교육, 뉴스)를 북마크한다.")
+    @Operation(summary = "금융, 배우자 북마크", description = "금융, 배우자(교육, 뉴스)를 북마크한다. ContentType을 Params로 입력해주세요. 예시) contentType=EDU_CONTENT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "금융, 배우자.(교육, 뉴스) 즐겨찾기 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
             @ApiResponse(responseCode = "400", description = "금융, 배우자.(교육, 뉴스) 즐겨찾기 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping("/posts/{post_id}")
+    @PostMapping("/posts/{id}")
     public ResponseCustom<?> bookmarkPost(
             @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("post_id") Long post_id,
+            @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("id") Long id,
             @Parameter(description = "ContentType을 Params로 입력해주세요. 예시) contentType=EDU_CONTENT", required = true) @RequestParam("contentType") ContentType contentType
     ) {
-        return ResponseCustom.OK(postBookmarkService.insert(userPrincipal, post_id, contentType));
+        return ResponseCustom.OK(postBookmarkService.insert(userPrincipal, id, contentType));
     }
 
     @Operation(summary = "금융, 배우자 북마크 삭제", description = "금융, 배우자(교육, 뉴스) 북마크를 삭제한다.")
@@ -81,12 +81,13 @@ public class BookmarkController {
             @ApiResponse(responseCode = "200", description = "금융, 배우자(교육, 뉴스). 즐겨찾기 삭제 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class) ) } ),
             @ApiResponse(responseCode = "400", description = "금융, 배우자(교육, 뉴스). 즐겨찾기 삭제 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @DeleteMapping("/posts/{post_id}")
+    @DeleteMapping("/posts/{id}")
     public ResponseCustom<?> deleteBookmarkPost(
             @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("post_id") Long post_id
+            @Parameter(description = "금융, 배우자(교육, 뉴스) id를 입력해주세요.", required = true) @Valid @PathVariable("id") Long id,
+            @Parameter(description = "ContentType을 Params로 입력해주세요. 예시) contentType=EDU_CONTENT", required = true) @RequestParam("contentType") ContentType contentType
     ) {
-        return ResponseCustom.OK(postBookmarkService.delete(userPrincipal, post_id));
+        return ResponseCustom.OK(postBookmarkService.delete(userPrincipal, id, contentType));
     }
 
     @Operation(summary = "금융, 뭐하지 북마크", description = "금융, 뭐하지(금융 상품)를 북마크한다.")
