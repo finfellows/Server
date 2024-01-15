@@ -104,9 +104,10 @@ public class AuthController {
     @PostMapping(value = "sign-out")
     public ResponseCustom<?> signOut(
             @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.") @Valid @RequestBody RefreshTokenReq tokenRefreshRequest
+            HttpServletRequest request,
+            HttpServletResponse response
     ) {
-        return ResponseCustom.OK(kakaoService.signOut(tokenRefreshRequest));
+        return ResponseCustom.OK(kakaoService.signOut(request, response));
     }
 
 
