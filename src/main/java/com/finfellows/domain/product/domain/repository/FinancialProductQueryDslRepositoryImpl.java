@@ -58,6 +58,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
@@ -76,6 +77,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
@@ -100,6 +102,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     ))
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id)).fetchJoin()
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName)).fetchJoin()
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId))).fetchJoin()
                     .where(
@@ -118,6 +121,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .select(financialProductOptionOrderByMax.count())
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id)).fetchJoin()
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName)).fetchJoin()
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId))).fetchJoin()
                     .where(
@@ -157,6 +161,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -174,6 +179,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
@@ -197,6 +203,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     ))
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
@@ -214,6 +221,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .select(financialProductOptionOrderByMax.count())
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
