@@ -229,10 +229,25 @@ public class KakaoService {
     }
 
     @Transactional
-    public Message signOut(final RefreshTokenReq tokenRefreshRequest) {
-        Token token = tokenRepository.findByRefreshToken(tokenRefreshRequest.getRefreshToken())
+    public Message signOut(HttpServletRequest request, HttpServletResponse response) {
+        //쿠키에서 리프레시 토큰 추출
+        String refreshToken = Arrays.stream(request.getCookies())
+                .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
+
+        Token token = tokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
         tokenRepository.delete(token);
+
+        // 쿠키에서 리프레시 토큰 삭제
+        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+        refreshTokenCookie.setMaxAge(0); // 쿠키 만료 시간을 0으로 설정하여 쿠키를 즉시 만료시킴
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
 
         return Message.builder()
                 .message("로그아웃 하였습니다.")
