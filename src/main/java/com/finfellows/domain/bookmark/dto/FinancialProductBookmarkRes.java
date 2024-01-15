@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class FinancialProductBookmarkRes {
+    private Boolean isLiked;
     private Long financialProductId;
     private FinancialProductType financialProductType;
     private String companyName;
@@ -22,8 +23,10 @@ public class FinancialProductBookmarkRes {
     private String maximumPreferredInterestRate;
 
 
+
     @Builder
-    public FinancialProductBookmarkRes(Long financialProductId, FinancialProductType financialProductType, String companyName, String productName, String interestRate, String maximumPreferredInterestRate) {
+    public FinancialProductBookmarkRes(Boolean isLiked, Long financialProductId, FinancialProductType financialProductType, String companyName, String productName, String interestRate, String maximumPreferredInterestRate) {
+        this.isLiked = isLiked;
         this.financialProductId = financialProductId;
         this.financialProductType = financialProductType;
         this.companyName = companyName;
@@ -34,6 +37,8 @@ public class FinancialProductBookmarkRes {
 
 
 
+
+
     public static List<FinancialProductBookmarkRes> toDto(List<FinancialProductBookmark> bookmarks) {
         List<FinancialProductBookmarkRes> results = new ArrayList<>();
 
@@ -41,6 +46,7 @@ public class FinancialProductBookmarkRes {
             FinancialProduct financialProduct = bookmark.getFinancialProduct();
 
             for (FinancialProductOption financialProductOption : financialProduct.getFinancialProductOption()) {
+                Boolean isLiked = Boolean.TRUE;
                 Long financialProductId = financialProduct.getId();
                 FinancialProductType financialProductType = financialProduct.getFinancialProductType();
                 String companyName = financialProduct.getBankName();
@@ -48,7 +54,7 @@ public class FinancialProductBookmarkRes {
                 String interestRate = financialProductOption.getInterestRate();
                 String maximumPreferredInterestRate = financialProductOption.getMaximumPreferredInterestRate();
 
-                results.add(new FinancialProductBookmarkRes(financialProductId ,financialProductType, companyName, productName, interestRate, maximumPreferredInterestRate));
+                results.add(new FinancialProductBookmarkRes(isLiked ,financialProductId ,financialProductType, companyName, productName, interestRate, maximumPreferredInterestRate));
 
             }
         }

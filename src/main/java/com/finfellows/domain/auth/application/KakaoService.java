@@ -16,6 +16,8 @@ import com.finfellows.global.error.DefaultAuthenticationException;
 import com.finfellows.global.payload.ErrorCode;
 import com.finfellows.global.payload.Message;
 import com.finfellows.global.payload.ResponseCustom;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -169,7 +172,7 @@ public class KakaoService {
 
 
     @Transactional
-    public AuthRes kakaoLogin(KakaoProfile kakaoProfile) {
+    public AuthRes kakaoLogin(KakaoProfile kakaoProfile, HttpServletResponse response) {
 
         // 이미 DB에 회원 정보가 저장되어 있으면 로그인 시키고, 없다면 DB에 등록 후 로그인.
 
@@ -210,6 +213,14 @@ public class KakaoService {
         Token savedToken = tokenRepository.save(token);
 
 
+        // 쿠키 생성 및 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
+        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
+
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(token.getRefreshToken())
@@ -247,7 +258,7 @@ public class KakaoService {
     }
 
     @Transactional
-    public AuthRes adminSignIn(KakaoProfile kakaoProfile) {
+    public AuthRes adminSignIn(KakaoProfile kakaoProfile, HttpServletResponse response) {
         Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
         if (!byEmail.isPresent()) {
             User user = User.builder()
@@ -283,6 +294,13 @@ public class KakaoService {
 
         Token savedToken = tokenRepository.save(token);
 
+        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
+        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        response.addCookie(refreshTokenCookie);
+
 
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
@@ -291,19 +309,26 @@ public class KakaoService {
 
     }
 
-    public ResponseEntity<?> refresh(RefreshTokenReq refreshTokenReq) {
+    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
+        //쿠키에서 리프레시 토큰 추출
+        String refreshToken = Arrays.stream(request.getCookies())
+                .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
+
         //1차 검증
-        boolean checkValid = valid(refreshTokenReq.getRefreshToken());
+        boolean checkValid = valid(refreshToken);
         DefaultAssert.isAuthentication(checkValid);
 
-        Optional<Token> token = tokenRepository.findByRefreshToken(refreshTokenReq.getRefreshToken());
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
         Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getEmail());
 
         //4. refresh token 정보 값을 업데이트 한다.
         //시간 유효성 확인
         TokenMapping tokenMapping;
 
-        Long expirationTime = customTokenProviderService.getExpiration(refreshTokenReq.getRefreshToken());
+        Long expirationTime = customTokenProviderService.getExpiration(refreshToken);
         if(expirationTime > 0){
             tokenMapping = customTokenProviderService.refreshToken(authentication, token.get().getRefreshToken());
         }else{
@@ -313,11 +338,20 @@ public class KakaoService {
         Token updateToken = token.get().updateRefreshToken(tokenMapping.getRefreshToken());
         tokenRepository.save(updateToken);
 
+        // 새로운 리프레시 토큰을 쿠키에 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
+        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간을 2주로 설정
+        refreshTokenCookie.setSecure(true); // HTTPS를 사용할 때만 쿠키를 전송하도록 설정
+        refreshTokenCookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근 방지
+        refreshTokenCookie.setPath("/"); // 모든 경로에서 쿠키 사용
+        response.addCookie(refreshTokenCookie); // 쿠키를 응답에 추가
+
         AuthRes authResponse = AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(updateToken.getRefreshToken())
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .build();
+
 
         return ResponseEntity.ok(authResponse);
     }

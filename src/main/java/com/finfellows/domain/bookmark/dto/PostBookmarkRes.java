@@ -14,18 +14,22 @@ import java.util.stream.Collectors;
 
 @Data
 public class PostBookmarkRes {
+    private Boolean isLiked;
     private Long postId;
     private String title;
     private String content;
     private ContentType contentType;
 
+
     @Builder
-    public PostBookmarkRes(Long postId, String title, String content, ContentType contentType) {
+    public PostBookmarkRes(Boolean isLiked, Long postId, String title, String content, ContentType contentType) {
+        this.isLiked = isLiked;
         this.postId = postId;
         this.title = title;
         this.content = content;
         this.contentType = contentType;
     }
+
 
 
     public static List<PostBookmarkRes> toDto(List<PostBookmark> bookmarks) {
@@ -38,18 +42,20 @@ public class PostBookmarkRes {
 
             if (contentType == ContentType.EDU_CONTENT) {
                 for (EduContent eduContent : post.getEduContent()) {
+                    Boolean isLiked = Boolean.TRUE;
                     Long postId = eduContent.getId();
                     String title = eduContent.getTitle();
                     String content = eduContent.getContent();
-                    results.add(new PostBookmarkRes(postId, title, content, contentType));
+                    results.add(new PostBookmarkRes(isLiked, postId, title, content, contentType));
                 }
             }
             if (contentType == ContentType.NEWS_CONTENT) {
                 for (NewsContent newsContent : post.getNewsContent()) {
+                    Boolean isLiked = Boolean.TRUE;
                     Long postId = newsContent.getId();
                     String title = newsContent.getTitle();
                     String content = newsContent.getContent();
-                    results.add(new PostBookmarkRes(postId, title, content, contentType));
+                    results.add(new PostBookmarkRes(isLiked, postId, title, content, contentType));
                 }
             }
         }

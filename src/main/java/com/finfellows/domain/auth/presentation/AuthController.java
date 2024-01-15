@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,13 +67,14 @@ public class AuthController {
     })
     @GetMapping(value = "/kakao/sign-in")
     public ResponseCustom<?> kakaoCallback(
-            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
+            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code,
+            HttpServletResponse response
     ) {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
 
 
-        return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile));
+        return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile, response));
 
     }
 
@@ -83,12 +86,13 @@ public class AuthController {
     })
     @GetMapping(value = "/admin/sign-in")
     public ResponseCustom<?> adminSignIn(
-            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
+            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code,
+            HttpServletResponse response
             ) {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
 
-        return ResponseCustom.OK(kakaoService.adminSignIn(kakaoProfile));
+        return ResponseCustom.OK(kakaoService.adminSignIn(kakaoProfile, response));
     }
 
 
@@ -125,9 +129,10 @@ public class AuthController {
     })
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(
-            @Parameter(description = "Schemas의 RefreshTokenReq를 참고해주세요.", required = true) @Valid @RequestBody RefreshTokenReq refreshTokenReq
+            HttpServletRequest request,
+            HttpServletResponse response
     ) {
-        return kakaoService.refresh(refreshTokenReq);
+        return kakaoService.refresh(request, response);
     }
 
 
