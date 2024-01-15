@@ -18,8 +18,8 @@ public class CMA extends BaseEntity {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name="company_name")
-    private String companyName;
+    @Column(name="bank_name", unique = true)
+    private String bankName;
 
     @Column(name="product_name")
     private String productName;
@@ -49,8 +49,8 @@ public class CMA extends BaseEntity {
     private String depositProtection;
 
     @Builder
-    public CMA(String companyName, String productName, String cmaType, String disclosureMonth, String maturityInterestRate, String specialCondition, String joinWay, String etcNote, String productUrl, String depositProtection) {
-        this.companyName = companyName;
+    public CMA(String bankName, String productName, String cmaType, String disclosureMonth, String maturityInterestRate, String specialCondition, String joinWay, String etcNote, String productUrl, String depositProtection) {
+        this.bankName = bankName;
         this.productName = productName;
         this.cmaType = cmaType;
         this.disclosureMonth = disclosureMonth;
