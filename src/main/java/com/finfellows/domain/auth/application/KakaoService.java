@@ -216,10 +216,11 @@ public class KakaoService {
         // 쿠키 생성 및 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
         refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
-        refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
+
         response.addCookie(refreshTokenCookie);
+
 
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
@@ -244,7 +245,6 @@ public class KakaoService {
         // 쿠키에서 리프레시 토큰 삭제
         Cookie refreshTokenCookie = new Cookie("refreshToken", null);
         refreshTokenCookie.setMaxAge(0); // 쿠키 만료 시간을 0으로 설정하여 쿠키를 즉시 만료시킴
-        refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
@@ -311,7 +311,6 @@ public class KakaoService {
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
         refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
-        refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
