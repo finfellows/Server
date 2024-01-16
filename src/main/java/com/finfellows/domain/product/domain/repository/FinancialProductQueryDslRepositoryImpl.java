@@ -58,14 +58,14 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -77,14 +77,14 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit()),
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null
                     );
         } else {
             orderSpecifiers.add(financialProductOptionOrderByMax.maximumPreferredInterestRate.desc());
@@ -101,16 +101,16 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByMax.interestRate
                     ))
                     .from(financialProductOptionOrderByMax)
-                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id)).fetchJoin()
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
-                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName)).fetchJoin()
-                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId))).fetchJoin()
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -120,16 +120,16 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
             countQuery = queryFactory
                     .select(financialProductOptionOrderByMax.count())
                     .from(financialProductOptionOrderByMax)
-                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id)).fetchJoin()
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
-                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName)).fetchJoin()
-                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId))).fetchJoin()
+                    .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
+                    .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
+                    .leftJoin(financialProductBookmark).on(financialProduct.id.eq(financialProductBookmark.financialProduct.id).and(financialProductBookmark.user.id.eq(userId)))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     );
         }
 
@@ -161,13 +161,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -179,13 +179,13 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
                     .leftJoin(financialProduct).on(financialProductOptionOrderByDefault.financialProductId.eq(financialProduct.id))
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     );
         } else {
             orderSpecifiers.add(financialProductOptionOrderByMax.maximumPreferredInterestRate.desc());
@@ -203,14 +203,14 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     ))
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -221,14 +221,14 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                     .select(financialProductOptionOrderByMax.count())
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
-                    .leftJoin(financialProductOption).on(financialProduct.id.eq(financialProductOption.financialProduct.id))
                     .leftJoin(bank).on(financialProductOptionOrderByMax.bankName.eq(bank.bankName))
                     .where(
                             financialProduct.financialProductType.eq(financialProductType),
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
-                            termEq(financialProductSearchCondition.getTerms()),
-                            bankNameEq(financialProductSearchCondition.getBankNames())
+                            financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
+                            bankNameEq(financialProductSearchCondition.getBankNames()),
+                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
                     );
         }
 
@@ -415,6 +415,10 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
         }
 
         return expression;
+    }
+
+    private BooleanExpression maxLimitLoe(Integer maxLimit) {
+        return financialProduct.maxLimit.loe(maxLimit).or(financialProduct.maxLimit.isNull());
     }
 
 }
