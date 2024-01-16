@@ -53,9 +53,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByDefault.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByDefault.maximumPreferredInterestRate,
-                            financialProductOptionOrderByDefault.interestRate,
-                            financialProductOptionOrderByDefault.savingsTerm,
-                            financialProduct.maxLimit
+                            financialProductOptionOrderByDefault.interestRate
                     ))
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
@@ -100,9 +98,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByMax.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByMax.maximumPreferredInterestRate,
-                            financialProductOptionOrderByMax.interestRate,
-                            financialProductOptionOrderByMax.savingsTerm,
-                            financialProduct.maxLimit
+                            financialProductOptionOrderByMax.interestRate
                     ))
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))
@@ -160,9 +156,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByDefault.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByDefault.maximumPreferredInterestRate,
-                            financialProductOptionOrderByDefault.interestRate,
-                            financialProductOptionOrderByDefault.savingsTerm,
-                            financialProduct.maxLimit
+                            financialProductOptionOrderByDefault.interestRate
                     ))
                     .from(financialProductOptionOrderByDefault)
                     .leftJoin(bank).on(financialProductOptionOrderByDefault.bankName.eq(bank.bankName))
@@ -205,9 +199,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             financialProductOptionOrderByMax.bankName,
                             bank.bankLogoUrl,
                             financialProductOptionOrderByMax.maximumPreferredInterestRate,
-                            financialProductOptionOrderByMax.interestRate,
-                            financialProductOptionOrderByMax.savingsTerm,
-                            financialProduct.maxLimit
+                            financialProductOptionOrderByMax.interestRate
                     ))
                     .from(financialProductOptionOrderByMax)
                     .leftJoin(financialProduct).on(financialProductOptionOrderByMax.financialProductId.eq(financialProduct.id))

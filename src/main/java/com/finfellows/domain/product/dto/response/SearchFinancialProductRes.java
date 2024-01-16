@@ -13,11 +13,9 @@ public class SearchFinancialProductRes {
     private String bankLogoUrl;
     private String maxInterestRate;
     private String interestRate;
-    private Integer savingsTerm;
-    private Integer maxLimit;
 
     @QueryProjection
-    public SearchFinancialProductRes(Long id, Boolean isLiked, String productName, String bankName, String bankLogoUrl, String maxInterestRate, String interestRate, Integer savingsTerm, Integer maxLimit) {
+    public SearchFinancialProductRes(Long id, Boolean isLiked, String productName, String bankName, String bankLogoUrl, String maxInterestRate, String interestRate) {
         this.id = id;
         this.isLiked = isLiked;
         this.productName = productName;
@@ -25,8 +23,6 @@ public class SearchFinancialProductRes {
         this.bankLogoUrl = bankLogoUrl;
         this.maxInterestRate = maxInterestRate;
         this.interestRate = interestRate;
-        this.savingsTerm = savingsTerm;
-        this.maxLimit = maxLimit;
     }
 
 }
