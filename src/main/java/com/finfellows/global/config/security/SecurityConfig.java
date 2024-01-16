@@ -28,6 +28,8 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
+
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(customAuthenticationProvider);
