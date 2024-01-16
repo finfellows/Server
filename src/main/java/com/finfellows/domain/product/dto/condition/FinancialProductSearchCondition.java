@@ -21,4 +21,7 @@ public class FinancialProductSearchCondition {
     @Schema(type = "string", example = "MAX, DEFAULT", description = "이율 정렬 기준입니다.")
     private String interestRateType;
 
+    @Schema(type = "int", example = "100000", description = "금액 기준입니다. (최대 2147483647)")
+    private Integer maxLimit;
+
 }

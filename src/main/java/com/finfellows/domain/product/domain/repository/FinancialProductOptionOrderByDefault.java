@@ -10,7 +10,7 @@ import org.hibernate.annotations.Subselect;
 import org.hibernate.annotations.Synchronize;
 
 @Entity
-@Subselect("SELECT sfp.id as financial_product_id, sfp.product_name, sfp.bank_name, sfp.maximum_preferred_interest_rate, sfp.interest_rate " +
+@Subselect("SELECT sfp.id as financial_product_id, sfp.product_name, sfp.bank_name, sfp.maximum_preferred_interest_rate, sfp.interest_rate, sfp.savings_term " +
         "FROM ( " +
         "    SELECT " +
         "        fp.id, " +
@@ -18,6 +18,7 @@ import org.hibernate.annotations.Synchronize;
         "        fp.bank_name, " +
         "        fpo.maximum_preferred_interest_rate, " +
         "        fpo.interest_rate, " +
+        "        fpo.savings_term,  " +
         "        ROW_NUMBER() OVER(PARTITION BY fp.product_name ORDER BY fpo.interest_rate DESC, fpo.maximum_preferred_interest_rate DESC) as rownum " +
         "    FROM financial_product_option fpo " +
         "    LEFT JOIN financial_product fp ON fp.id = fpo.financial_product_id " +
@@ -43,5 +44,8 @@ public class FinancialProductOptionOrderByDefault {
 
     @Column(name = "interest_rate")
     private String interestRate;
+
+    @Column(name = "savings_term")
+    private Integer savingsTerm;
 
 }
