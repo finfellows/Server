@@ -355,7 +355,6 @@ public class KakaoService {
         // 새로운 리프레시 토큰을 쿠키에 설정
         Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
         refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간을 2주로 설정
-        refreshTokenCookie.setSecure(true); // HTTPS를 사용할 때만 쿠키를 전송하도록 설정
         refreshTokenCookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근 방지
         refreshTokenCookie.setPath("/"); // 모든 경로에서 쿠키 사용
         response.addCookie(refreshTokenCookie); // 쿠키를 응답에 추가
