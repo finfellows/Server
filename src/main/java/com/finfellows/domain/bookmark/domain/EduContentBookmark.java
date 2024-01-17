@@ -30,7 +30,6 @@ public class EduContentBookmark extends BaseEntity {
     // 금융 배우자 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "edu_content_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private EduContent eduContent;
 
     @Builder
