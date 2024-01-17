@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -28,6 +30,7 @@ public class EduContentBookmark extends BaseEntity {
     // 금융 배우자 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "edu_content_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private EduContent eduContent;
 
     @Builder
