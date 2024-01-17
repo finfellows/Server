@@ -1,11 +1,15 @@
 package com.finfellows.domain.product.domain;
 
+import com.finfellows.domain.bookmark.domain.CmaBookmark;
 import com.finfellows.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "CMA")
@@ -47,6 +51,9 @@ public class CMA extends BaseEntity {
 
     @Column(name="deposit_protection")
     private String depositProtection;
+
+    @OneToMany(mappedBy = "cma", cascade = CascadeType.ALL)
+    private List<CmaBookmark> cmaBookmarkList = new ArrayList<>();
 
     @Builder
     public CMA(String bankName, String productName, String cmaType, String disclosureMonth, String maturityInterestRate, String specialCondition, String joinWay, String etcNote, String productUrl, String depositProtection) {

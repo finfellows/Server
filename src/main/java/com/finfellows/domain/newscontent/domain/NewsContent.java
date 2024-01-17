@@ -1,5 +1,6 @@
 package com.finfellows.domain.newscontent.domain;
 
+import com.finfellows.domain.bookmark.domain.NewsContentBookmark;
 import com.finfellows.domain.common.BaseEntity;
 
 import com.finfellows.domain.post.domain.ContentType;
@@ -10,6 +11,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="NewsContent")
@@ -35,6 +39,9 @@ public class NewsContent extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name="contentType")
     private ContentType contentType;
+
+    @OneToMany(mappedBy = "newsContent", cascade = CascadeType.ALL)
+    private List<NewsContentBookmark> newsContentBookmarkList = new ArrayList<>();
 
     @Builder
     public NewsContent(Post post, String title, String content){

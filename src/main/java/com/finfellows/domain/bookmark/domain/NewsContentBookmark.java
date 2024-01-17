@@ -29,7 +29,6 @@ public class NewsContentBookmark extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "news_content_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private NewsContent newsContent;
 
     @Builder
