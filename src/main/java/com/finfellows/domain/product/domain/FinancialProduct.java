@@ -1,5 +1,6 @@
 package com.finfellows.domain.product.domain;
 
+import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -74,6 +76,9 @@ public class FinancialProduct extends BaseEntity {
 
     @OneToMany(mappedBy = "financialProduct", fetch = FetchType.LAZY)
     private List<FinancialProductOption> financialProductOption;
+
+    @OneToMany(mappedBy = "financialProduct", cascade = CascadeType.ALL)
+    private List<FinancialProductBookmark> financialProductBookmarkList = new ArrayList<>();
 
     @Builder
     public FinancialProduct(String financialCompanyNo, String financialProductCode, String disclosureMonth, String bankName, String productName, String joinWay, String maturityInterestRate, String specialCondition, Integer joinDeny, String joinMember, String etcNote, Integer maxLimit, LocalDate disclosureStartDay, LocalDate disclosureEndDay, LocalDateTime financialCompanySubmissionDay, FinancialProductType financialProductType, List<FinancialProductOption> financialProductOption) {

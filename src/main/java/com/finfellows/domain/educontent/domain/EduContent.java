@@ -1,5 +1,6 @@
 package com.finfellows.domain.educontent.domain;
 
+import com.finfellows.domain.bookmark.domain.EduContentBookmark;
 import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.post.domain.ContentType;
 import com.finfellows.domain.post.domain.Post;
@@ -9,6 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "EduContent")
@@ -30,6 +34,8 @@ public class EduContent extends BaseEntity {
     @Column(name="contentType")
     private ContentType contentType;
 
+    @OneToMany(mappedBy = "eduContent", cascade = CascadeType.ALL)
+    private List<EduContentBookmark> eduContentBookmarkList = new ArrayList<>();
 
     @Column(name="title")
     private String title;

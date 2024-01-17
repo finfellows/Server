@@ -67,14 +67,13 @@ public class AuthController {
     })
     @GetMapping(value = "/kakao/sign-in")
     public ResponseCustom<?> kakaoCallback(
-            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code,
-            HttpServletResponse response
+            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
     ) {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
 
 
-        return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile, response));
+        return ResponseCustom.OK(kakaoService.kakaoLogin(kakaoProfile));
 
     }
 
