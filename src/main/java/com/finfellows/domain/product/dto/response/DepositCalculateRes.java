@@ -9,11 +9,11 @@ import lombok.Data;
 @Builder
 public class DepositCalculateRes {
 
-    private Double defaultInterestCalculation;
+    private String defaultInterestCalculation;
 
-    private Double maxInterestCalculation;
+    private String maxInterestCalculation;
 
-    public static DepositCalculateRes toDto(Double maxInterestRate, Double interestRate) {
+    public static DepositCalculateRes toDto(String maxInterestRate, String interestRate) {
         return DepositCalculateRes.builder()
                 .defaultInterestCalculation(interestRate)
                 .maxInterestCalculation(maxInterestRate)
