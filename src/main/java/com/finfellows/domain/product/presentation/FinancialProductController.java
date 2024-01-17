@@ -128,6 +128,19 @@ public class FinancialProductController {
         return ResponseCustom.OK(financialProductServiceImpl.getCmaDetail(userPrincipal, cmaId));
     }
 
+    @Operation(summary = "예금 계산기", description = "예금 계산기를 이용합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "예금 계산 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DepositCalculateRes.class))}),
+            @ApiResponse(responseCode = "400", description = "예금 계산 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/deposit/{deposit-id}/calculate")
+    public ResponseCustom<DepositCalculateRes> depositCalculate(
+            @Parameter(name = "예금 상품 ID 입니다") @PathVariable(name = "deposit-id") Long depositId,
+            @RequestParam(name = "amount") Double amount
+    ) {
+        return ResponseCustom.OK(financialProductServiceImpl.depositCalculate(depositId, amount));
+    }
+
     @Operation(summary = "은행 등록", description = "은행을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "은행 등록 성공"),
