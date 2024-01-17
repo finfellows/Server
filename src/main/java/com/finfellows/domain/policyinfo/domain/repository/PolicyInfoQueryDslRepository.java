@@ -9,6 +9,7 @@ public interface PolicyInfoQueryDslRepository {
 
     Page<SearchPolicyInfoRes> findPolicyInfos(String searchKeyword, Pageable pageable);
     Page<SearchPolicyInfoRes> findPolicyInfosWithAuthorization(String searchKeyword, Pageable pageable, Long userId);
-    PolicyInfoDetailRes findPolicyDetail(Long policyId, Long userId);
+    PolicyInfoDetailRes findPolicyDetailWithAuthorization(Long policyId, Long userId);
+    PolicyInfoDetailRes findPolicyDetail(Long policyId);
 
 }

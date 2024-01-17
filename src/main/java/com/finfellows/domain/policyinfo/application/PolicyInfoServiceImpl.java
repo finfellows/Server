@@ -32,7 +32,10 @@ public class PolicyInfoServiceImpl implements PolicyInfoService {
 
     @Override
     public PolicyInfoDetailRes findPolicyDetail(UserPrincipal userPrincipal, Long policyId) {
-        return policyInfoRepository.findPolicyDetail(policyId, userPrincipal.getId());
+        if(userPrincipal != null){
+            return policyInfoRepository.findPolicyDetailWithAuthorization(policyId, userPrincipal.getId());
+        }
+        return policyInfoRepository.findPolicyDetail(policyId);
     }
 
     @Override
