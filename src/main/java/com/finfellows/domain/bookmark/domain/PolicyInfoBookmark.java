@@ -30,7 +30,6 @@ public class PolicyInfoBookmark extends BaseEntity {
     // 금융 고마워 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_info_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private PolicyInfo policyInfo;
 
     @Builder

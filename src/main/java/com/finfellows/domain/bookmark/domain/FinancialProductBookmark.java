@@ -30,7 +30,6 @@ public class FinancialProductBookmark extends BaseEntity {
     // 금융 뭐하지 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "financial_product_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private FinancialProduct financialProduct;
 
     @Builder

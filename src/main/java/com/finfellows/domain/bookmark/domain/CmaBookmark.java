@@ -31,7 +31,6 @@ public class CmaBookmark extends BaseEntity {
     // 금융 뭐하지 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cma_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private CMA cma;
 
     @Builder
