@@ -138,7 +138,7 @@ public class KakaoService {
         String redirectURL = KAKAO_SNS_URL + "?" + parameterString;
         log.info("redirectURL = ", redirectURL);
 
-        response.sendRedirect(redirectURL);
+//        response.sendRedirect(redirectURL);
     }
 
     @Transactional
