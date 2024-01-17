@@ -419,7 +419,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
 
     private BooleanExpression maxLimitGoe(Integer maxLimit) {
         if(maxLimit == null) return null;
-        return financialProduct.maxLimit.goe(maxLimit).or(financialProduct.maxLimit.isNull());
+        return financialProduct.maxLimit.goe(maxLimit).or(financialProduct.maxLimit.eq(0));
     }
 
 }
