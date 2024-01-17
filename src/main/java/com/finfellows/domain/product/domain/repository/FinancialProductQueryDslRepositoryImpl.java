@@ -65,7 +65,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             bankNameEq(financialProductSearchCondition.getBankNames()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -83,7 +83,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             typeEq(financialProductSearchCondition.getTypes()),
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             bankNameEq(financialProductSearchCondition.getBankNames()),
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit()),
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null
                     );
         } else {
@@ -110,7 +110,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             bankNameEq(financialProductSearchCondition.getBankNames()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -129,7 +129,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
                             bankNameEq(financialProductSearchCondition.getBankNames()),
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     );
         }
 
@@ -167,7 +167,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
                             bankNameEq(financialProductSearchCondition.getBankNames()),
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -185,7 +185,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByDefault.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
                             bankNameEq(financialProductSearchCondition.getBankNames()),
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     );
         } else {
             orderSpecifiers.add(financialProductOptionOrderByMax.maximumPreferredInterestRate.desc());
@@ -210,7 +210,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
                             bankNameEq(financialProductSearchCondition.getBankNames()),
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     )
                     .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
                     .offset(pageable.getOffset())
@@ -228,7 +228,7 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
                             bankGroupNoEq(financialProductSearchCondition.getBankGroupNos()),
                             financialProductSearchCondition.getTerms() != null ? financialProductOptionOrderByMax.savingsTerm.in(financialProductSearchCondition.getTerms()) : null,
                             bankNameEq(financialProductSearchCondition.getBankNames()),
-                            maxLimitLoe(financialProductSearchCondition.getMaxLimit())
+                            maxLimitGoe(financialProductSearchCondition.getMaxLimit())
                     );
         }
 
@@ -417,9 +417,9 @@ public class FinancialProductQueryDslRepositoryImpl implements FinancialProductQ
         return expression;
     }
 
-    private BooleanExpression maxLimitLoe(Integer maxLimit) {
+    private BooleanExpression maxLimitGoe(Integer maxLimit) {
         if(maxLimit == null) return null;
-        return financialProduct.maxLimit.loe(maxLimit).or(financialProduct.maxLimit.isNull());
+        return financialProduct.maxLimit.goe(maxLimit).or(financialProduct.maxLimit.eq(0));
     }
 
 }

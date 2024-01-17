@@ -166,8 +166,8 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .max(Comparator.comparing(FinancialProductOption::getInterestRate))
                 .orElseThrow(RuntimeException::new);
 
-        Double maxInterestRate = amount + (amount * Double.parseDouble(maxOption.getMaximumPreferredInterestRate()) * 0.846);
-        Double interestRate = amount + (amount * Double.parseDouble(defaultOption.getInterestRate()) * 0.846);
+        Double maxInterestRate = amount + (amount * (Double.parseDouble(maxOption.getMaximumPreferredInterestRate()) / 100) * 0.846);
+        Double interestRate = amount + (amount * (Double.parseDouble(defaultOption.getInterestRate()) / 100) * 0.846);
 
         return DepositCalculateRes.toDto(maxInterestRate, interestRate);
     }
