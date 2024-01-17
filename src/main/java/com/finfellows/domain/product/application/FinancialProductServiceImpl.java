@@ -153,4 +153,23 @@ public class FinancialProductServiceImpl implements FinancialProductService {
         return null;
     }
 
+    @Override
+    public DepositCalculateRes depositCalculate(Long depositId, Double amount) {
+        FinancialProduct deposit = financialProductRepository.findById(depositId)
+                .orElseThrow(InvalidFinancialProductException::new);
+
+        List<FinancialProductOption> depositOptions = financialProductOptionRepository.findFinancialProductOptionsByFinancialProduct(deposit);
+        FinancialProductOption maxOption = depositOptions.stream()
+                .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
+                .orElse(null);
+        FinancialProductOption defaultOption = depositOptions.stream()
+                .max(Comparator.comparing(FinancialProductOption::getInterestRate))
+                .orElseThrow(RuntimeException::new);
+
+        Double maxInterestRate = amount + (amount * Double.parseDouble(maxOption.getMaximumPreferredInterestRate()) * 0.846);
+        Double interestRate = amount + (amount * Double.parseDouble(defaultOption.getInterestRate()) * 0.846);
+
+        return DepositCalculateRes.toDto(maxInterestRate, interestRate);
+    }
+
 }
