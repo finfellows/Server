@@ -9,6 +9,7 @@ import com.finfellows.domain.bookmark.dto.CmaFinancialProductBookmarkRes;
 import com.finfellows.domain.bookmark.dto.FinancialProductBookmarkRes;
 import com.finfellows.domain.product.domain.CMA;
 import com.finfellows.domain.product.domain.FinancialProduct;
+import com.finfellows.domain.product.domain.repository.BankRepository;
 import com.finfellows.domain.product.domain.repository.CmaRepository;
 import com.finfellows.domain.product.domain.repository.FinancialProductRepository;
 import com.finfellows.domain.user.domain.User;
@@ -36,6 +37,7 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     private final FinancialProductRepository financialProductRepository;
     private final CmaRepository cmaRepository;
     private final CmaBookmarkRepository cmaBookmarkRepository;
+    private final BankRepository bankRepository;
 
 
     @Transactional
@@ -96,8 +98,8 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
         List<CmaBookmark> cmaBookmarks = cmaBookmarkRepository.findAllByUser(user);
 
 
-        List<FinancialProductBookmarkRes> financialProductBookmarkResList = FinancialProductBookmarkRes.toDto(bookmarks);
-        List<CmaBookmarkRes> cmaBookmarkResList = CmaBookmarkRes.toDto(cmaBookmarks);
+        List<FinancialProductBookmarkRes> financialProductBookmarkResList = FinancialProductBookmarkRes.toDto(bookmarks, bankRepository);
+        List<CmaBookmarkRes> cmaBookmarkResList = CmaBookmarkRes.toDto(cmaBookmarks, bankRepository);
 
         CmaFinancialProductBookmarkRes cmaFinancialProductBookmarkRes = new CmaFinancialProductBookmarkRes(financialProductBookmarkResList, cmaBookmarkResList);
 

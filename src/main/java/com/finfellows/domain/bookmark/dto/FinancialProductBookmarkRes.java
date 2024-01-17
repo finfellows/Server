@@ -5,6 +5,7 @@ import com.finfellows.domain.bookmark.domain.FinancialProductBookmark;
 import com.finfellows.domain.product.domain.FinancialProduct;
 import com.finfellows.domain.product.domain.FinancialProductOption;
 import com.finfellows.domain.product.domain.FinancialProductType;
+import com.finfellows.domain.product.domain.repository.BankRepository;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,11 +22,12 @@ public class FinancialProductBookmarkRes {
     private String productName;
     private String interestRate;
     private String maximumPreferredInterestRate;
+    private String bankLogoUrl;
 
 
 
     @Builder
-    public FinancialProductBookmarkRes(Boolean isLiked, Long financialProductId, FinancialProductType financialProductType, String companyName, String productName, String interestRate, String maximumPreferredInterestRate) {
+    public FinancialProductBookmarkRes(Boolean isLiked, Long financialProductId, FinancialProductType financialProductType, String companyName, String productName, String interestRate, String maximumPreferredInterestRate, String bankLogoUrl) {
         this.isLiked = isLiked;
         this.financialProductId = financialProductId;
         this.financialProductType = financialProductType;
@@ -33,28 +35,33 @@ public class FinancialProductBookmarkRes {
         this.productName = productName;
         this.interestRate = interestRate;
         this.maximumPreferredInterestRate = maximumPreferredInterestRate;
+        this.bankLogoUrl = bankLogoUrl;
     }
 
 
 
 
 
-    public static List<FinancialProductBookmarkRes> toDto(List<FinancialProductBookmark> bookmarks) {
+    public static List<FinancialProductBookmarkRes> toDto(List<FinancialProductBookmark> bookmarks, BankRepository bankRepository) {
         List<FinancialProductBookmarkRes> results = new ArrayList<>();
 
         for (FinancialProductBookmark bookmark : bookmarks) {
             FinancialProduct financialProduct = bookmark.getFinancialProduct();
 
             for (FinancialProductOption financialProductOption : financialProduct.getFinancialProductOption()) {
-                Boolean isLiked = Boolean.TRUE;
-                Long financialProductId = financialProduct.getId();
-                FinancialProductType financialProductType = financialProduct.getFinancialProductType();
-                String companyName = financialProduct.getBankName();
-                String productName = financialProduct.getProductName();
-                String interestRate = financialProductOption.getInterestRate();
-                String maximumPreferredInterestRate = financialProductOption.getMaximumPreferredInterestRate();
+                String bankName = financialProduct.getBankName();
+                String bankLogoUrl = bankRepository.findByBankName(bankName) != null ? bankRepository.findByBankName(bankName).getBankLogoUrl() : null;
 
-                results.add(new FinancialProductBookmarkRes(isLiked ,financialProductId ,financialProductType, companyName, productName, interestRate, maximumPreferredInterestRate));
+                results.add(FinancialProductBookmarkRes.builder()
+                        .isLiked(Boolean.TRUE)
+                        .financialProductId(financialProduct.getId())
+                        .financialProductType(financialProduct.getFinancialProductType())
+                        .companyName(bankName)
+                        .productName(financialProduct.getProductName())
+                        .interestRate(financialProductOption.getInterestRate())
+                        .maximumPreferredInterestRate(financialProductOption.getMaximumPreferredInterestRate())
+                        .bankLogoUrl(bankLogoUrl)
+                        .build());
 
             }
         }
