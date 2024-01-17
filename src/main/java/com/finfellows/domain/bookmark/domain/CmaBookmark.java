@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -29,6 +31,7 @@ public class CmaBookmark extends BaseEntity {
     // 금융 뭐하지 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cma_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private CMA cma;
 
     @Builder

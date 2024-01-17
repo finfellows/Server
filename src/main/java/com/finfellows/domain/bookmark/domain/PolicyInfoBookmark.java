@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 
 @Entity
@@ -28,6 +30,7 @@ public class PolicyInfoBookmark extends BaseEntity {
     // 금융 고마워 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_info_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PolicyInfo policyInfo;
 
     @Builder
