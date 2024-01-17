@@ -12,4 +12,7 @@ public interface NewsContentBookmarkRepository extends JpaRepository<NewsContent
     Optional<NewsContentBookmark> findByUserAndNewsContent(User user, NewsContent newsContent);
 
     List<NewsContentBookmark> findAllByUser(User user);
+
+
+    boolean existsByUser_IdAndNewsContent_Id(Long userId, Long newsContentId);
 }

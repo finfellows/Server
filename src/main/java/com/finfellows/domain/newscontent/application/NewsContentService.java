@@ -1,6 +1,7 @@
 package com.finfellows.domain.newscontent.application;
 
 import com.finfellows.domain.bookmark.domain.repository.EduContentBookmarkRepository;
+import com.finfellows.domain.bookmark.domain.repository.NewsContentBookmarkRepository;
 import com.finfellows.domain.newscontent.domain.NewsContent;
 import com.finfellows.domain.newscontent.domain.repository.NewsContentRepository;
 import com.finfellows.domain.newscontent.dto.request.NewsContentRequest;
@@ -25,6 +26,7 @@ public class NewsContentService {
     private final NewsContentRepository newsContentRepository;
     private final PostRepository postRepository;
     private final EduContentBookmarkRepository eduContentBookmarkRepository;
+    private final NewsContentBookmarkRepository newsContentBookmarkRepository;
 
     @Transactional
     public NewsContent createNewsContent(NewsContentRequest request) {
@@ -96,6 +98,6 @@ public class NewsContentService {
 
     // 특정 뉴스 콘텐츠에 대한 북마크 여부 확인
     private boolean checkBookmarked(Long userId, Long newsContentId) {
-        return eduContentBookmarkRepository.existsByUser_IdAndEduContent_Id(userId, newsContentId);
+        return newsContentBookmarkRepository.existsByUser_IdAndNewsContent_Id(userId, newsContentId);
     }
 }
