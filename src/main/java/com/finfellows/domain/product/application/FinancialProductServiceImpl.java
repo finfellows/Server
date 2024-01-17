@@ -159,17 +159,14 @@ public class FinancialProductServiceImpl implements FinancialProductService {
                 .orElseThrow(InvalidFinancialProductException::new);
 
         List<FinancialProductOption> depositOptions = financialProductOptionRepository.findFinancialProductOptionsByFinancialProduct(deposit);
-        FinancialProductOption maxOption = depositOptions.stream()
-                .max(Comparator.comparing(FinancialProductOption::getMaximumPreferredInterestRate))
-                .orElse(null);
-        FinancialProductOption defaultOption = depositOptions.stream()
-                .max(Comparator.comparing(FinancialProductOption::getInterestRate))
-                .orElseThrow(RuntimeException::new);
+        FinancialProductOption financialOption = depositOptions.stream()
+                .filter(option -> option.getSavingsTerm().equals(12))
+                .toList().get(0);
 
-        Double maxInterestRate = amount + (amount * (Double.parseDouble(maxOption.getMaximumPreferredInterestRate()) / 100) * 0.846);
-        Double interestRate = amount + (amount * (Double.parseDouble(defaultOption.getInterestRate()) / 100) * 0.846);
+        Double maxInterestRate = amount + (amount * (Double.parseDouble(financialOption.getMaximumPreferredInterestRate()) / 100) * 0.846);
+        Double interestRate = amount + (amount * (Double.parseDouble(financialOption.getInterestRate()) / 100) * 0.846);
 
-        return DepositCalculateRes.toDto(maxInterestRate, interestRate);
+        return DepositCalculateRes.toDto(String.format("%.0f", maxInterestRate), String.format("%.0f", interestRate));
     }
 
 }
