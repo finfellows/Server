@@ -138,7 +138,7 @@ public class KakaoService {
         String redirectURL = KAKAO_SNS_URL + "?" + parameterString;
         log.info("redirectURL = ", redirectURL);
 
-//        response.sendRedirect(redirectURL);
+        response.sendRedirect(redirectURL);
     }
 
     @Transactional
@@ -172,7 +172,7 @@ public class KakaoService {
 
 
     @Transactional
-    public AuthRes kakaoLogin(KakaoProfile kakaoProfile, HttpServletResponse response) {
+    public AuthRes kakaoLogin(KakaoProfile kakaoProfile) {
 
         // 이미 DB에 회원 정보가 저장되어 있으면 로그인 시키고, 없다면 DB에 등록 후 로그인.
 
@@ -214,13 +214,13 @@ public class KakaoService {
 
 
         // 쿠키 생성 및 설정
-        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
-        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setSecure(true);
+//        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
+//        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setSecure(true);
 
-        response.addCookie(refreshTokenCookie);
+//        response.addCookie(refreshTokenCookie);
 
 
         return AuthRes.builder()
