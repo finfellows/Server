@@ -22,5 +22,6 @@ public interface FinancialProductService {
     Page<SearchCmaRes> findCmaProducts(UserPrincipal userPrincipal, CmaSearchCondition cmaSearchCondition, Pageable pageable);
     CmaDetailRes getCmaDetail(UserPrincipal userPrincipal, Long cmaId);
     Void bankUpload(BankUploadReq bankUploadReq, String bankLogoImg) throws IOException;
+    DepositCalculateRes depositCalculate(Long depositId, Double amount);
 
 }
