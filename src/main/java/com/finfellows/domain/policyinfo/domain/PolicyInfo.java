@@ -1,5 +1,6 @@
 package com.finfellows.domain.policyinfo.domain;
 
+import com.finfellows.domain.bookmark.domain.PolicyInfoBookmark;
 import com.finfellows.domain.common.BaseEntity;
 import com.finfellows.domain.policyinfo.dto.PolicyUpdateReq;
 import jakarta.persistence.*;
@@ -8,6 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "PolicyInfo")
@@ -56,6 +60,9 @@ public class PolicyInfo extends BaseEntity {
     private String rqutUrla;
 
     private String pstnPaprCn;
+
+    @OneToMany(mappedBy = "policyInfo", cascade = CascadeType.ALL)
+    private List<PolicyInfoBookmark> policyInfoBookmarkList = new ArrayList<>();
 
     public void updatePolicyInfo(PolicyUpdateReq policyUpdateReq) {
         this.polyBizSjNm = policyUpdateReq.getPolyBizSjNm();
