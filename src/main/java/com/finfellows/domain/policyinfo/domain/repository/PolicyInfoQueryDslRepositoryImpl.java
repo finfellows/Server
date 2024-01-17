@@ -87,7 +87,7 @@ public class PolicyInfoQueryDslRepositoryImpl implements PolicyInfoQueryDslRepos
     }
 
     @Override
-    public PolicyInfoDetailRes findPolicyDetail(Long policyId, Long userId) {
+    public PolicyInfoDetailRes findPolicyDetailWithAuthorization(Long policyId, Long userId) {
         QPolicyInfoBookmark policyInfoBookmark = QPolicyInfoBookmark.policyInfoBookmark;
 
         List<PolicyInfoDetailRes> result = queryFactory
@@ -119,6 +119,39 @@ public class PolicyInfoQueryDslRepositoryImpl implements PolicyInfoQueryDslRepos
                         policyInfo.id.eq(policyId)
                 )
                 .fetch();
+        return result.get(0);
+    }
+
+    @Override
+    public PolicyInfoDetailRes findPolicyDetail(Long policyId) {
+        List<PolicyInfoDetailRes> result = queryFactory
+                .select(new QPolicyInfoDetailRes(
+                        Expressions.constant(false),
+                        policyInfo.polyBizSjNm,
+                        policyInfo.polyItcnCn,
+                        policyInfo.sporCn,
+                        policyInfo.bizPrdCn,
+                        policyInfo.rqutPrdCn,
+                        policyInfo.sporScvl,
+                        policyInfo.ageInfo,
+                        policyInfo.prcpCn,
+                        policyInfo.accrRqisCn,
+                        policyInfo.majrRqisCn,
+                        policyInfo.empmSttsCn,
+                        policyInfo.splzRlmRqisCn,
+                        policyInfo.aditRscn,
+                        policyInfo.prcpLmttTrgtCn,
+                        policyInfo.rqutProcCn,
+                        policyInfo.jdgnPresCn,
+                        policyInfo.rqutUrla,
+                        policyInfo.pstnPaprCn
+                ))
+                .from(policyInfo)
+                .where(
+                        policyInfo.id.eq(policyId)
+                )
+                .fetch();
+
         return result.get(0);
     }
 
