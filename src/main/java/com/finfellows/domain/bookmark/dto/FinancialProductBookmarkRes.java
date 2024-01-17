@@ -10,7 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -44,28 +46,35 @@ public class FinancialProductBookmarkRes {
 
     public static List<FinancialProductBookmarkRes> toDto(List<FinancialProductBookmark> bookmarks, BankRepository bankRepository) {
         List<FinancialProductBookmarkRes> results = new ArrayList<>();
+        Set<Long> includedFinancialProductIds = new HashSet<>();
 
         for (FinancialProductBookmark bookmark : bookmarks) {
             FinancialProduct financialProduct = bookmark.getFinancialProduct();
+            Long financialProductId = financialProduct.getId();
 
-            for (FinancialProductOption financialProductOption : financialProduct.getFinancialProductOption()) {
+            // financialProductId가 이미 포함되어 있으면 건너뛴다
+            if (!includedFinancialProductIds.contains(financialProductId)) {
                 String bankName = financialProduct.getBankName();
                 String bankLogoUrl = bankRepository.findByBankName(bankName) != null ? bankRepository.findByBankName(bankName).getBankLogoUrl() : null;
 
+                // 대표 옵션 선택 또는 모든 옵션 정보 집계
+                FinancialProductOption representativeOption = financialProduct.getFinancialProductOption().get(0); // 예시: 첫 번째 옵션 사용
+
                 results.add(FinancialProductBookmarkRes.builder()
                         .isLiked(Boolean.TRUE)
-                        .financialProductId(financialProduct.getId())
+                        .financialProductId(financialProductId)
                         .financialProductType(financialProduct.getFinancialProductType())
                         .companyName(bankName)
                         .productName(financialProduct.getProductName())
-                        .interestRate(financialProductOption.getInterestRate())
-                        .maximumPreferredInterestRate(financialProductOption.getMaximumPreferredInterestRate())
+                        .interestRate(representativeOption.getInterestRate())
+                        .maximumPreferredInterestRate(representativeOption.getMaximumPreferredInterestRate())
                         .bankLogoUrl(bankLogoUrl)
                         .build());
 
+                // financialProductId를 포함된 목록에 추가한다
+                includedFinancialProductIds.add(financialProductId);
             }
         }
-
 
         return results;
 
