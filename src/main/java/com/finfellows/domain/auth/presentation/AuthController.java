@@ -85,13 +85,12 @@ public class AuthController {
     })
     @GetMapping(value = "/admin/sign-in")
     public ResponseCustom<?> adminSignIn(
-            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code,
-            HttpServletResponse response
+            @Parameter(description = "code를 입력해주세요.", required = true) @RequestParam("code") String code
             ) {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(accessToken);
 
-        return ResponseCustom.OK(kakaoService.adminSignIn(kakaoProfile, response));
+        return ResponseCustom.OK(kakaoService.adminSignIn(kakaoProfile));
     }
 
 
@@ -103,10 +102,9 @@ public class AuthController {
     @PostMapping(value = "sign-out")
     public ResponseCustom<?> signOut(
             @Parameter(description = "Accesstoken을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            HttpServletRequest request,
-            HttpServletResponse response
+            @Parameter(description = "Schemas의 RefreshTokenRequest를 참고해주세요.") @Valid @RequestBody RefreshTokenReq tokenRefreshRequest
     ) {
-        return ResponseCustom.OK(kakaoService.signOut(request, response));
+        return ResponseCustom.OK(kakaoService.signOut(tokenRefreshRequest));
     }
 
 
@@ -127,13 +125,12 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "토큰 갱신 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class) ) } ),
             @ApiResponse(responseCode = "400", description = "토큰 갱신 실패", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class) ) } ),
     })
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(
-            HttpServletRequest request,
-            HttpServletResponse response
+    public ResponseCustom<?> refresh(
+            @Parameter(description = "Schemas의 RefreshTokenReq를 참고해주세요.", required = true) @Valid @RequestBody RefreshTokenReq refreshTokenReq
     ) {
-        return kakaoService.refresh(request, response);
+        return ResponseCustom.OK(kakaoService.refresh(refreshTokenReq));
     }
+
 
 
 }

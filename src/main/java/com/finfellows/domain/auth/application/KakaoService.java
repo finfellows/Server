@@ -231,25 +231,10 @@ public class KakaoService {
     }
 
     @Transactional
-    public Message signOut(HttpServletRequest request, HttpServletResponse response) {
-        //쿠키에서 리프레시 토큰 추출
-        String refreshToken = Arrays.stream(request.getCookies())
-                .filter(cookie -> "refreshToken".equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
-
-        Token token = tokenRepository.findByRefreshToken(refreshToken)
+    public Message signOut(final RefreshTokenReq tokenRefreshRequest) {
+        Token token = tokenRepository.findByRefreshToken(tokenRefreshRequest.getRefreshToken())
                 .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
         tokenRepository.delete(token);
-
-        // 쿠키에서 리프레시 토큰 삭제
-        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-        refreshTokenCookie.setMaxAge(0); // 쿠키 만료 시간을 0으로 설정하여 쿠키를 즉시 만료시킴
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setSecure(true);
-        response.addCookie(refreshTokenCookie);
 
         return Message.builder()
                 .message("로그아웃 하였습니다.")
@@ -275,7 +260,7 @@ public class KakaoService {
     }
 
     @Transactional
-    public AuthRes adminSignIn(KakaoProfile kakaoProfile, HttpServletResponse response) {
+    public AuthRes adminSignIn(KakaoProfile kakaoProfile) {
         Optional<User> byEmail = userRepository.findByEmail(kakaoProfile.getKakaoAccount().getEmail());
         if (!byEmail.isPresent()) {
             User user = User.builder()
@@ -311,13 +296,6 @@ public class KakaoService {
 
         Token savedToken = tokenRepository.save(token);
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
-        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setSecure(true);
-        response.addCookie(refreshTokenCookie);
-
 
         return AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
@@ -326,26 +304,19 @@ public class KakaoService {
 
     }
 
-    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
-        //쿠키에서 리프레시 토큰 추출
-        String refreshToken = Arrays.stream(request.getCookies())
-                .filter(cookie -> "refreshToken".equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElseThrow(() -> new DefaultAuthenticationException(ErrorCode.INVALID_AUTHENTICATION));
-
+    public ResponseEntity<?> refresh(RefreshTokenReq refreshTokenReq) {
         //1차 검증
-        boolean checkValid = valid(refreshToken);
+        boolean checkValid = valid(refreshTokenReq.getRefreshToken());
         DefaultAssert.isAuthentication(checkValid);
 
-        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshTokenReq.getRefreshToken());
         Authentication authentication = customTokenProviderService.getAuthenticationByEmail(token.get().getEmail());
 
         //4. refresh token 정보 값을 업데이트 한다.
         //시간 유효성 확인
         TokenMapping tokenMapping;
 
-        Long expirationTime = customTokenProviderService.getExpiration(refreshToken);
+        Long expirationTime = customTokenProviderService.getExpiration(refreshTokenReq.getRefreshToken());
         if(expirationTime > 0){
             tokenMapping = customTokenProviderService.refreshToken(authentication, token.get().getRefreshToken());
         }else{
@@ -355,20 +326,11 @@ public class KakaoService {
         Token updateToken = token.get().updateRefreshToken(tokenMapping.getRefreshToken());
         tokenRepository.save(updateToken);
 
-        // 새로운 리프레시 토큰을 쿠키에 설정
-        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
-        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간을 2주로 설정
-        refreshTokenCookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근 방지
-        refreshTokenCookie.setPath("/"); // 모든 경로에서 쿠키 사용
-        refreshTokenCookie.setSecure(true);
-        response.addCookie(refreshTokenCookie); // 쿠키를 응답에 추가
-
         AuthRes authResponse = AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(updateToken.getRefreshToken())
                 .role(Role.USER)
                 .build();
-
 
         return ResponseEntity.ok(authResponse);
     }
