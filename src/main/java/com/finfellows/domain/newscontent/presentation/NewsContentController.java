@@ -63,8 +63,9 @@ public class NewsContentController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = NewsContentResponse.class))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<NewsContentResponse> getNewsContent(@PathVariable Long id) {
-        NewsContentResponse response = newsContentService.getNewsContent(id);
+    public ResponseEntity<NewsContentResponse> getNewsContent(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal) {
+        Long userId = userPrincipal != null ? userPrincipal.getId() : null;
+        NewsContentResponse response = newsContentService.getNewsContent(id, userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
