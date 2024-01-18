@@ -60,15 +60,18 @@ public class NewsContentService {
         return new PageImpl<>(newsContentsResponses, pageable, newsContentsPage.getTotalElements());
     }
 
-    public NewsContentResponse getNewsContent(Long id) {
+    public NewsContentResponse getNewsContent(Long id, Long userId) {
         NewsContent newsContent = newsContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("NewsContent not found with id: " + id));
+
+        boolean isBookmarked = userId != null && checkBookmarked(userId, id);
 
         return NewsContentResponse.builder()
                 .id(newsContent.getId())
                 .created_at(newsContent.getCreatedAt())
                 .title(newsContent.getTitle())
                 .content(newsContent.getContent())
+                .bookmarked(isBookmarked)
                 .build();
     }
 
