@@ -52,27 +52,33 @@ public class FinancialProductBookmarkRes {
             FinancialProduct financialProduct = bookmark.getFinancialProduct();
             Long financialProductId = financialProduct.getId();
 
-            // financialProductId가 이미 포함되어 있으면 건너뛴다
+            // Skip if financialProductId is already included
             if (!includedFinancialProductIds.contains(financialProductId)) {
-                String bankName = financialProduct.getBankName();
-                String bankLogoUrl = bankRepository.findByBankName(bankName) != null ? bankRepository.findByBankName(bankName).getBankLogoUrl() : null;
+                // Check if any of the FinancialProductOptions have a savingTerm of 12
+                boolean hasSavingTerm12 = financialProduct.getFinancialProductOption().stream()
+                        .anyMatch(option -> option.getSavingsTerm() != null && option.getSavingsTerm().equals(12));
 
-                // 대표 옵션 선택 또는 모든 옵션 정보 집계
-                FinancialProductOption representativeOption = financialProduct.getFinancialProductOption().get(0); // 예시: 첫 번째 옵션 사용
+                if (hasSavingTerm12) {
+                    String bankName = financialProduct.getBankName();
+                    String bankLogoUrl = bankRepository.findByBankName(bankName) != null ? bankRepository.findByBankName(bankName).getBankLogoUrl() : null;
 
-                results.add(FinancialProductBookmarkRes.builder()
-                        .isLiked(Boolean.TRUE)
-                        .financialProductId(financialProductId)
-                        .financialProductType(financialProduct.getFinancialProductType())
-                        .companyName(bankName)
-                        .productName(financialProduct.getProductName())
-                        .interestRate(representativeOption.getInterestRate())
-                        .maximumPreferredInterestRate(representativeOption.getMaximumPreferredInterestRate())
-                        .bankLogoUrl(bankLogoUrl)
-                        .build());
+                    // Use the first option as the representative option
+                    FinancialProductOption representativeOption = financialProduct.getFinancialProductOption().get(0);
 
-                // financialProductId를 포함된 목록에 추가한다
-                includedFinancialProductIds.add(financialProductId);
+                    results.add(FinancialProductBookmarkRes.builder()
+                            .isLiked(Boolean.TRUE)
+                            .financialProductId(financialProductId)
+                            .financialProductType(financialProduct.getFinancialProductType())
+                            .companyName(bankName)
+                            .productName(financialProduct.getProductName())
+                            .interestRate(representativeOption.getInterestRate())
+                            .maximumPreferredInterestRate(representativeOption.getMaximumPreferredInterestRate())
+                            .bankLogoUrl(bankLogoUrl)
+                            .build());
+
+                    // Add the financialProductId to the included set
+                    includedFinancialProductIds.add(financialProductId);
+                }
             }
         }
 
