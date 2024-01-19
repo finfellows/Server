@@ -18,6 +18,7 @@ import com.finfellows.global.config.security.token.UserPrincipal;
 import com.finfellows.global.payload.Message;
 import com.finfellows.global.payload.ResponseCustom;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FinancialProductBookmarkServiceImpl implements BookmarkService{
     private final FinancialProductBookmarkRepository financialProductBookmarkRepository;
     private final UserRepository userRepository;
@@ -144,10 +146,16 @@ public class FinancialProductBookmarkServiceImpl implements BookmarkService{
         CMA cma = cmaRepository.findById(cmaId)
                 .orElseThrow(RuntimeException::new);
 
+        log.info(String.valueOf(user));
+        log.info(String.valueOf(cma));
+
+
         CmaBookmark cmaBookmark = CmaBookmark.builder()
                 .user(user)
                 .cma(cma)
                 .build();
+
+        log.info(cmaBookmark.toString());
 
         cmaBookmarkRepository.delete(cmaBookmark);
 

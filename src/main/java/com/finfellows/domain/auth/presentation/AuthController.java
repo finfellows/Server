@@ -48,6 +48,7 @@ public class AuthController {
 //        kakaoService.accessRequest();
 //    }
 
+
     @Operation(summary = "유저 정보 확인", description = "현재 접속 중인 유저의 정보를 확인합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "유저 확인 성공", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class) ) } ),
