@@ -7,6 +7,7 @@ import com.finfellows.domain.educontent.dto.request.EduContentRequest;
 import com.finfellows.domain.educontent.dto.response.EduContentResponse;
 import com.finfellows.domain.post.domain.Post;
 import com.finfellows.domain.post.domain.repository.PostRepository;
+import com.finfellows.global.config.security.token.UserPrincipal;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -58,14 +59,21 @@ public class EduContentService {
         return new PageImpl<>(eduContentResponses, pageable, eduContentPage.getTotalElements());
     }
 
-    public EduContentResponse getEduContent(Long id) {
+    public EduContentResponse getEduContent(UserPrincipal userPrincipal, Long id) {
         EduContent eduContent = eduContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
+
+        Boolean isBookmarked = false;
+        if (userPrincipal != null) {
+            isBookmarked = eduContentBookmarkRepository.existsByUser_IdAndEduContent_Id(userPrincipal.getId(), id);
+        }
+
 
         return EduContentResponse.builder()
                 .id(eduContent.getId())
                 .title(eduContent.getTitle())
                 .content(eduContent.getContent())
+                .bookmarked(isBookmarked)
                 .build();
     }
 
