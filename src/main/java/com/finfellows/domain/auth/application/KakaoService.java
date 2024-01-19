@@ -213,14 +213,7 @@ public class KakaoService {
         Token savedToken = tokenRepository.save(token);
 
 
-        // 쿠키 생성 및 설정
-//        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenMapping.getRefreshToken());
-//        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 유효기간 2주일
-//        refreshTokenCookie.setHttpOnly(true);
-//        refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setSecure(true);
 
-//        response.addCookie(refreshTokenCookie);
 
 
         return AuthRes.builder()
@@ -229,6 +222,8 @@ public class KakaoService {
                 .role(Role.USER)
                 .build();
     }
+
+
 
     @Transactional
     public Message signOut(final RefreshTokenReq tokenRefreshRequest) {
