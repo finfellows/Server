@@ -58,14 +58,17 @@ public class EduContentService {
         return new PageImpl<>(eduContentResponses, pageable, eduContentPage.getTotalElements());
     }
 
-    public EduContentResponse getEduContent(Long id) {
+    public EduContentResponse getEduContent(Long id, Long userId) {
         EduContent eduContent = eduContentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("EduContent not found with id: " + id));
+
+        boolean isBookmarked = userId != null && checkBookmarked(userId, id);
 
         return EduContentResponse.builder()
                 .id(eduContent.getId())
                 .title(eduContent.getTitle())
                 .content(eduContent.getContent())
+                .bookmarked(isBookmarked)
                 .build();
     }
 

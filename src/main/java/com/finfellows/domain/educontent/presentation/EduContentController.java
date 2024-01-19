@@ -64,8 +64,9 @@ public class EduContentController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = EduContentResponse.class))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<EduContentResponse> getEduContent(@PathVariable Long id) {
-        EduContentResponse response = eduContentService.getEduContent(id);
+    public ResponseEntity<EduContentResponse> getEduContent(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal) {
+        Long userId = userPrincipal != null ? userPrincipal.getId() : null;
+        EduContentResponse response = eduContentService.getEduContent(id,userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
