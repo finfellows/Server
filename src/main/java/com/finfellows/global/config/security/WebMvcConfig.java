@@ -2,6 +2,7 @@ package com.finfellows.global.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -18,7 +19,8 @@ public class WebMvcConfig implements WebMvcConfigurer{
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-//                .allowedHeaders("*")
+                .allowedHeaders("*")
+                .exposedHeaders(HttpHeaders.LOCATION,"Authorization")
                 .allowCredentials(true)
                 .maxAge(MAX_AGE_SECS);
     }
