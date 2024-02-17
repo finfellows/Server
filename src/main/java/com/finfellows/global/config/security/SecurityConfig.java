@@ -1,5 +1,7 @@
 package com.finfellows.global.config.security;
 
+import com.finfellows.domain.auth.application.CustomDefaultOAuth2UserService;
+import com.finfellows.global.config.security.handler.CustomSimpleUrlAuthenticationSuccessHandler;
 import com.finfellows.global.config.security.token.CustomAuthenticationEntryPoint;
 import com.finfellows.global.config.security.token.CustomOncePerRequestFilter;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
+
+    private final CustomDefaultOAuth2UserService customOAuth2UserService;
+    private final CustomSimpleUrlAuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
 
     @Autowired
@@ -74,7 +79,12 @@ public class SecurityConfig {
                         .permitAll()
 
                         .anyRequest()
-                        .authenticated());
+                        .authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(customOAuth2UserService))
+                        .successHandler(oAuth2AuthenticationSuccessHandler))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
 
 
