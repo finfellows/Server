@@ -57,7 +57,7 @@ public class AuthService {
 
 
         return Message.builder()
-                .message("회원탈퇴 하였습니다.")
+                .message("회원 탈퇴 하였습니다.")
                 .build();
     }
 }
