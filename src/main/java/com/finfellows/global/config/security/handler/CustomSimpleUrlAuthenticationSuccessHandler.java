@@ -5,7 +5,6 @@ import com.finfellows.domain.auth.domain.Token;
 import com.finfellows.domain.auth.domain.repository.CustomAuthorizationRequestRepository;
 import com.finfellows.domain.auth.domain.repository.TokenRepository;
 import com.finfellows.domain.auth.dto.TokenMapping;
-import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.DefaultAssert;
 import com.finfellows.global.config.security.OAuth2Config;
