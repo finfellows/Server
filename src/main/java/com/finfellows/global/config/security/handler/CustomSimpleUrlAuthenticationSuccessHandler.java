@@ -5,7 +5,6 @@ import com.finfellows.domain.auth.domain.Token;
 import com.finfellows.domain.auth.domain.repository.CustomAuthorizationRequestRepository;
 import com.finfellows.domain.auth.domain.repository.TokenRepository;
 import com.finfellows.domain.auth.dto.TokenMapping;
-import com.finfellows.domain.user.domain.User;
 import com.finfellows.domain.user.domain.repository.UserRepository;
 import com.finfellows.global.DefaultAssert;
 import com.finfellows.global.config.security.OAuth2Config;
@@ -74,8 +73,8 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
                 .build();
         tokenRepository.save(token);
 
-        return UriComponentsBuilder.fromUriString("https://www.finfellows.co.kr/")
-                .queryParam("token", tokenMapping.getAccessToken())
+        return UriComponentsBuilder.fromUriString("http://localhost:3000/") // http://localhost:3000/   https://www.finfellows.co.kr/
+//                .queryParam("token", tokenMapping.getAccessToken())
                 .build().toUriString();
     }
 
