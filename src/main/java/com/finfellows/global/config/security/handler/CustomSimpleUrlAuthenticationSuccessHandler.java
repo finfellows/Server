@@ -74,7 +74,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         tokenRepository.save(token);
 
         return UriComponentsBuilder.fromUriString("http://localhost:3000/") // http://localhost:3000/   https://www.finfellows.co.kr/
-//                .queryParam("token", tokenMapping.getAccessToken())
+                .queryParam("token", tokenMapping.getAccessToken())
                 .build().toUriString();
     }
 
